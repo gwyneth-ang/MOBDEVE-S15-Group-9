@@ -12,9 +12,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:layout_marginTop="80sp"
-        android:paddingStart="50sp"
-        android:paddingEnd="50sp"
+        android:layout_marginTop="40sp"
+        android:paddingStart="60sp"
+        android:paddingEnd="60sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,8 +25,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:paddingStart="90sp"
-        android:paddingEnd="60sp"
+        android:paddingStart="100sp"
+        android:paddingEnd="70sp"
         android:layout_marginTop="65sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,10 +34,11 @@
         app:srcCompat="@drawable/girl_white" />
 
     <TextView
+        android:id="@+id/tv_app_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="BOOK - BAY"
-        android:layout_marginTop="20sp"
+        android:layout_marginTop="15sp"
         android:fontFamily="@font/cormorant_garamond_semibold"
         android:textSize="36sp"
         android:textColor="#000000"
@@ -47,9 +48,46 @@
 />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/iv_arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/short_arrow" />
+        android:layout_marginTop="5sp"
+        app:srcCompat="@drawable/short_arrow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_app_title"/>
+
+    <TextView
+        android:id="@+id/tv_app_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BOOK STORE"
+        android:layout_marginTop="4sp"
+        android:fontFamily="@font/josefin_sans"
+        android:textSize="21sp"
+        android:textColor="#999999"
+        android:letterSpacing="0.2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_arrow"
+        />
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/btn_sign_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_app_desc" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        android:visibility="gone"
+        tools:layout_editor_absoluteX="142dp"
+        tools:layout_editor_absoluteY="501dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
