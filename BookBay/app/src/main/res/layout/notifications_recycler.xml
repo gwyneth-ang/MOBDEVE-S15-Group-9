@@ -23,13 +23,14 @@
         android:id="@+id/rvNotifications"
         android:layout_width="match_parent"
         android:layout_height="594dp"
+        android:background="#FBF9F6"
+        android:backgroundTint="#FBF9F6"
         app:layout_constraintTop_toBottomOf="@id/tvNotifications" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clBottomNav"
         android:layout_width="match_parent"
         android:layout_height="85dp"
-        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -52,9 +53,9 @@
             android:orientation="vertical"
             android:layout_marginTop="7dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/llNotifBell"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/llNotifBell">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/ivThriftStore"
@@ -70,7 +71,6 @@
                 android:fontFamily="@font/cormorant_garamond_medium"
                 android:textColor="#000000"
                 android:text="Thrift Store"
-                android:layout_marginTop="5sp"
                 android:textSize="13sp" />
         </LinearLayout>
 
@@ -82,9 +82,9 @@
             android:orientation="vertical"
             android:layout_marginTop="7dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/llOrders"
             app:layout_constraintStart_toEndOf="@+id/llThriftStore"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/llOrders">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/ivNotifBell"
@@ -100,7 +100,6 @@
                 android:fontFamily="@font/cormorant_garamond_medium"
                 android:textColor="#000000"
                 android:text="Notifications"
-                android:layout_marginTop="5sp"
                 android:textSize="13sp" />
         </LinearLayout>
 
@@ -112,9 +111,9 @@
             android:orientation="vertical"
             android:layout_marginTop="7dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/llAccount"
             app:layout_constraintStart_toEndOf="@+id/llNotifBell"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/llAccount">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/ivOrders"
@@ -130,7 +129,6 @@
                 android:fontFamily="@font/cormorant_garamond_medium"
                 android:textColor="#000000"
                 android:text="Orders"
-                android:layout_marginTop="5sp"
                 android:textSize="13sp" />
         </LinearLayout>
 
@@ -142,9 +140,9 @@
             android:orientation="vertical"
             android:layout_marginTop="7dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/llOrders"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/ivAccount"
@@ -160,14 +158,10 @@
                 android:fontFamily="@font/cormorant_garamond_medium"
                 android:textColor="#000000"
                 android:text="Account"
-                android:layout_marginTop="5sp"
                 android:textSize="13sp" />
         </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-=======
-        app:layout_constraintTop_toTopOf="parent" />
->>>>>>> 0f139ab1afabee18288348ec20070aac5b150758
 </androidx.constraintlayout.widget.ConstraintLayout>
