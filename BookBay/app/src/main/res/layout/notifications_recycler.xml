@@ -15,10 +15,9 @@
         android:text="Notifications"
         android:textColor="#FFFFFF"
         android:textSize="25sp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-<<<<<<< HEAD
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvNotifications"
@@ -133,14 +132,14 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView
-                android:id="@+id/ivOrders"
+                android:id="@+id/ivAccount"
                 android:layout_width="wrap_content"
                 android:layout_height="46dp"
                 android:adjustViewBounds="true"
                 app:srcCompat="@drawable/user_black" />
 
             <TextView
-                android:id="@+id/tvOrders"
+                android:id="@+id/tvAccount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/cormorant_garamond"
