@@ -28,13 +28,21 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clBottomNav"
         android:layout_width="match_parent"
-        android:layout_height="81dp"
-        android:orientation="horizontal"
-        android:padding="4dp"
+        android:layout_height="85dp"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rvNotifications">
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="7dp"
+            android:background="@drawable/top_shadow_gradient"
+            android:layout_marginBottom="50dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toStartOf="@+id/llThriftStore"/>
 
         <LinearLayout
             android:id="@+id/llThriftStore"
@@ -42,6 +50,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
+            android:layout_marginTop="7dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -58,7 +67,8 @@
                 android:id="@+id/tvThriftStore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/cormorant_garamond"
+                android:fontFamily="@font/cormorant_garamond_medium"
+                android:textColor="#000000"
                 android:text="Thrift Store"
                 android:layout_marginTop="5sp"
                 android:textSize="13sp" />
@@ -70,6 +80,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
+            android:layout_marginTop="7dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/llThriftStore"
             app:layout_constraintTop_toTopOf="parent"
@@ -86,7 +97,8 @@
                 android:id="@+id/tvNotifBell"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/cormorant_garamond"
+                android:fontFamily="@font/cormorant_garamond_medium"
+                android:textColor="#000000"
                 android:text="Notifications"
                 android:layout_marginTop="5sp"
                 android:textSize="13sp" />
@@ -98,6 +110,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
+            android:layout_marginTop="7dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/llNotifBell"
             app:layout_constraintTop_toTopOf="parent"
@@ -114,7 +127,8 @@
                 android:id="@+id/tvOrders"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/cormorant_garamond"
+                android:fontFamily="@font/cormorant_garamond_medium"
+                android:textColor="#000000"
                 android:text="Orders"
                 android:layout_marginTop="5sp"
                 android:textSize="13sp" />
@@ -126,6 +140,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
+            android:layout_marginTop="7dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/llOrders"
             app:layout_constraintTop_toTopOf="parent"
@@ -142,7 +157,8 @@
                 android:id="@+id/tvAccount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/cormorant_garamond"
+                android:fontFamily="@font/cormorant_garamond_medium"
+                android:textColor="#000000"
                 android:text="Account"
                 android:layout_marginTop="5sp"
                 android:textSize="13sp" />
