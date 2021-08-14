@@ -12,9 +12,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:layout_marginTop="100sp"
-        android:paddingStart="50dp"
-        android:paddingEnd="50dp"
+        android:layout_marginTop="80sp"
+        android:paddingStart="50sp"
+        android:paddingEnd="50sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,9 +25,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:paddingStart="90dp"
-        android:paddingEnd="60dp"
-        android:layout_marginTop="65dp"
+        android:paddingStart="90sp"
+        android:paddingEnd="60sp"
+        android:layout_marginTop="65sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_red_blob"
@@ -37,10 +37,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="BOOK - BAY"
-        android:fontFamily="@font/cormorant_garamond"
+        android:layout_marginTop="20sp"
+        android:fontFamily="@font/cormorant_garamond_semibold"
         android:textSize="36sp"
         android:textColor="#000000"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_red_blob"
 />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/short_arrow" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
