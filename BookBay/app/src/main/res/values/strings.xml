@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">BookBay</string>
+    <string-array name="conditions">
+        <item>"New"</item>
+        <item>"Good"</item>
+        <item>"Acceptable"</item>
+    </string-array>
 </resources>
