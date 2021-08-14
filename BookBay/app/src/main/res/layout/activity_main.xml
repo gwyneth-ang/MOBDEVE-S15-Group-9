@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:layout_marginTop="40sp"
-        android:paddingStart="60sp"
-        android:paddingEnd="60sp"
+        android:paddingStart="55sp"
+        android:paddingEnd="55sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,8 +25,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:paddingStart="100sp"
-        android:paddingEnd="70sp"
+        android:paddingStart="95sp"
+        android:paddingEnd="65sp"
         android:layout_marginTop="65sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,25 +69,16 @@
         android:letterSpacing="0.2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_arrow"
+        app:layout_constraintTop_toBottomOf="@+id/iv_arrow"
         />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/btn_sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="40sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_app_desc" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        android:visibility="gone"
-        tools:layout_editor_absoluteX="142dp"
-        tools:layout_editor_absoluteY="501dp" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_app_desc" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
