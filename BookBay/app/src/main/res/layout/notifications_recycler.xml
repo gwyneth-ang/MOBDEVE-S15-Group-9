@@ -10,12 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:background="#000000"
-        android:fontFamily="@font/cormorant_garamond"
+        android:fontFamily="@font/cormorant_garamond_semibold"
         android:gravity="center"
         android:text="Notifications"
         android:textColor="#FFFFFF"
         android:textSize="25sp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
