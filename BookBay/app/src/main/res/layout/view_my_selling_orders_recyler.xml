@@ -6,27 +6,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        android:id="@+id/tvNotifications"
+        android:id="@+id/tv_orders"
         android:layout_width="match_parent"
         android:layout_height="54dp"
-        android:background="#000000"
+        android:background="#EFE6D5"
         android:fontFamily="@font/cormorant_garamond_semibold"
         android:gravity="center"
-        android:text="Notifications"
-        android:textColor="#FFFFFF"
+        android:text="My Orders"
+        android:textColor="#000000"
         android:textSize="25sp"
-        android:letterSpacing="0.02"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvNotifications"
+        android:id="@+id/rv_orders"
         android:layout_width="match_parent"
         android:layout_height="594dp"
         android:background="#FBF9F6"
         android:backgroundTint="#FBF9F6"
-        app:layout_constraintTop_toBottomOf="@id/tvNotifications" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_orders" />
 
     <include layout="@layout/navigation_bar"/>
 

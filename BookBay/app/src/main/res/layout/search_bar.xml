@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_viewbookingdetails_search"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:background="#D14031"
+    android:orientation="horizontal"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+        <SearchView
+            android:id="@+id/Sv_viewbookingdetails_seach_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/custom_search_bar"
+            android:backgroundTint="#FFFFFF"
+            android:iconifiedByDefault="false"
+            android:layoutDirection="rtl"
+            android:queryBackground="@android:color/transparent"
+            android:queryHint="Search by book title or author"
+            android:searchIcon="@drawable/loupe"
+            android:textDirection="ltr"></SearchView>
+
+        <ImageButton
+            android:id="@+id/Bt_viewbookingdetails_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:backgroundTint="@android:color/transparent"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/filter" />
+
+</LinearLayout>
+
