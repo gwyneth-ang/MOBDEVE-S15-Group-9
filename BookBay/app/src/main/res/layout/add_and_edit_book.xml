@@ -7,7 +7,7 @@
     android:background="#FBF9F6">
 
     <TextView
-        android:id="@+id/tvAddABook"
+        android:id="@+id/TvMyAccount"
         android:layout_width="match_parent"
         android:layout_height="54dp"
         android:background="#EFE6D5"
@@ -29,7 +29,7 @@
         android:paddingLeft="20sp"
         android:paddingRight="20sp"
         android:layout_marginTop="10sp"
-        app:layout_constraintTop_toBottomOf="@+id/tvAddABook">
+        app:layout_constraintTop_toBottomOf="@+id/TvMyAccount">
 
         <ImageView
             android:id="@+id/imageView2"
