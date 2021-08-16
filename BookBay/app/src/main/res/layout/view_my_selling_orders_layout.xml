@@ -3,19 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="10sp">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/iv_book_image"
         android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_height="200sp"
         android:adjustViewBounds="false"
         android:scaleType="fitCenter"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="20sp"
+        android:layout_marginStart="20sp"
         app:srcCompat="@drawable/war"
-        tools:layout_editor_absoluteX="19dp"
-        tools:layout_editor_absoluteY="36dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,26 +25,28 @@
         android:textSize="16sp"
         android:fontFamily="@font/cormorant_garamond_medium"
         android:textColor="#000000"
-        android:layout_marginTop="40sp"
         android:layout_marginStart="15sp"
+        android:layout_marginEnd="20sp"
         app:layout_constraintStart_toEndOf="@+id/iv_book_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/iv_book_image"
+        app:layout_constraintBottom_toTopOf="@+id/tv_book_author"
         />
 
     <TextView
         android:id="@+id/tv_book_author"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="BY JAMIL ZAKI"
-        android:textSize="10.5sp"
         android:fontFamily="@font/josefin_sans"
-        android:textColor="#999999"
         android:letterSpacing="0.5"
-        android:layout_marginTop="10sp"
-        app:layout_constraintStart_toStartOf="@+id/tv_book_title"
+        android:text="BY JAMIL ZAKI"
+        android:textColor="#999999"
+        android:textSize="10.5sp"
+        android:layout_marginEnd="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/tv_book_smallest_price"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_book_title"/>
+        app:layout_constraintStart_toStartOf="@+id/tv_book_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_book_title" />
 
     <TextView
         android:id="@+id/tv_book_smallest_price"
@@ -56,8 +56,35 @@
         android:textSize="14sp"
         android:fontFamily="@font/cormorant_garamond_medium"
         android:textColor="#000000"
-        android:layout_marginTop="10sp"
+        android:layout_marginBottom="18sp"
+        android:layout_marginEnd="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tv_book_title"
-        app:layout_constraintTop_toBottomOf="@+id/tv_book_author"/>
+        app:layout_constraintTop_toBottomOf="@+id/tv_book_author"
+        app:layout_constraintBottom_toTopOf="@+id/tv_book_status"/>
+
+    <TextView
+        android:id="@+id/tv_book_status"
+        android:layout_width="90sp"
+        android:layout_height="wrap_content"
+        android:text="PENDING"
+        android:textSize="13sp"
+        android:fontFamily="@font/cormorant_garamond_medium"
+        android:textColor="#000000"
+        android:background="@drawable/roundable_book_status"
+        android:paddingTop="2sp"
+        android:paddingBottom="2sp"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="@+id/tv_book_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_book_smallest_price"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_book_image"/>
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#999999"
+        android:text="TextView"
+        android:layout_marginTop="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/iv_book_image" />
 </androidx.constraintlayout.widget.ConstraintLayout>

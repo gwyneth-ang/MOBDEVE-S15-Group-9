@@ -26,27 +26,27 @@ public class Book {
         this.status = BookStatus.NOT_ORDERED.name();
     }
 
-    private String getTitle(){
+    public String getTitle(){
         return bookTitle;
     }
 
-    private String getAuthor(){
+    public String getAuthor(){
         return bookAuthor;
     }
 
-    private ArrayList<String> getBookCondition(){
+    public ArrayList<String> getBookCondition(){
         return bookCondition;
     }
 
-    private ArrayList<Float> getBookPrice(){
+    public ArrayList<Float> getBookPrice(){
         return bookPrice;
     }
 
-    private String getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    private int getImageId() {
+    public int getImageId() {
         return imageId;
     }
 }

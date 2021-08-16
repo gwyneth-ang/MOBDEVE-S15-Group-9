@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class DataHelper {
 
-    private ArrayList<Book> populateData() {
+    public static ArrayList<Book> populateData() {
         ArrayList<Book> books = new ArrayList<>();
 
         String[] titles = {"Girl, Woman, Other", "Shoko’s Smile", "The War for Kindness: Building Empathy in a Fractured World", "The Death of Vivek Oji", "The Little Prince"};

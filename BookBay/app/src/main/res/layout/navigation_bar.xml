@@ -12,7 +12,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="7dp"
+        android:layout_height="7sp"
         android:background="@drawable/top_shadow_gradient"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +25,8 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="7sp"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/llNotifBell"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +35,7 @@
         <ImageView
             android:id="@+id/ivThriftStore"
             android:layout_width="wrap_content"
-            android:layout_height="46dp"
+            android:layout_height="46sp"
             android:adjustViewBounds="true"
             app:srcCompat="@drawable/book_shop_black" />
 
@@ -44,7 +45,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/cormorant_garamond_medium"
             android:textColor="#000000"
-            android:paddingTop="3dp"
+            android:paddingTop="3sp"
             android:text="Thrift Store"
             android:textSize="13sp" />
     </LinearLayout>
@@ -55,7 +56,8 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginTop="7dp"
+        android:clickable="true"
+        android:layout_marginTop="7sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/llOrders"
         app:layout_constraintStart_toEndOf="@+id/llThriftStore"
@@ -64,7 +66,7 @@
         <ImageView
             android:id="@+id/ivNotifBell"
             android:layout_width="wrap_content"
-            android:layout_height="46dp"
+            android:layout_height="46sp"
             android:adjustViewBounds="true"
             app:srcCompat="@drawable/bell_black" />
 
@@ -74,7 +76,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/cormorant_garamond_medium"
             android:textColor="#000000"
-            android:paddingTop="3dp"
+            android:paddingTop="3sp"
             android:text="Notifications"
             android:textSize="13sp" />
     </LinearLayout>
@@ -85,7 +87,8 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="7sp"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/llAccount"
         app:layout_constraintStart_toEndOf="@+id/llNotifBell"
@@ -94,7 +97,7 @@
         <ImageView
             android:id="@+id/ivOrders"
             android:layout_width="wrap_content"
-            android:layout_height="46dp"
+            android:layout_height="46sp"
             android:adjustViewBounds="true"
             app:srcCompat="@drawable/clipboard_black" />
 
@@ -104,7 +107,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/cormorant_garamond_medium"
             android:textColor="#000000"
-            android:paddingTop="3dp"
+            android:paddingTop="3sp"
             android:text="Orders"
             android:textSize="13sp" />
     </LinearLayout>
@@ -115,7 +118,8 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="7sp"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/llOrders"
@@ -124,7 +128,7 @@
         <ImageView
             android:id="@+id/ivAccount"
             android:layout_width="wrap_content"
-            android:layout_height="46dp"
+            android:layout_height="46sp"
             android:adjustViewBounds="true"
             app:srcCompat="@drawable/user_black" />
 
@@ -134,7 +138,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/cormorant_garamond_medium"
             android:textColor="#000000"
-            android:paddingTop="3dp"
+            android:paddingTop="3sp"
             android:text="Account"
             android:textSize="13sp" />
     </LinearLayout>
