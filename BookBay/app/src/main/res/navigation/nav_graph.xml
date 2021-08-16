@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/view_thrift_store">
+    <fragment
+        android:id="@+id/view_account"
+        android:name="com.mobdeve.s15.group.nine.bookbay.view_account"
+        android:label="fragment_view_account"
+        tools:layout="@layout/fragment_view_account" />
+    <fragment
+        android:id="@+id/view_thrift_store"
+        android:name="com.mobdeve.s15.group.nine.bookbay.view_thrift_store"
+        android:label="fragment_view_thrift_store"
+        tools:layout="@layout/fragment_view_thrift_store" />
+    <fragment
+        android:id="@+id/view_notifications"
+        android:name="com.mobdeve.s15.group.nine.bookbay.view_notifications"
+        android:label="fragment_view_notifications"
+        tools:layout="@layout/fragment_view_notifications" />
+    <fragment
+        android:id="@+id/view_my_orders"
+        android:name="com.mobdeve.s15.group.nine.bookbay.view_my_orders"
+        android:label="fragment_view_my_orders"
+        tools:layout="@layout/fragment_view_my_orders" />
+</navigation>

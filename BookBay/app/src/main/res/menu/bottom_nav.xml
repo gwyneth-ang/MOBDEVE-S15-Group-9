@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/view_thrift_store"
+        android:title="Thrift Store"
+        android:icon="@drawable/book_shop_black"/>
+    <item
+        android:id="@+id/view_notifications"
+        android:title="Notifications"
+        android:icon="@drawable/bell_black"/>
+    <item
+        android:id="@+id/view_my_orders"
+        android:title="Orders"
+        android:icon="@drawable/clipboard_black"/>
+    <item
+        android:id="@+id/view_account"
+        android:title="Account"
+        android:icon="@drawable/user_black"/>
+
+</menu>
