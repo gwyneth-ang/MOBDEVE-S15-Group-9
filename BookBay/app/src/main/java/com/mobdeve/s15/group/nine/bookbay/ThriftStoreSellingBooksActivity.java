@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-
+//TODO: TRANSFER TO FRAGMENTS
 public class ThriftStoreSellingBooksActivity extends AppCompatActivity {
 
     private ArrayList<Book> books;
