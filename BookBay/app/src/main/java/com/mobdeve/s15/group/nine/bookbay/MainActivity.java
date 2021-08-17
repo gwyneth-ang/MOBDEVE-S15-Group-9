@@ -72,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser != null){
             //FIXME: magpasa ng profile picture
             Intent intent = new Intent(MainActivity.this, HomePageActivity.class);
+            intent.putExtra(IntentKeys.USER_NAME.name(), currentUser.getDisplayName());
+            intent.putExtra(IntentKeys.USER_PROFILE_PICTURE.name(), currentUser.getPhotoUrl().toString());
+            intent.putExtra(IntentKeys.USER_ID.name(), currentUser.getUid());
             startActivity(intent);
             finish();
         }

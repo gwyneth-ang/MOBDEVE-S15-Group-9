@@ -1,5 +1,7 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +9,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
+
+import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +68,41 @@ public class view_account extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_view_account, container, false);
+        View view = inflater.inflate(R.layout.fragment_view_account, container, false);
+
+        ImageView profilePicture = view.findViewById(R.id.Iv_myaccount_profile_picture);
+        TextView userName = view.findViewById(R.id.Tv_myaccount_user_name);
+        TextView numBooks = view.findViewById(R.id.Tv_myaccount_num_books);
+        Button myBooks = view.findViewById(R.id.Bt_myaccount_my_books);
+        Button sellingOrder = view.findViewById(R.id.Bt_myaccount_selling_orders);
+        Button logout = view.findViewById(R.id.Bt_myaccount_logout);
+
+        // set profile information
+        userName.setText(getArguments().getString(IntentKeys.USER_NAME.name()));
+        Picasso.with(this.getContext()).load(Uri.parse(getArguments().getString(IntentKeys.USER_PROFILE_PICTURE.name()))).into(profilePicture);
+
+        //Set on click listeners for buttons
+        myBooks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        sellingOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        return view;
     }
 }
