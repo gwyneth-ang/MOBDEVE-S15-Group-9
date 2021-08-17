@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ThriftStoreSellingBooksActivity.class);
+                Intent intent = new Intent(MainActivity.this, HomePageActivity.class);
                 startActivity(intent);
                 finish();
             }

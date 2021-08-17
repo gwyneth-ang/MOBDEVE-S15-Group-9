@@ -38,6 +38,8 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@+id/Iv_myaccount_circle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/Iv_myaccount_circle">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -65,9 +67,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:fontFamily="@font/josefin_sans"
+            android:letterSpacing="0.07"
             android:text="SELLING X BOOKS"
             android:textColor="#999999"
-            android:letterSpacing="0.07"
             android:textSize="12sp" />
 
     </LinearLayout>
@@ -139,16 +141,12 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="200dp"
-        android:layout_marginBottom="-500dp"
-        app:layout_constraintBottom_toTopOf="@+id/include"
+        android:layout_marginBottom="-1100dp"
+        app:layout_constraintBottom_toTopOf="@+id/TvMyAccount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/girl_black" />
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/navigation_bar"
-        tools:layout_editor_absoluteY="573dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
