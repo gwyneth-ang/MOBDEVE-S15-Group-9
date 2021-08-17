@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null){
             //FIXME: magpasa ng profile picture
-            Intent intent = new Intent(MainActivity.this, ThriftStoreSellingBooksActivity.class);
+            Intent intent = new Intent(MainActivity.this, HomePageActivity.class);
             startActivity(intent);
             finish();
         }
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             ).show();
         } else {
             //FIXME: magpasa ng profile picture
-            Intent intent = new Intent(MainActivity.this, ThriftStoreSellingBooksActivity.class);
+            Intent intent = new Intent(MainActivity.this, HomePageActivity.class);
             startActivity(intent);
             finish();
         }
