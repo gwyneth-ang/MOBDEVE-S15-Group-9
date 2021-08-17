@@ -19,7 +19,7 @@ public class ThriftStoreSellingBooksActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.thrift_and_selling_recylcer);
+//        setContentView(R.layout.thrift_and_selling_recylcer);
 
         this.books = new DataHelper().populateData();
 
