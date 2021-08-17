@@ -253,6 +253,5 @@
             android:text="Place Order" />
     </LinearLayout>
 
-    <include layout="@layout/navigation_bar"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -179,6 +179,5 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <include layout="@layout/navigation_bar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

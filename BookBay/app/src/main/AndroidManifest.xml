@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mobdeve.s15.group.nine.bookbay">
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -17,7 +17,6 @@
             </intent-filter>
         </activity>
         <activity android:name= ".HomePageActivity"></activity>
-        <activity android:name="com.mobdeve.s15.group.nine.bookbay.ThriftStoreSellingBooksActivity"></activity>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
