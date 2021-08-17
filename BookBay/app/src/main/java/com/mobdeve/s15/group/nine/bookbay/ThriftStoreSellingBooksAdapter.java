@@ -12,12 +12,6 @@ import java.util.ArrayList;
 public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftStoreViewHolder> {
     private ArrayList<Book> book;
 
-    /* Variables to keep track of the current apps settings. Each variable has a setter and these
-     * values must be set or else the Adapter will not be able to... adapt... appropriately.
-     * */
-    private Boolean hideLikeBtn;
-    private int viewType;
-
     public ThriftStoreSellingBooksAdapter(ArrayList<Book> data) {
         this.book = data;
     }
