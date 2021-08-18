@@ -1,6 +1,7 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -48,6 +49,14 @@ public class SellingBooksActivity extends AppCompatActivity {
         this.sellingBookAdapter.setViewType(WhichLayout.SELLING_BOOKS.ordinal());
 
         readyRecyclerViewAndAdapter();
+
+        fab_add_book.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent intent = new Intent(this, AddBookActivity.class);
+//                startActivity(intent);
+            }
+        });
     }
 
     private void readyRecyclerViewAndAdapter() {

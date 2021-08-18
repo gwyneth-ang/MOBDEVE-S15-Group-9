@@ -8,14 +8,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftStoreSellingBooksViewHolder> {
+public class OrdersAdapter extends RecyclerView.Adapter<OrdersViewHolder>{
     // FIXME: to be change to database
     private ArrayList<Book> book;
 
     private int whichView;
 
     // FIXME: to be change to database
-    public ThriftStoreSellingBooksAdapter(ArrayList<Book> data) {
+    public OrdersAdapter(ArrayList<Book> data) {
         this.book = data;
     }
 
@@ -24,19 +24,19 @@ public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftS
     }
 
     @Override
-    public ThriftStoreSellingBooksViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public OrdersViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Inflate the appropriate layout based on the viewType returned and generate the itemView.
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View itemView = layoutInflater.inflate(R.layout.thrift_and_selling_layout, parent, false);
+        View itemView = layoutInflater.inflate(R.layout.view_my_selling_orders_layout, parent, false);
 
-        ThriftStoreSellingBooksViewHolder holder = new ThriftStoreSellingBooksViewHolder(itemView);
+        OrdersViewHolder holder = new OrdersViewHolder(itemView);
 
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(ThriftStoreSellingBooksViewHolder holder, int position) {
-        holder.bindData(book.get(position), whichView);
+    public void onBindViewHolder(OrdersViewHolder holder, int position) {
+        holder.bindData(book.get(position));
     }
 
     // FIXME: to be change to database

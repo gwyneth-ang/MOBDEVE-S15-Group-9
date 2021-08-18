@@ -80,7 +80,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/iv_book_image"/>
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tv_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#999999"

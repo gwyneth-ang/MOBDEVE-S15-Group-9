@@ -31,6 +31,7 @@ public class view_thrift_store extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    // FIXME: to be change to database
     private ArrayList<Book> books;
 
     private RecyclerView thriftRecyclerView;
