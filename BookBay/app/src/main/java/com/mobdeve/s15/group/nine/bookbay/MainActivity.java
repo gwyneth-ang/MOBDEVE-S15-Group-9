@@ -69,12 +69,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart(){
         super.onStart();
 
-        //FIXME: for google sign-in
 //        // Check for existing Google Sign In account, if the user is already signed in
 //// the GoogleSignInAccount will be non-null.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null){
-            //FIXME: magpasa ng profile picture
             Intent intent = new Intent(MainActivity.this, HomePageActivity.class);
             startActivity(intent);
             finish();
@@ -136,7 +134,6 @@ public class MainActivity extends AppCompatActivity {
                     this, "Sign in failed", Toast.LENGTH_LONG
             ).show();
         } else {
-            //FIXME: magpasa ng profile picture
             Intent intent = new Intent(MainActivity.this, HomePageActivity.class);
             startActivity(intent);
             finish();
