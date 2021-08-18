@@ -10,6 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.SearchView;
+import android.widget.TextView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -29,6 +34,11 @@ public class view_thrift_store extends Fragment {
 
     private RecyclerView thriftRecyclerView;
     private ThriftStoreSellingBooksAdapter thriftAdapter;
+
+    private TextView tv_my_books;
+    private FloatingActionButton fab_add_book;
+    private SearchView Sv_thriftsellingbooks_search_bar;
+    private ImageButton Bt_thriftsellingbooks_filter;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -76,8 +86,11 @@ public class view_thrift_store extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         this.books = new DataHelper().populateData();
 
+        this.tv_my_books = view.findViewById(R.id.tv_my_books);
+
         this.thriftRecyclerView = view.findViewById(R.id.rv_books);
         this.thriftAdapter = new ThriftStoreSellingBooksAdapter(books);
+        this.thriftAdapter.setViewType(WhichLayout.THRIFT_STORE.ordinal());
 
         readyRecyclerViewAndAdapter(view.getContext());
     }
@@ -86,5 +99,9 @@ public class view_thrift_store extends Fragment {
         this.thriftRecyclerView.setLayoutManager(new GridLayoutManager(view, 2));
 
         this.thriftRecyclerView.setAdapter(this.thriftAdapter);
+    }
+
+    public void setUI(){
+
     }
 }
