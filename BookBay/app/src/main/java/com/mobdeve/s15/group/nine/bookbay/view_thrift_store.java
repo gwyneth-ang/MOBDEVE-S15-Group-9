@@ -75,7 +75,6 @@ public class view_thrift_store extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         this.books = new DataHelper().populateData();
-
         this.thriftRecyclerView = view.findViewById(R.id.rv_books);
         this.thriftAdapter = new ThriftStoreSellingBooksAdapter(books);
 
