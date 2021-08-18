@@ -20,8 +20,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< HEAD
         <activity android:name=".HomePageActivity" />
 
+=======
+        <activity android:name= ".HomePageActivity"></activity>
+        <activity android:name= ".SellingBooksActivity"></activity>
+>>>>>>> main
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

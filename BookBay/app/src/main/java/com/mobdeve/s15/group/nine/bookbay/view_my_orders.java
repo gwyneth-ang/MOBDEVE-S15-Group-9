@@ -1,12 +1,18 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +25,12 @@ public class view_my_orders extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    // FIXME: to be change to database
+    private ArrayList<Book> books;
+
+    private RecyclerView myOrdersRecyclerView;
+    private OrdersAdapter myOrdersAdapter;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -60,5 +72,22 @@ public class view_my_orders extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_view_my_orders, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        this.books = new DataHelper().populateData();
+
+        this.myOrdersRecyclerView = view.findViewById(R.id.rv_orders);
+        this.myOrdersAdapter = new OrdersAdapter(books);
+        this.myOrdersAdapter.setViewType(WhichLayout.MY_ORDERS.ordinal());
+
+        readyRecyclerViewAndAdapter(view.getContext());
+    }
+
+    private void readyRecyclerViewAndAdapter(Context context) {
+        this.myOrdersRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+        this.myOrdersRecyclerView.setAdapter(this.myOrdersAdapter);
     }
 }
