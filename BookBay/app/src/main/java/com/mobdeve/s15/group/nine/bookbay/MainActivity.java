@@ -1,8 +1,13 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +76,6 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser != null){
             //FIXME: magpasa ng profile picture
             Intent intent = new Intent(MainActivity.this, HomePageActivity.class);
-            intent.putExtra(IntentKeys.USER_NAME.name(), currentUser.getDisplayName());
-            intent.putExtra(IntentKeys.USER_PROFILE_PICTURE.name(), currentUser.getPhotoUrl().toString());
-            intent.putExtra(IntentKeys.USER_ID.name(), currentUser.getUid());
             startActivity(intent);
             finish();
         }

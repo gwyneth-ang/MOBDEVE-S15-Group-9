@@ -1,7 +1,6 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,6 +12,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
 import java.util.Set;
@@ -78,28 +81,40 @@ public class view_account extends Fragment {
         Button logout = view.findViewById(R.id.Bt_myaccount_logout);
 
         // set profile information
-        userName.setText(getArguments().getString(IntentKeys.USER_NAME.name()));
-        Picasso.with(this.getContext()).load(Uri.parse(getArguments().getString(IntentKeys.USER_PROFILE_PICTURE.name()))).into(profilePicture);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        userName.setText(user.getDisplayName());
+        Picasso.with(this.getContext()).load(user.getPhotoUrl()).into(profilePicture);
 
         //Set on click listeners for buttons
         myBooks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+//                Intent intent = new Intent(getActivity(), ViewSellingBooks.class);
+//                startActivity(intent);
+//                getActivity().finish();
             }
         });
 
         sellingOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+//                Intent intent = new Intent(getActivity(), ViewSellingOrders.class);
+//                startActivity(intent);
+//                getActivity().finish();
             }
         });
 
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                FirebaseAuth.getInstance().signOut();
+                GoogleSignIn.getClient(
+                        getContext(),
+                        new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+                ).signOut();
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                startActivity(intent);
+                getActivity().finish();
             }
         });
 
