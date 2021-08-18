@@ -27,9 +27,9 @@ public class ThriftStoreSellingBooksViewHolder extends RecyclerView.ViewHolder {
         this.tv_book_author.setText(book.getAuthor());
         this.tv_book_title.setText(book.getTitle());
 
-        if (whichLayout == WhichLayout.THRIFT_STORE.ordinal()) {
+        if (whichLayout == WhichLayout.SELLING_BOOKS.ordinal()) {
             this.tv_book_smallest_price.setVisibility(View.GONE);
-        } else if (whichLayout == WhichLayout.SELLING_BOOKS.ordinal()) {
+        } else if (whichLayout == WhichLayout.THRIFT_STORE.ordinal()) {
             this.tv_book_smallest_price.setVisibility(View.VISIBLE);
             this.tv_book_smallest_price.setText(String.valueOf(book.getBookPrice().get(0)));
         }

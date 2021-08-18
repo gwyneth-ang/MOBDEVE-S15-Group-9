@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -37,6 +38,7 @@ public class view_thrift_store extends Fragment {
 
     private TextView tv_my_books;
     private FloatingActionButton fab_add_book;
+    private LinearLayout ll_thriftsellingbooks_search;
     private SearchView Sv_thriftsellingbooks_search_bar;
     private ImageButton Bt_thriftsellingbooks_filter;
 
@@ -87,6 +89,12 @@ public class view_thrift_store extends Fragment {
         this.books = new DataHelper().populateData();
 
         this.tv_my_books = view.findViewById(R.id.tv_my_books);
+        this.fab_add_book = view.findViewById(R.id.fab_add_book);
+        this.ll_thriftsellingbooks_search = view.findViewById(R.id.ll_thriftsellingbooks_search);
+        this.Sv_thriftsellingbooks_search_bar = view.findViewById(R.id.Sv_thriftsellingbooks_seach_bar);
+        this.Bt_thriftsellingbooks_filter = view.findViewById(R.id.Bt_thriftsellingbooks_filter);
+
+        setupUi();
 
         this.thriftRecyclerView = view.findViewById(R.id.rv_books);
         this.thriftAdapter = new ThriftStoreSellingBooksAdapter(books);
@@ -95,13 +103,16 @@ public class view_thrift_store extends Fragment {
         readyRecyclerViewAndAdapter(view.getContext());
     }
 
-    private void readyRecyclerViewAndAdapter(Context view) {
-        this.thriftRecyclerView.setLayoutManager(new GridLayoutManager(view, 2));
+    private void readyRecyclerViewAndAdapter(Context context) {
+        this.thriftRecyclerView.setLayoutManager(new GridLayoutManager(context, 2));
 
         this.thriftRecyclerView.setAdapter(this.thriftAdapter);
     }
 
-    public void setUI(){
-
+    public void setupUi(){
+        this.tv_my_books.setVisibility(View.GONE);
+        this.fab_add_book.setVisibility(View.GONE);
+        this.ll_thriftsellingbooks_search.setBackgroundResource(R.color.red);
+        this.Bt_thriftsellingbooks_filter.setImageResource(R.drawable.filter);
     }
 }

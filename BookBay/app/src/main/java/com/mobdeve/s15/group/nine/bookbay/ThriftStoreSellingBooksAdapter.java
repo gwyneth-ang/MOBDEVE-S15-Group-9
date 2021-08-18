@@ -30,12 +30,6 @@ public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftS
         // Determine which subclass of CustomViewHolder to generate based on the viewType
         ThriftStoreSellingBooksViewHolder holder = new ThriftStoreSellingBooksViewHolder(itemView);
 
-        if (whichView == WhichLayout.THRIFT_STORE.ordinal()) {
-
-        } else if (whichView == WhichLayout.SELLING_BOOKS.ordinal()) {
-
-        }
-
         return holder;
     }
 
