@@ -1,9 +1,12 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import com.google.firebase.firestore.ServerTimestamp;
+import com.google.type.Date;
+
 public class Orders {
     private String BookID;
     private String BuyerID;
-    private String OrderDate;
+    private @ServerTimestamp Date OrderDate;
     private String Status;
 
     // Do not remove this. This is needed by Firebase when it creates instances of our model class.
@@ -11,7 +14,7 @@ public class Orders {
 
     }
 
-    public Orders(String BookID, String BuyerID, String OrderDate, String Status) {
+    public Orders(String BookID, String BuyerID, Date OrderDate, String Status) {
         this.BookID = BookID;
         this.BuyerID = BuyerID;
         this.OrderDate = OrderDate;
@@ -34,11 +37,11 @@ public class Orders {
         this.BuyerID = buyerID;
     }
 
-    public String getOrderDate() {
+    public Date getOrderDate() {
         return OrderDate;
     }
 
-    public void setOrderDate(String orderDate) {
+    public void setOrderDate(Date orderDate) {
         this.OrderDate = orderDate;
     }
 
