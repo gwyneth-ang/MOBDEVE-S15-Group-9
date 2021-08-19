@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/iv_book_image"
-        android:layout_width="140dp"
-        android:layout_height="210dp"
+        android:layout_width="140sp"
+        android:layout_height="210sp"
         android:adjustViewBounds="false"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/little_prince"

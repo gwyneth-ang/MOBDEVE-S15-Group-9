@@ -1,8 +1,11 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -94,6 +97,13 @@ public class view_thrift_store extends Fragment {
         this.ll_thriftsellingbooks_search = view.findViewById(R.id.ll_thriftsellingbooks_search);
         this.Sv_thriftsellingbooks_search_bar = view.findViewById(R.id.Sv_thriftsellingbooks_seach_bar);
         this.Bt_thriftsellingbooks_filter = view.findViewById(R.id.Bt_thriftsellingbooks_filter);
+
+        // change font for
+        int id = this.Sv_thriftsellingbooks_search_bar.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        Typeface tf = ResourcesCompat.getFont(view.getContext(),R.font.cormorant_garamond);
+        TextView searchText = (TextView) this.Sv_thriftsellingbooks_search_bar.findViewById(id);
+        searchText.setTypeface(tf);
+        searchText.setTextColor(Color.BLACK);
 
         setupUi();
 
