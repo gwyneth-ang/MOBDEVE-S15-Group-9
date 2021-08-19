@@ -49,7 +49,7 @@ public class view_my_orders extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private String TAG = "MY_ORDERS_ACTIVTIY"
+    private String TAG = "MY_ORDERS_ACTIVTIY";
 
     public view_my_orders() {
         // Required empty public constructor
@@ -104,28 +104,28 @@ public class view_my_orders extends Fragment {
                 .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, user.getUid())
                 .orderBy(BookbayFirestoreReferences.ORDER_DATE_FIELD);
 
-        myOrdersQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    // If there are no results, then there is no sign of the username in
-                    // the DB.
-                    if(task.getResult().isEmpty()) {
-                        showNewUserDialog(usersRef, username);
-                    } else {
-                        moveToChatRoomActivity(username);
-                    }
-                } else {
-                    Log.d(TAG, "Error getting documents: ", task.getException());
-                }
-            }
-        });
+//        myOrdersQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    // If there are no results, then there is no sign of the username in
+//                    // the DB.
+//                    if(task.getResult().isEmpty()) {
+//                        showNewUserDialog(usersRef, username);
+//                    } else {
+//                        moveToChatRoomActivity(username);
+//                    }
+//                } else {
+//                    Log.d(TAG, "Error getting documents: ", task.getException());
+//                }
+//            }
+//        });
 
-        FirestoreRecyclerOptions<Books_sell> options = new FirestoreRecyclerOptions.Builder<Books_sell>()
-                .setQuery(query, Books_sell.class)
-                .build();
+//        FirestoreRecyclerOptions<Books_sell> options = new FirestoreRecyclerOptions.Builder<Books_sell>()
+//                .setQuery(query, Books_sell.class)
+//                .build();
 
-        this.myOrdersAdapter = new OrdersAdapter(books);
+//        this.myOrdersAdapter = new OrdersAdapter(books);
         this.myOrdersAdapter.setViewType(WhichLayout.MY_ORDERS.ordinal());
 
         readyRecyclerViewAndAdapter(view.getContext());
@@ -153,5 +153,4 @@ public class view_my_orders extends Fragment {
         // something listening all the time in the background.
         this.myOrdersAdapter.stopListening();
     }
-}
 }
