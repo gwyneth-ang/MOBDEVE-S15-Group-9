@@ -83,7 +83,7 @@ public class view_account extends Fragment {
         // set profile information
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         userName.setText(user.getDisplayName());
-        Picasso.with(this.getContext()).load(user.getPhotoUrl()).into(profilePicture);
+        Picasso.get().load(user.getPhotoUrl()).into(profilePicture);
 
         //Set on click listeners for buttons
         myBooks.setOnClickListener(new View.OnClickListener() {
