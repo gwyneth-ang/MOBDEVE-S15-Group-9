@@ -20,11 +20,7 @@ public class Orders {
 
     }
 
-<<<<<<< HEAD
-    public Orders(String BookID, String BuyerID, Date OrderDate, String Status) {
-=======
     public Orders(DocumentReference BookID, String BuyerID, Date OrderDate, String Status) {
->>>>>>> firestore
         this.BookID = BookID;
         this.BuyerID = BuyerID;
         this.OrderDate = OrderDate;
