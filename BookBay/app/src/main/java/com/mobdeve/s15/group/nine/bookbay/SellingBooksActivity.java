@@ -1,6 +1,8 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
@@ -9,6 +11,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,6 +47,14 @@ public class SellingBooksActivity extends AppCompatActivity {
         this.Sv_thriftsellingbooks_search_bar = findViewById(R.id.Sv_thriftsellingbooks_seach_bar);
         this.Bt_thriftsellingbooks_filter = findViewById(R.id.Bt_thriftsellingbooks_filter);
 
+        // change font for search view
+        int id = this.Sv_thriftsellingbooks_search_bar.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        Typeface tf = ResourcesCompat.getFont(this,R.font.cormorant_garamond);
+        TextView searchText = (TextView) this.Sv_thriftsellingbooks_search_bar.findViewById(id);
+        searchText.setTypeface(tf);
+        searchText.setTextColor(Color.BLACK);
+
+        // change UI based on which activity
         setupUi();
 
         // Get the book from the Books_sell Collection
