@@ -10,12 +10,12 @@ import java.util.ArrayList;
 
 public class OrdersAdapter extends RecyclerView.Adapter<OrdersViewHolder>{
     // FIXME: to be change to database
-    private ArrayList<Book> book;
+    private ArrayList<Books_sell> book;
 
     private int whichView;
 
     // FIXME: to be change to database
-    public OrdersAdapter(ArrayList<Book> data) {
+    public OrdersAdapter(ArrayList<Books_sell> data) {
         this.book = data;
     }
 

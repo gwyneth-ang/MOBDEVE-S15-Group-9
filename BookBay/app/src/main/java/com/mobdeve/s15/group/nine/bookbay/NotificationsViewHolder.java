@@ -30,19 +30,19 @@ public class NotificationsViewHolder extends RecyclerView.ViewHolder {
         this.ibButton_notifLayout = itemView.findViewById(R.id.ibButton_notifLayout);
     }
 
-    public void bindData(Notification notification) {
-        this.tvSellerName_notifLayout.setText(notification.getSellerName());
-        this.tvBookTitle_notifLayout.setText(notification.getBookTitle());
-        this.tvTimePassed_notifLayout.setText(notification.getTime());
-        this.imageView.setImageResource(notification.getImageId());
-
-        if (notification.getStatus() == "Approved") {
-            this.tvStatusBook_notifLayout.setText("Woohoo! Your purchase of " + notification.getBookTitle() + " has been approved by the seller! You will be receiving this book by your doorstep soon");
-            this.ibButton_notifLayout.setImageResource(R.drawable.check_mark);
-        } else {
-            this.tvStatusBook_notifLayout.setText("I’m sorry, your purchase of " + notification.getBookTitle() + "has been denied by the seller. Check our Thrift Store for more book options.");
-            this.ibButton_notifLayout.setImageResource(R.drawable.cancel);
-        }
-
-    }
+//    public void bindData(Notification notification) {
+//        this.tvSellerName_notifLayout.setText(notification.getSellerName());
+//        this.tvBookTitle_notifLayout.setText(notification.getBookTitle());
+//        this.tvTimePassed_notifLayout.setText(notification.getTime());
+//        this.imageView.setImageResource(notification.getImageId());
+//
+//        if (notification.getStatus() == "Approved") {
+//            this.tvStatusBook_notifLayout.setText("Woohoo! Your purchase of " + notification.getBookTitle() + " has been approved by the seller! You will be receiving this book by your doorstep soon");
+//            this.ibButton_notifLayout.setImageResource(R.drawable.check_mark);
+//        } else {
+//            this.tvStatusBook_notifLayout.setText("I’m sorry, your purchase of " + notification.getBookTitle() + "has been denied by the seller. Check our Thrift Store for more book options.");
+//            this.ibButton_notifLayout.setImageResource(R.drawable.cancel);
+//        }
+//
+//    }
 }

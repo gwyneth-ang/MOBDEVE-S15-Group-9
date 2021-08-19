@@ -11,9 +11,8 @@ import java.util.ArrayList;
 
 public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsViewHolder> {
 
-    private ArrayList<Notification> notifications;
 
-    public NotificationsAdapter(ArrayList<Notification> data) {this.notifications = data;}
+    public NotificationsAdapter() {}
 
     @Override
     public NotificationsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -26,11 +25,11 @@ public class NotificationsAdapter extends RecyclerView.Adapter<NotificationsView
 
     @Override
     public void onBindViewHolder(NotificationsViewHolder holder, int position) {
-        holder.bindData(notifications.get(position));
+//        holder.bindData(notifications.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return notifications.size();
+        return 0;
     }
 }

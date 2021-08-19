@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,7 +26,7 @@ public class view_my_orders extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // FIXME: to be change to database
-    private ArrayList<Book> books;
+    private ArrayList<Books_sell> books;
 
     private RecyclerView myOrdersRecyclerView;
     private OrdersAdapter myOrdersAdapter;
@@ -76,7 +75,6 @@ public class view_my_orders extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        this.books = new DataHelper().populateData();
 
         this.myOrdersRecyclerView = view.findViewById(R.id.rv_orders);
         this.myOrdersAdapter = new OrdersAdapter(books);

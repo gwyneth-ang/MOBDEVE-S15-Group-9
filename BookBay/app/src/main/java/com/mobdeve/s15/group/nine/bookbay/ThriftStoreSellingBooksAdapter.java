@@ -1,22 +1,24 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+
 import java.util.ArrayList;
 
-public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftStoreSellingBooksViewHolder> {
-    // FIXME: to be change to database
-    private ArrayList<Book> book;
+public class ThriftStoreSellingBooksAdapter extends FirestoreRecyclerAdapter<Books_sell, ThriftStoreSellingBooksViewHolder> {
 
     private int whichView;
+    private String TAG = "THRIFT_SELLING_ADAPTER";
 
-    // FIXME: to be change to database
-    public ThriftStoreSellingBooksAdapter(ArrayList<Book> data) {
-        this.book = data;
+    public ThriftStoreSellingBooksAdapter(FirestoreRecyclerOptions<Books_sell> options) {
+        super(options);
     }
 
     public void setViewType(int whichView) {
@@ -35,13 +37,8 @@ public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftS
     }
 
     @Override
-    public void onBindViewHolder(ThriftStoreSellingBooksViewHolder holder, int position) {
-        holder.bindData(book.get(position), whichView);
-    }
-
-    // FIXME: to be change to database
-    @Override
-    public int getItemCount() {
-        return book.size();
+    public void onBindViewHolder(ThriftStoreSellingBooksViewHolder holder, int position, Books_sell books_sell) {
+        Log.d(TAG, books_sell.getBookTitle());
+        holder.bindData(books_sell, this.whichView);
     }
 }

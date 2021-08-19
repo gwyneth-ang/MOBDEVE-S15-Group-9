@@ -27,7 +27,7 @@ public class view_notifications extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     //vars used
-    private ArrayList<Notification> notifications;
+//    private ArrayList<Notification> notifications;
 
     private RecyclerView notificationsRecyclerView;
     private NotificationsAdapter notificationsAdapter;
@@ -76,15 +76,15 @@ public class view_notifications extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        this.notifications = new DataHelper().populateNotifications();
-        this.notificationsRecyclerView = view.findViewById(R.id.rvNotifications);
-        this.notificationsAdapter = new NotificationsAdapter(notifications);
-
-        readyRecyclerViewAndAdapter(view.getContext());
+//        this.notifications = new DataHelper().populateNotifications();
+//        this.notificationsRecyclerView = view.findViewById(R.id.rvNotifications);
+//        this.notificationsAdapter = new NotificationsAdapter();
+//
+//        readyRecyclerViewAndAdapter(view.getContext());
     }
 
-    private void readyRecyclerViewAndAdapter(Context view) {
-        this.notificationsRecyclerView.setAdapter(this.notificationsAdapter);
-        this.notificationsRecyclerView.setLayoutManager(new LinearLayoutManager(view));
-    }
+//    private void readyRecyclerViewAndAdapter(Context view) {
+//        this.notificationsRecyclerView.setAdapter(this.notificationsAdapter);
+//        this.notificationsRecyclerView.setLayoutManager(new LinearLayoutManager(view));
+//    }
 }
