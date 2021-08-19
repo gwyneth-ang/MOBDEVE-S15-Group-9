@@ -53,8 +53,8 @@ public class SellingBooksActivity extends AppCompatActivity {
         fab_add_book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(this, AddBookActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(SellingBooksActivity.this, AddBookActivity.class);
+                startActivity(intent);
             }
         });
     }

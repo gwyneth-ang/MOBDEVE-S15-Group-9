@@ -33,11 +33,11 @@
         app:layout_constraintTop_toBottomOf="@+id/TvMyAccount">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/Iv_bookImage"
             android:layout_width="110dp"
             android:layout_height="130dp"
             android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/girl_woman_other" />
+            app:srcCompat="@drawable/image_vector" />
 
         <TextView
             android:id="@+id/Tv_bookTitle_addBook"
@@ -53,6 +53,12 @@
             android:layout_width="match_parent"
             android:layout_height="39dp"
             android:layout_marginTop="5dp"
+            android:fontFamily="@font/cormorant_garamond_semibold"
+            android:textSize="18dp"
+            android:paddingLeft="10sp"
+            android:paddingRight="10sp"
+            android:maxLength="40"
+            android:textColor="#555555"
             android:layout_marginBottom="10dp"
             android:background="@drawable/custom_add_and_edit_text"
             android:ems="10"
@@ -71,7 +77,13 @@
             android:id="@+id/Et_author_addBook"
             android:layout_width="match_parent"
             android:ems="10"
+            android:fontFamily="@font/cormorant_garamond_semibold"
+            android:textSize="18dp"
+            android:textColor="#555555"
             android:layout_height="39dp"
+            android:paddingLeft="10sp"
+            android:paddingRight="10sp"
+            android:maxLength="50"
             android:background="@drawable/custom_add_and_edit_text"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"
@@ -100,9 +112,15 @@
                 <EditText
                     android:id="@+id/Et_price_addBook"
                     android:layout_width="115dp"
-                    android:layout_height="39dp"
+                    android:layout_height="41dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="15dp"
+                    android:fontFamily="@font/cormorant_garamond_semibold"
+                    android:textSize="18dp"
+                    android:paddingLeft="10sp"
+                    android:paddingRight="10sp"
+                    android:maxLength="8"
+                    android:textColor="#555555"
                     android:background="@drawable/custom_add_and_edit_text"
                     android:ems="10"
                     android:inputType="numberDecimal" />
@@ -127,10 +145,14 @@
                 <Spinner
                     android:id="@+id/Spinner_addBook"
                     android:layout_width="match_parent"
-                    android:layout_height="39dp"
+                    android:layout_height="41dp"
                     android:layout_marginTop="5dp"
+                    android:paddingRight="10dp"
+                    android:textColor="#555555"
                     android:layout_marginBottom="15dp"
-                    android:background="@drawable/custom_add_and_edit_text" />
+                    android:spinnerMode="dropdown"
+                    android:background="@drawable/spinner_background" />
+
             </LinearLayout>
         </LinearLayout>
 
@@ -173,6 +195,7 @@
             android:gravity="center"
             android:text="Add Book"
             android:textAllCaps="false"
+            android:textColor="@color/white"
             android:textSize="14dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
