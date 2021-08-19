@@ -1,6 +1,7 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftStoreSellingBooksViewHolder> {
-    // FIXME: to be change to database
-    private ArrayList<Book> book;
+    private ArrayList<Books_sell> book;
 
     private int whichView;
+    private String TAG = "THRIFT_SELLING_ADAPTER";
 
-    // FIXME: to be change to database
-    public ThriftStoreSellingBooksAdapter(ArrayList<Book> data) {
+    public ThriftStoreSellingBooksAdapter(ArrayList<Books_sell> data) {
         this.book = data;
     }
 
@@ -37,11 +37,11 @@ public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftS
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(parent.getContext(), ViewBookingDetails.class);
-                intent.putExtra(IntentKeys.AUTHOR_KEY.name(), book.get(holder.getAdapterPosition()).getAuthor());
-                intent.putExtra(IntentKeys.CONDITION_KEY.name(), book.get(holder.getAdapterPosition()).getBookCondition().get(0));
-                intent.putExtra(IntentKeys.TITLE_KEY.name(), book.get(holder.getAdapterPosition()).getTitle());
-                intent.putExtra(IntentKeys.PRICE_KEY.name(), book.get(holder.getAdapterPosition()).getBookPrice().get(0));
-                intent.putExtra(IntentKeys.BOOK_IMAGE_KEY.name(), book.get(holder.getAdapterPosition()).getImageId());
+                intent.putExtra(IntentKeys.AUTHOR_KEY.name(), book.get(holder.getAdapterPosition()).getBookAuthor());
+                intent.putExtra(IntentKeys.CONDITION_KEY.name(), book.get(holder.getAdapterPosition()).getCondition());
+                intent.putExtra(IntentKeys.TITLE_KEY.name(), book.get(holder.getAdapterPosition()).getBookTitle());
+                intent.putExtra(IntentKeys.PRICE_KEY.name(), book.get(holder.getAdapterPosition()).getPrice());
+                intent.putExtra(IntentKeys.BOOK_IMAGE_KEY.name(), book.get(holder.getAdapterPosition()).getImage());
                 //TODO: Get book owner and owner image
                 parent.getContext().startActivity(intent);
 
@@ -53,10 +53,10 @@ public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftS
 
     @Override
     public void onBindViewHolder(ThriftStoreSellingBooksViewHolder holder, int position) {
-        holder.bindData(book.get(position), whichView);
+//        Log.d(TAG, book.get().getBookTitle());
+        holder.bindData(book.get(position), this.whichView);
     }
 
-    // FIXME: to be change to database
     @Override
     public int getItemCount() {
         return book.size();

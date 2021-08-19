@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -18,7 +19,16 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -34,17 +44,19 @@ public class view_thrift_store extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // FIXME: to be change to database
-    private ArrayList<Book> books;
-
+    // for recylerview
     private RecyclerView thriftRecyclerView;
     private ThriftStoreSellingBooksAdapter thriftAdapter;
 
+    // for other views in the layout
     private TextView tv_my_books;
     private FloatingActionButton fab_add_book;
     private LinearLayout ll_thriftsellingbooks_search;
     private SearchView Sv_thriftsellingbooks_search_bar;
     private ImageButton Bt_thriftsellingbooks_filter;
+
+    // DB reference
+    private FirebaseFirestore dbRef;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -90,40 +102,96 @@ public class view_thrift_store extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        this.books = new DataHelper().populateData();
-
         this.tv_my_books = view.findViewById(R.id.tv_my_books);
         this.fab_add_book = view.findViewById(R.id.fab_add_book);
         this.ll_thriftsellingbooks_search = view.findViewById(R.id.ll_thriftsellingbooks_search);
         this.Sv_thriftsellingbooks_search_bar = view.findViewById(R.id.Sv_thriftsellingbooks_seach_bar);
         this.Bt_thriftsellingbooks_filter = view.findViewById(R.id.Bt_thriftsellingbooks_filter);
 
-        // change font for
+        // change font for search view
         int id = this.Sv_thriftsellingbooks_search_bar.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
         Typeface tf = ResourcesCompat.getFont(view.getContext(),R.font.cormorant_garamond);
         TextView searchText = (TextView) this.Sv_thriftsellingbooks_search_bar.findViewById(id);
         searchText.setTypeface(tf);
         searchText.setTextColor(Color.BLACK);
 
+        // change UI based on which activity
         setupUi();
 
+        // for recycler view
         this.thriftRecyclerView = view.findViewById(R.id.rv_books);
-        this.thriftAdapter = new ThriftStoreSellingBooksAdapter(books);
-        this.thriftAdapter.setViewType(WhichLayout.THRIFT_STORE.ordinal());
+        thriftRecyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
 
-        readyRecyclerViewAndAdapter(view.getContext());
+        // Get the book from the Books_sell Collection
+        this.dbRef = FirebaseFirestore.getInstance();
+//        Query query = dbRef
+//                .collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+//                .orderBy(BookbayFirestoreReferences.BOOK_TITLE_FIELD);
+//
+//        FirestoreRecyclerOptions<Books_sell> options = new FirestoreRecyclerOptions.Builder<Books_sell>()
+//                .setQuery(query, Books_sell.class)
+//                .build();
+
+
+        updateDataAndAdapter();
+
     }
 
-    private void readyRecyclerViewAndAdapter(Context context) {
-        this.thriftRecyclerView.setLayoutManager(new GridLayoutManager(context, 2));
-
-        this.thriftRecyclerView.setAdapter(this.thriftAdapter);
-    }
-
-    public void setupUi(){
+    private void setupUi(){
         this.tv_my_books.setVisibility(View.GONE);
         this.fab_add_book.setVisibility(View.GONE);
         this.ll_thriftsellingbooks_search.setBackgroundResource(R.color.red);
         this.Bt_thriftsellingbooks_filter.setImageResource(R.drawable.filter);
     }
+
+    private void updateDataAndAdapter() {
+        ArrayList<Books_sell> books = new ArrayList<>();
+        dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                .orderBy(BookbayFirestoreReferences.BOOK_TITLE_FIELD).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult())
+                                books.add(document.toObject(Books_sell.class));
+
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    thriftAdapter = new ThriftStoreSellingBooksAdapter(books);
+                                    thriftAdapter.setViewType(WhichLayout.THRIFT_STORE.ordinal());
+
+                                    thriftRecyclerView.setAdapter(thriftAdapter);
+                                }
+                            });
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateDataAndAdapter();
+    }
 }
+
+
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        // When our app is open, we need to have the adapter listening for any changes in the data.
+//        // To do so, we'd want to turn on the listening using the appropriate method in the onStart
+//        // or onResume (basically before the start but within the loop)
+//        this.thriftAdapter.startListening();
+//    }
+//
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        // We want to eventually stop the listening when we're about to exit an app as we don't need
+//        // something listening all the time in the background.
+//        this.thriftAdapter.stopListening();
+//    }
+//}
