@@ -12,13 +12,14 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 import java.util.ArrayList;
 
-public class ThriftStoreSellingBooksAdapter extends FirestoreRecyclerAdapter<Books_sell, ThriftStoreSellingBooksViewHolder> {
+public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftStoreSellingBooksViewHolder> {
+    private ArrayList<Books_sell> book;
 
     private int whichView;
     private String TAG = "THRIFT_SELLING_ADAPTER";
 
-    public ThriftStoreSellingBooksAdapter(FirestoreRecyclerOptions<Books_sell> options) {
-        super(options);
+    public ThriftStoreSellingBooksAdapter(ArrayList<Books_sell> data) {
+        this.book = data;
     }
 
     public void setViewType(int whichView) {
@@ -37,8 +38,13 @@ public class ThriftStoreSellingBooksAdapter extends FirestoreRecyclerAdapter<Boo
     }
 
     @Override
-    public void onBindViewHolder(ThriftStoreSellingBooksViewHolder holder, int position, Books_sell books_sell) {
-        Log.d(TAG, books_sell.getBookTitle());
-        holder.bindData(books_sell, this.whichView);
+    public void onBindViewHolder(ThriftStoreSellingBooksViewHolder holder, int position) {
+//        Log.d(TAG, book.get().getBookTitle());
+        holder.bindData(book.get(position), this.whichView);
+    }
+
+    @Override
+    public int getItemCount() {
+        return book.size();
     }
 }

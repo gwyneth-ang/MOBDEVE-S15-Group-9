@@ -16,9 +16,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -57,21 +61,14 @@ public class SellingBooksActivity extends AppCompatActivity {
         // change UI based on which activity
         setupUi();
 
+        // for recycler view
+        this.sellingBookRecyclerView = findViewById(R.id.rv_books);
+        this.sellingBookRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+
         // Get the book from the Books_sell Collection
         this.dbRef = FirebaseFirestore.getInstance();
-        Query query = dbRef
-                .collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                .orderBy(BookbayFirestoreReferences.BOOK_TITLE_FIELD);
 
-        FirestoreRecyclerOptions<Books_sell> options = new FirestoreRecyclerOptions.Builder<Books_sell>()
-                .setQuery(query, Books_sell.class)
-                .build();
-
-        this.sellingBookRecyclerView = findViewById(R.id.rv_books);
-        this.sellingBookAdapter = new ThriftStoreSellingBooksAdapter(options);
-        this.sellingBookAdapter.setViewType(WhichLayout.SELLING_BOOKS.ordinal());
-
-        readyRecyclerViewAndAdapter();
+        updateDataAndAdapter();
 
         fab_add_book.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,33 +79,58 @@ public class SellingBooksActivity extends AppCompatActivity {
         });
     }
 
-    private void readyRecyclerViewAndAdapter() {
-        this.sellingBookRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-
-        this.sellingBookRecyclerView.setAdapter(this.sellingBookAdapter);
-    }
-
-    public void setupUi(){
+    private void setupUi(){
         this.tv_my_books.setVisibility(View.VISIBLE);
         this.fab_add_book.setVisibility(View.VISIBLE);
         this.ll_thriftsellingbooks_search.setBackgroundResource(R.color.pale);
         this.Bt_thriftsellingbooks_filter.setImageResource(R.drawable.filter_red);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // When our app is open, we need to have the adapter listening for any changes in the data.
-        // To do so, we'd want to turn on the listening using the appropriate method in the onStart
-        // or onResume (basically before the start but within the loop)
-        this.sellingBookAdapter.startListening();
+    private void updateDataAndAdapter() {
+        ArrayList<Books_sell> books = new ArrayList<>();
+        dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                .orderBy(BookbayFirestoreReferences.BOOK_TITLE_FIELD).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult())
+                                books.add(document.toObject(Books_sell.class));
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    sellingBookAdapter = new ThriftStoreSellingBooksAdapter(books);
+                                    sellingBookAdapter.setViewType(WhichLayout.SELLING_BOOKS.ordinal());
+
+                                    sellingBookRecyclerView.setAdapter(sellingBookAdapter);
+                                }
+                            });
+                        }
+                    }
+                });
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        // We want to eventually stop the listening when we're about to exit an app as we don't need
-        // something listening all the time in the background.
-        this.sellingBookAdapter.stopListening();
+    protected void onStart() {
+        super.onStart();
+        updateDataAndAdapter();
     }
+
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        // When our app is open, we need to have the adapter listening for any changes in the data.
+//        // To do so, we'd want to turn on the listening using the appropriate method in the onStart
+//        // or onResume (basically before the start but within the loop)
+//        this.sellingBookAdapter.startListening();
+//    }
+//
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        // We want to eventually stop the listening when we're about to exit an app as we don't need
+//        // something listening all the time in the background.
+//        this.sellingBookAdapter.stopListening();
+//    }
 }
