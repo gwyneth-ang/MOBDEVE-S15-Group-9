@@ -31,7 +31,7 @@
             android:iconifiedByDefault="false"
             android:layoutDirection="rtl"
             android:queryBackground="@android:color/transparent"
-            android:queryHint="Search by book title or author"
+            android:queryHint="Search by title or author"
             android:searchIcon="@drawable/loupe"
             android:textDirection="ltr"></SearchView>
 

@@ -47,7 +47,7 @@
             android:iconifiedByDefault="false"
             android:layoutDirection="rtl"
             android:queryBackground="@android:color/transparent"
-            android:queryHint="Search by book title or author"
+            android:queryHint="Search by title or author"
             android:searchIcon="@drawable/loupe"
             android:textDirection="ltr"></SearchView>
 
@@ -85,6 +85,9 @@
         android:layout_height="0dp"
         android:background="#FBF9F6"
         android:backgroundTint="#FBF9F6"
+        android:paddingTop="20sp"
+        android:paddingBottom="15sp"
+        android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@+id/ll_thriftsellingbooks_search"
         app:layout_constraintBottom_toBottomOf="parent">
 

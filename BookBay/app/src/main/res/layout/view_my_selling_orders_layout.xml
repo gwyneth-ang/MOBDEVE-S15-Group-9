@@ -7,10 +7,10 @@
 
     <ImageView
         android:id="@+id/iv_book_image"
-        android:layout_width="wrap_content"
-        android:layout_height="200sp"
+        android:layout_width="110sp"
+        android:layout_height="180sp"
         android:adjustViewBounds="false"
-        android:scaleType="fitCenter"
+        android:scaleType="centerCrop"
         android:layout_marginTop="20sp"
         android:layout_marginStart="20sp"
         app:srcCompat="@drawable/war"
