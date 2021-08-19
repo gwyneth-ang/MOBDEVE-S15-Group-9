@@ -12,7 +12,7 @@
             <item
                 android:drawable="@drawable/drop_down_arrow_gray"
                 android:gravity="end"
-                android:fontFamily="@font/cormorant_garamond_semibold"/>
+                />
         </layer-list>
     </item>
 </selector>
