@@ -38,7 +38,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                                 // Get the path of the image
                                 imageUri = result.getData().getData();
                                 // Load the image into the tempImageIv using the path
-                                Picasso.with(this.getContext()).load(imageUri).into(Iv_bookImage);
+                                Picasso.get().load(imageUri).into(Iv_bookImage);
                             }
                         } catch(Exception exception){
                             Log.d("TAG",""+exception.getLocalizedMessage());
