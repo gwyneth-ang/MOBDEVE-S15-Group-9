@@ -16,12 +16,16 @@ public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftS
     private int whichView;
     private String TAG = "THRIFT_SELLING_ADAPTER";
 
-    public ThriftStoreSellingBooksAdapter(ArrayList<Books_sell> data) {
-        this.book = data;
+    public ThriftStoreSellingBooksAdapter() {
+        this.book = new ArrayList<>();
     }
 
     public void setViewType(int whichView) {
         this.whichView = whichView;
+    }
+
+    public void setData(ArrayList<Books_sell> data) {
+        this.book = data;
     }
 
     @Override
