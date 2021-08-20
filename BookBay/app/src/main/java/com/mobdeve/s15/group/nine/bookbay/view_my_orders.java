@@ -102,12 +102,14 @@ public class view_my_orders extends Fragment {
         Query myOrdersQuery = dbRef
                 .collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, user.getUid())
+                .whereNotEqualTo(BookbayFirestoreReferences.ORDER_DATE_FIELD, null)
                 .orderBy(BookbayFirestoreReferences.ORDER_DATE_FIELD);
 
         FirestoreRecyclerOptions<Books_sell> options = new FirestoreRecyclerOptions.Builder<Books_sell>()
                 .setQuery(myOrdersQuery, Books_sell.class)
                 .build();
 
+        this.myOrdersAdapter = new OrdersAdapter(options);
         this.myOrdersAdapter.setViewType(WhichLayout.MY_ORDERS.ordinal());
 
         readyRecyclerViewAndAdapter(view.getContext());

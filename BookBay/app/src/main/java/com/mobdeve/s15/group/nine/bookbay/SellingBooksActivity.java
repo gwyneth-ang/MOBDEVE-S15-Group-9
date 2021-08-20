@@ -19,6 +19,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -90,7 +92,12 @@ public class SellingBooksActivity extends AppCompatActivity {
 
     private void updateDataAndAdapter() {
         ArrayList<Books_sell> books = new ArrayList<>();
+
+        //get current user
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, user.getUid())
                 .orderBy(BookbayFirestoreReferences.BOOK_TITLE_FIELD).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
