@@ -3,31 +3,51 @@ package com.mobdeve.s15.group.nine.bookbay;
 
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.ServerTimestamp;
+import java.util.Date;
 
 public class Books_sell {
     @DocumentId
     private DocumentReference books_sellID;
 
     // Attributes
+    private @ServerTimestamp Date AddBookDate;
     private String BookAuthor;
     private String BookTitle;
     private String Condition;
-    private String Image;
     private String OwnerID;
     private Float Price;
+    private String Image;
+    private String BuyerID;
+    private @ServerTimestamp Date OrderDate;
+    private String Status;
+    private @ServerTimestamp Date NotificationDateTime;
 
     // Do not remove this. This is needed by Firebase when it creates instances of our model class.
     public Books_sell() {
 
     }
 
-    public Books_sell(DocumentReference bookRef, String BookAuthor, String BookTitle, String Condition, String OwnerID, Float Price, String Image) {
+    public Books_sell(Date AddBookDate, String BookAuthor, String BookTitle, String Condition, String OwnerID, Float Price, String Image, String BuyerID, Date OrderDate, String Status, Date NotifcationDateTime) {
+        this.AddBookDate = AddBookDate;
         this.BookAuthor = BookAuthor;
         this.BookTitle = BookTitle;
         this.Condition = Condition;
-        this.Image = Image;
         this.OwnerID = OwnerID;
         this.Price = Price;
+        this.Image = Image;
+        this.BuyerID = BuyerID;
+        this.OrderDate = OrderDate;
+        this.Status = Status;
+        this.NotificationDateTime = NotifcationDateTime;
+    }
+
+    public Date getAddBookDate() {
+        return AddBookDate;
+    }
+
+    public void setAddBookDate(Date addBookDate) {
+        this.AddBookDate = addBookDate;
     }
 
     public DocumentReference getBooks_sellID() {
@@ -62,14 +82,6 @@ public class Books_sell {
         this.Condition = condition;
     }
 
-    public String getImage() {
-        return Image;
-    }
-
-    public void setImage(String image) {
-        this.Image = image;
-    }
-
     public String getOwnerID() {
         return OwnerID;
     }
@@ -84,5 +96,45 @@ public class Books_sell {
 
     public void setPrice(Float price) {
         this.Price = price;
+    }
+
+    public String getImage() {
+        return Image;
+    }
+
+    public void setImage(String image) {
+        this.Image = image;
+    }
+
+    public String getBuyerID() {
+        return BuyerID;
+    }
+
+    public void setBuyerID(String buyerID) {
+        this.BuyerID = buyerID;
+    }
+
+    public Date getOrderDate() {
+        return OrderDate;
+    }
+
+    public void setOrderDate(Date orderDate) {
+        this.OrderDate = orderDate;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String status) {
+        this.Status = status;
+    }
+
+    public Date getNotificationDateTime() {
+        return NotificationDateTime;
+    }
+
+    public void setNotificationDateTime(Date notificationDateTime) {
+        this.NotificationDateTime = notificationDateTime;
     }
 }

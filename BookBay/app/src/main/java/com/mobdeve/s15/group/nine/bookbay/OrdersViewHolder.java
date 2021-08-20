@@ -21,7 +21,7 @@ public class OrdersViewHolder extends RecyclerView.ViewHolder {
         this.iv_book_image = view.findViewById(R.id.iv_book_image);
     }
 
-    public void bindData(Orders order) {
+    public void bindData(Books_sell book) {
 //        this.iv_book_image.setImageResource(book.getImageId());
 
 //        this.tv_book_author.setText(book.getBookAuthor());
