@@ -18,19 +18,17 @@ public class BookbayFirestoreReferences {
     public final static String
             BOOKS_SELL_COLLECTION = "Books_sell",
 
-    ADD_BOOK_DATE_FIELD = "AddBookDate",
-            BOOK_AUTHOR_FIELD = "BookAuthor",
-            BOOK_TITLE_FIELD = "BookTitle",
-            CONDITION_FIELD = "Condition",
-            IMAGE_FIELD = "Image",
-            OWNER_ID_UID_FIELD = "OwnerID",
-            PRICE_FIELD = "Price",
-            MESSAGE_FIELD = "Message",
-            NOTIFICATION_DATE_TIME_FIELD = "NotificationDateTime",
-            TIMESTAMP_FIELD = "timestamp",
-            BUYER_ID_UID_FIELD = "BuyerID",
-            ORDER_DATE_FIELD = "OrderDate",
-            STATUS_FIELD = "Status";
+            ADD_BOOK_DATE_FIELD = "addBookDate",
+            BOOK_AUTHOR_FIELD = "bookAuthor",
+            BOOK_TITLE_FIELD = "bookTitle",
+            CONDITION_FIELD = "condition",
+            IMAGE_FIELD = "image",
+            OWNER_ID_UID_FIELD = "ownerID",
+            PRICE_FIELD = "price",
+            NOTIFICATION_DATE_TIME_FIELD = "notificationDateTime",
+            BUYER_ID_UID_FIELD = "buyerID",
+            ORDER_DATE_FIELD = "orderDate",
+            STATUS_FIELD = "status";
 
     // All our instances of Firestore and Storage
     private static FirebaseFirestore firebaseFirestoreInstance = null;
@@ -57,26 +55,6 @@ public class BookbayFirestoreReferences {
 
     public static DocumentReference getDocumentReference(String stringRef) {
         return getFirestoreInstance().document(stringRef);
-    }
-
-    public static void downloadImageIntoImageViewWithJPEG(Books_sell book, ImageView iv) {
-        String path = "images/" + book.getBooks_sellID().getId() + "-" + Uri.parse(book.getImage()).getLastPathSegment() + ".jpeg";
-
-        Log.d("TEST", path);
-
-        getStorageReferenceInstance().child(path).getDownloadUrl()
-                .addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(Task<Uri> task) {
-                        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(iv.getContext());
-                        circularProgressDrawable.setCenterRadius(30);
-                        Picasso.get()
-                                .load(task.getResult())
-                                .error(R.drawable.ic_error)
-                                .placeholder(circularProgressDrawable)
-                                .into(iv);
-                    }
-                });
     }
 
     public static void downloadImageIntoImageView(Books_sell book, ImageView iv) {
