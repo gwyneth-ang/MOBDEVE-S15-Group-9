@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -36,10 +37,12 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Document;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class AddBookActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -130,10 +133,11 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                             null
                     );
 
-                    StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
-                            .child(BookbayFirestoreReferences.generateNewImagePath(book.getBooks_sellID(), imageUri));
-
                     CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
+                    String ID = UUID.randomUUID().toString();
+
+                    StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
+                            .child(BookbayFirestoreReferences.generateNewImagePath(ID, imageUri));
 
                     //task 1 - upload the image to the Firebase
                     Task t1 = imageRef.putFile(imageUri)
@@ -145,8 +149,10 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                                     progressDialog.setMessage("Uploaded  " + (int) progress + "%");
                                 }
                             });
+
                     //adding the book to the book_sell collection
-                    Task t2 = bookRef.add(book);
+                    Task t2 = bookRef.document(ID).set(book);
+
                     Tasks.whenAllSuccess(t1, t2).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
                         @Override
                         public void onSuccess(List<Object> objects) {
