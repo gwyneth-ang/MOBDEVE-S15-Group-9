@@ -1,10 +1,7 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,7 +22,7 @@ public class NotificationsViewHolder extends RecyclerView.ViewHolder {
         this.tvStatusBook_notifLayout = itemView.findViewById(R.id.tvStatusBook_notifLayout);
         this.tvTimePassed_notifLayout = itemView.findViewById(R.id.tvTimePassed_notifLayout);
 
-        this.imageView = itemView.findViewById(R.id.imageView);
+        this.imageView = itemView.findViewById(R.id.notifImageView);
 
         this.ibButton_notifLayout = itemView.findViewById(R.id.ibButton_notifLayout);
     }

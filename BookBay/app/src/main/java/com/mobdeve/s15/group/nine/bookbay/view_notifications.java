@@ -1,16 +1,23 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
-import android.content.Context;
-import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+
+import android.content.Context;
+import android.os.Bundle;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
 
@@ -26,6 +33,11 @@ public class view_notifications extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private ImageView notifImageView;
+    private TextView tvSellerName_notifLayout, tvBookTitle_notifLayout, tvStatusBook_notifLayout, tvTimePassed_notifLayout;
+    private RecyclerView recyclerView;
+
+    private FirebaseFirestore dbRef;
     //vars used
 //    private ArrayList<Notification> notifications;
 
@@ -76,6 +88,17 @@ public class view_notifications extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
+        this.tvBookTitle_notifLayout = view.findViewById(R.id.tvBookTitle_notifLayout);
+        this.tvSellerName_notifLayout = view.findViewById(R.id.tvSellerName_notifLayout);
+        this.tvStatusBook_notifLayout = view.findViewById(R.id.tvStatusBook_notifLayout);
+        this.tvTimePassed_notifLayout = view.findViewById(R.id.tvTimePassed_notifLayout);
+        this.notifImageView = view.findViewById(R.id.notifImageView);
+
+        this.recyclerView = view.findViewById(R.id.rvNotifications);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+
 //        this.notifications = new DataHelper().populateNotifications();
 //        this.notificationsRecyclerView = view.findViewById(R.id.rvNotifications);
 //        this.notificationsAdapter = new NotificationsAdapter();

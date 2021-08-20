@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/notifImageView"
             android:layout_width="105dp"
             android:layout_height="121dp"
             android:layout_marginTop="7sp"
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            app:layout_constraintStart_toEndOf="@id/imageView"
+            app:layout_constraintStart_toEndOf="@id/notifImageView"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
@@ -88,7 +88,7 @@
             android:textColor="#000000"
             android:textSize="14sp"
             app:layout_constraintTop_toBottomOf="@+id/cl_seller_and_title"
-            app:layout_constraintStart_toEndOf="@id/imageView"
+            app:layout_constraintStart_toEndOf="@id/notifImageView"
             />
 
         <TextView
@@ -101,7 +101,7 @@
             android:textColor="#999999"
             android:textSize="12sp"
             app:layout_constraintTop_toBottomOf="@+id/tvStatusBook_notifLayout"
-            app:layout_constraintStart_toEndOf="@id/imageView"/>
+            app:layout_constraintStart_toEndOf="@id/notifImageView"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
