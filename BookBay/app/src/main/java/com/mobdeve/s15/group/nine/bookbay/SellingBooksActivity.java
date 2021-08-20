@@ -66,7 +66,7 @@ public class SellingBooksActivity extends AppCompatActivity {
         this.sellingBookRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
         // Get the book from the Books_sell Collection
-        this.dbRef = FirebaseFirestore.getInstance();
+        this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
 
         updateDataAndAdapter();
 

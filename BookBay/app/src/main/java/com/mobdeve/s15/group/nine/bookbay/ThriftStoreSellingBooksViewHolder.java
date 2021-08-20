@@ -29,23 +29,8 @@ public class ThriftStoreSellingBooksViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindData(Books_sell book, int whichLayout) {
-        // Create a reference with an initial file path and name
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference gsReference = storage.getReferenceFromUrl(book.getImage());
+        BookbayFirestoreReferences.downloadImageIntoImageViewWithJPEG(book, this.iv_book_image);
 
-        gsReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                // Got the download URL for 'users/me/profile.png'
-                // Pass it to Picasso to download, show in ImageView and caching
-                Picasso.get().load(uri.toString()).into(iv_book_image);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(Exception exception) {
-                // Handle any errors
-            }
-        });
 
         this.tv_book_author.setText(book.getBookAuthor());
         this.tv_book_title.setText(book.getBookTitle());

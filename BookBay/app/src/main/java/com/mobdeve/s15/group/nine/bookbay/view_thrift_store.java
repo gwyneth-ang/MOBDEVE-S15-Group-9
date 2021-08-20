@@ -123,7 +123,7 @@ public class view_thrift_store extends Fragment {
         thriftRecyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
 
         // Get the book from the Books_sell Collection
-        this.dbRef = FirebaseFirestore.getInstance();
+        this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
 //        Query query = dbRef
 //                .collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
 //                .orderBy(BookbayFirestoreReferences.BOOK_TITLE_FIELD);
