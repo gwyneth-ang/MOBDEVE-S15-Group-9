@@ -18,7 +18,7 @@ public class BookbayFirestoreReferences {
     public final static String
             BOOKS_SELL_COLLECTION = "Books_sell",
 
-            ADD_BOOK_DATE_FIELD = "AddBookDate",
+    ADD_BOOK_DATE_FIELD = "AddBookDate",
             BOOK_AUTHOR_FIELD = "BookAuthor",
             BOOK_TITLE_FIELD = "BookTitle",
             CONDITION_FIELD = "Condition",
@@ -36,8 +36,8 @@ public class BookbayFirestoreReferences {
     private static FirebaseFirestore firebaseFirestoreInstance = null;
     private static StorageReference storageReferenceInstance = null;
 
-    public static String generateNewImagePath(DocumentReference books_sellID, Uri imageUri) {
-        return "images/" + books_sellID.getId() + "-" + imageUri.getLastPathSegment();
+    public static String generateNewImagePath(String books_sellID, Uri imageUri) {
+        return "images/" + books_sellID + "-" + imageUri.getLastPathSegment();
     }
 
     public static FirebaseFirestore getFirestoreInstance() {
