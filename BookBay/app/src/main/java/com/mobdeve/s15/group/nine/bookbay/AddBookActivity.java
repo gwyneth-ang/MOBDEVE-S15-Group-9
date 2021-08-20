@@ -19,16 +19,26 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AddBookActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -87,8 +97,6 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         });
 
         this.Bt_addBook.setOnClickListener((new View.OnClickListener() {
-            private FirebaseFirestore dbRef;
-
             @Override
             public void onClick(View v) {
                 //get current user
@@ -108,33 +116,57 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 
                     //TODO: adjust to the db later
                     Books_sell book = new Books_sell(
+                            null,
                             author,
                             title,
                             selectorChoice,
-                            user,
+                            user.getUid(),
                             price,
-                            imageUri.toString()
+                            imageUri.toString(),
+                            null,
+                            null,
+                            null,
+                            null
                     );
-                    // Reference of the image in Firebase Storage
-                    StorageReference imageRef = MyFirestoreReferences.getStorageReferenceInstance()
-                            .child(MyFirestoreReferences.generateNewImagePath(book.getBooks_sellID().getId(), imageUri));
-                    // Post collection reference
-                    CollectionReference postsRef = MyFirestoreReferences.getPostCollectionReference();
 
+                    StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
+                            .child(BookbayFirestoreReferences.generateNewImagePath(book.getBooks_sellID(), imageUri));
 
+                    CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
+
+                    //task 1 - upload the image to the Firebase
+                    Task t1 = imageRef.putFile(imageUri)
+                            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
+                                    double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                                    progressDialog.setCanceledOnTouchOutside(false);
+                                    progressDialog.setMessage("Uploaded  " + (int) progress + "%");
+                                }
+                            });
+                    //adding the book to the book_sell collection
+                    Task t2 = bookRef.add(book);
+                    Tasks.whenAllSuccess(t1, t2).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                        @Override
+                        public void onSuccess(List<Object> objects) {
+                            progressDialog.setCanceledOnTouchOutside(true);
+                            progressDialog.setMessage("Success!");
+                            finish();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull @NotNull Exception e) {
+                            progressDialog.setCanceledOnTouchOutside(true);
+                            progressDialog.setMessage("Error occurred. Please try again.");
+                        }
+                    });
+                } else {
+                    Toast.makeText(
+                            AddBookActivity.this,
+                            "Please fill up all of the inputs.",
+                            Toast.LENGTH_SHORT
+                    ).show();
                 }
-
-                //TODO: DELETE
-                //ready the values
-                Map<String, Object> data = new HashMap<>();
-                data.put(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, user.getUid());
-                data.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, title);
-                data.put(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, author);
-                data.put(BookbayFirestoreReferences.PRICE_FIELD, price);
-                data.put(BookbayFirestoreReferences.CONDITION_FIELD, selectorChoice);
-
-                // Get the DB from Firebase
-                this.dbRef = FirebaseFirestore.getInstance();
             }
         }));
 

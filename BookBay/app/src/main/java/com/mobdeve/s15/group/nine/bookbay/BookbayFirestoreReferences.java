@@ -36,6 +36,10 @@ public class BookbayFirestoreReferences {
     private static FirebaseFirestore firebaseFirestoreInstance = null;
     private static StorageReference storageReferenceInstance = null;
 
+    public static String generateNewImagePath(DocumentReference books_sellID, Uri imageUri) {
+        return "images/" + books_sellID.getId() + "-" + imageUri.getLastPathSegment();
+    }
+
     public static FirebaseFirestore getFirestoreInstance() {
         if(firebaseFirestoreInstance == null) {
             firebaseFirestoreInstance = FirebaseFirestore.getInstance();
