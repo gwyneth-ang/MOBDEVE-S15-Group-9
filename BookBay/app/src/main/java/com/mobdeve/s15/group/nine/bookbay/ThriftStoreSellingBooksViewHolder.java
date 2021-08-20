@@ -29,7 +29,7 @@ public class ThriftStoreSellingBooksViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindData(Books_sell book, int whichLayout) {
-        BookbayFirestoreReferences.downloadImageIntoImageViewWithJPEG(book, this.iv_book_image);
+        BookbayFirestoreReferences.downloadImageIntoImageView(book, this.iv_book_image);
 
 
         this.tv_book_author.setText(book.getBookAuthor());
