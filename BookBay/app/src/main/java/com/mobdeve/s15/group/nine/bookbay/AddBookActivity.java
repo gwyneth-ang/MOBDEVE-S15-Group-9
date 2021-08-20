@@ -128,6 +128,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 //                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 //                    simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 
+                    Log.d("TEST", user.getDisplayName());
                     //TODO: adjust to the db later
                     Books_sell book = new Books_sell(
                             cal.getTime(),
@@ -140,7 +141,9 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                             null,
                             null,
                             null,
-                            null
+                            null,
+                            user.getDisplayName(),
+                            user.getPhotoUrl().toString()
                     );
 
                     CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
