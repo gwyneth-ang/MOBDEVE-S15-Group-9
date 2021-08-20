@@ -72,10 +72,9 @@ public class ViewBookingDetails extends AppCompatActivity {
                                 .into(bookImage);
                     }
                 });
-//        TODO: owner image and name
-//        this.ownerName.setText(i.getStringExtra(IntentKeys.OWNER_NAME_KEY.name()));
-//        this.ownerImage.setImageResource(i.getIntExtra(IntentKeys.OWNER_IMAGE_KEY.name()));
 
+        this.ownerName.setText(i.getStringExtra(IntentKeys.OWNER_NAME_KEY.name()));
+        Picasso.get().load(i.getStringExtra(IntentKeys.OWNER_IMAGE_KEY.name())).into(ownerImage);
         placeOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
