@@ -123,7 +123,7 @@ public class view_thrift_store extends Fragment {
         thriftRecyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
 
         // Get the book from the Books_sell Collection
-        this.dbRef = FirebaseFirestore.getInstance();
+        this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
 //        Query query = dbRef
 //                .collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
 //                .orderBy(BookbayFirestoreReferences.BOOK_TITLE_FIELD);
@@ -175,23 +175,3 @@ public class view_thrift_store extends Fragment {
         updateDataAndAdapter();
     }
 }
-
-
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        // When our app is open, we need to have the adapter listening for any changes in the data.
-//        // To do so, we'd want to turn on the listening using the appropriate method in the onStart
-//        // or onResume (basically before the start but within the loop)
-//        this.thriftAdapter.startListening();
-//    }
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        // We want to eventually stop the listening when we're about to exit an app as we don't need
-//        // something listening all the time in the background.
-//        this.thriftAdapter.stopListening();
-//    }
-//}

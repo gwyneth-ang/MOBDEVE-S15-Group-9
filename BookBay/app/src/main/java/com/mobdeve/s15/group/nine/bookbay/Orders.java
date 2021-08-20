@@ -1,10 +1,16 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import com.google.firebase.firestore.DocumentId;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.ServerTimestamp;
 import com.google.type.Date;
 
 public class Orders {
-    private String BookID;
+    @DocumentId
+    private DocumentReference ordersID;
+
+    // Attributes
+    private DocumentReference BookID;
     private String BuyerID;
     private @ServerTimestamp Date OrderDate;
     private String Status;
@@ -14,18 +20,26 @@ public class Orders {
 
     }
 
-    public Orders(String BookID, String BuyerID, Date OrderDate, String Status) {
+    public Orders(DocumentReference BookID, String BuyerID, Date OrderDate, String Status) {
         this.BookID = BookID;
         this.BuyerID = BuyerID;
         this.OrderDate = OrderDate;
         this.Status = Status;
     }
 
-    public String getBookID() {
+    public DocumentReference getOrdersID() {
+        return ordersID;
+    }
+
+    public void setOrdersID(DocumentReference ordersID) {
+        this.ordersID = ordersID;
+    }
+
+    public DocumentReference getBookID() {
         return BookID;
     }
 
-    public void setBookID(String bookID) {
+    public void setBookID(DocumentReference bookID) {
         this.BookID = bookID;
     }
 

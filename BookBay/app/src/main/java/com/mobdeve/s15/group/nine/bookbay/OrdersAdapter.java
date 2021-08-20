@@ -6,17 +6,17 @@ import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+
 import java.util.ArrayList;
 
-public class OrdersAdapter extends RecyclerView.Adapter<OrdersViewHolder>{
-    // FIXME: to be change to database
-    private ArrayList<Books_sell> book;
+public class OrdersAdapter extends FirestoreRecyclerAdapter<Orders, OrdersViewHolder> {
 
     private int whichView;
 
-    // FIXME: to be change to database
-    public OrdersAdapter(ArrayList<Books_sell> data) {
-        this.book = data;
+    public OrdersAdapter(FirestoreRecyclerOptions<Orders> options) {
+        super(options);
     }
 
     public void setViewType(int whichView) {
@@ -35,13 +35,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(OrdersViewHolder holder, int position) {
-        holder.bindData(book.get(position));
-    }
-
-    // FIXME: to be change to database
-    @Override
-    public int getItemCount() {
-        return book.size();
+    public void onBindViewHolder(OrdersViewHolder holder, int position, Orders order) {
+        holder.bindData(order);
     }
 }

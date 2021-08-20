@@ -1,7 +1,14 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 
+import com.google.firebase.firestore.DocumentId;
+import com.google.firebase.firestore.DocumentReference;
+
 public class Books_sell {
+    @DocumentId
+    private DocumentReference books_sellID;
+
+    // Attributes
     private String BookAuthor;
     private String BookTitle;
     private String Condition;
@@ -14,13 +21,21 @@ public class Books_sell {
 
     }
 
-    public Books_sell(String BookAuthor, String BookTitle, String Condition, String OwnerID, Float Price, String Image) {
+    public Books_sell(DocumentReference bookRef, String BookAuthor, String BookTitle, String Condition, String OwnerID, Float Price, String Image) {
         this.BookAuthor = BookAuthor;
         this.BookTitle = BookTitle;
         this.Condition = Condition;
         this.Image = Image;
         this.OwnerID = OwnerID;
         this.Price = Price;
+    }
+
+    public DocumentReference getBooks_sellID() {
+        return books_sellID;
+    }
+
+    public void setBooks_sellID(DocumentReference books_sellID) {
+        this.books_sellID = books_sellID;
     }
 
     public String getBookAuthor() {
