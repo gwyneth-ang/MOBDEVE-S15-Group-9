@@ -39,7 +39,7 @@ public class ThriftStoreSellingBooksViewHolder extends RecyclerView.ViewHolder {
             this.tv_book_smallest_price.setVisibility(View.GONE);
         } else if (whichLayout == WhichLayout.THRIFT_STORE.ordinal()) {
             this.tv_book_smallest_price.setVisibility(View.VISIBLE);
-            this.tv_book_smallest_price.setText(String.valueOf(book.getPrice()));
+            this.tv_book_smallest_price.setText("₱" + String.valueOf(book.getPrice()) + " - " + book.getCondition());
         }
     }
 }

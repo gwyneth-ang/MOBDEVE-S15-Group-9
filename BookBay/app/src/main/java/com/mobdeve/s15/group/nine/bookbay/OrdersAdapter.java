@@ -11,11 +11,11 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 import java.util.ArrayList;
 
-public class OrdersAdapter extends FirestoreRecyclerAdapter<Orders, OrdersViewHolder> {
+public class OrdersAdapter extends FirestoreRecyclerAdapter<Books_sell, OrdersViewHolder> {
 
     private int whichView;
 
-    public OrdersAdapter(FirestoreRecyclerOptions<Orders> options) {
+    public OrdersAdapter(FirestoreRecyclerOptions<Books_sell> options) {
         super(options);
     }
 
@@ -35,7 +35,7 @@ public class OrdersAdapter extends FirestoreRecyclerAdapter<Orders, OrdersViewHo
     }
 
     @Override
-    public void onBindViewHolder(OrdersViewHolder holder, int position, Orders order) {
-        holder.bindData(order);
+    public void onBindViewHolder(OrdersViewHolder holder, int position, Books_sell book) {
+        holder.bindData(book);
     }
 }

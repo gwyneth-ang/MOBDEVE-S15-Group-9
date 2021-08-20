@@ -108,13 +108,13 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 
                     //TODO: adjust to the db later
                     Books_sell book = new Books_sell(
-                            user,
-                            title,
                             author,
+                            title,
+                            selectorChoice,
+                            user,
                             price,
                             imageUri.toString()
                     );
-
                     // Reference of the image in Firebase Storage
                     StorageReference imageRef = MyFirestoreReferences.getStorageReferenceInstance()
                             .child(MyFirestoreReferences.generateNewImagePath(book.getBooks_sellID().getId(), imageUri));
