@@ -97,8 +97,8 @@ public class view_account extends Fragment {
         sellingOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(getActivity(), SellingOrdersActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(getActivity(), SellingOrdersActivity.class);
+                startActivity(intent);
             }
         });
 

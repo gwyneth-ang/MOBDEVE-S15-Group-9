@@ -1,5 +1,6 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import android.graphics.Color;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,14 +23,28 @@ public class OrdersViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindData(Books_sell book) {
-        //TODO: FIXME
-        //        this.iv_book_image.setImageResource(book.getImageId());
+        BookbayFirestoreReferences.downloadImageIntoImageView(book, this.iv_book_image);
 
         this.tv_book_author.setText(book.getBookAuthor());
         this.tv_book_title.setText(book.getBookTitle());
 
-        // FIXME: fix based on database
-        if (book.getStatus().equals(BookStatus.Declined.name())) {
+        if (book.getStatus().equals(BookStatus.DECLINED.name())) {
+
+            this.tv_book_status.setText(BookStatus.DECLINED.name());
+            this.tv_book_status.setBackgroundResource(R.drawable.declined_roundable_book_status);
+            this.tv_book_status.setTextColor(Color.parseColor("#FFFFFFFF"));
+
+        } else if (book.getStatus().equals(BookStatus.CONFIRMED.name())) {
+
+            this.tv_book_status.setText(BookStatus.CONFIRMED.name());
+            this.tv_book_status.setBackgroundResource(R.drawable.confirmed_roundable_book_status);
+            this.tv_book_status.setTextColor(Color.parseColor("#FFFFFFFF"));
+
+        } else if (book.getStatus().equals(BookStatus.PENDING.name())) {
+
+            this.tv_book_status.setText(BookStatus.PENDING.name());
+            this.tv_book_status.setBackgroundResource(R.drawable.pending_roundable_book_status);
+            this.tv_book_status.setTextColor(Color.parseColor("#FF000000"));
 
         }
     }

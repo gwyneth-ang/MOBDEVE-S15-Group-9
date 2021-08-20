@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,8 +25,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.Query.Direction;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
 
 import java.util.ArrayList;
 
@@ -38,6 +42,7 @@ public class SellingBooksActivity extends AppCompatActivity {
     private LinearLayout ll_thriftsellingbooks_search;
     private SearchView Sv_thriftsellingbooks_search_bar;
     private ImageButton Bt_thriftsellingbooks_filter;
+    private SwipeRefreshLayout sfl_store_selling_books;
 
     // DB reference
     private FirebaseFirestore dbRef;
@@ -52,6 +57,7 @@ public class SellingBooksActivity extends AppCompatActivity {
         this.ll_thriftsellingbooks_search = findViewById(R.id.ll_thriftsellingbooks_search);
         this.Sv_thriftsellingbooks_search_bar = findViewById(R.id.Sv_thriftsellingbooks_seach_bar);
         this.Bt_thriftsellingbooks_filter = findViewById(R.id.Bt_thriftsellingbooks_filter);
+        this.sfl_store_selling_books = findViewById(R.id.sfl_store_selling_books);
 
         // change font for search view
         int id = this.Sv_thriftsellingbooks_search_bar.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
@@ -70,9 +76,19 @@ public class SellingBooksActivity extends AppCompatActivity {
         // Get the book from the Books_sell Collection
         this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
 
+        // Recycler and adapter
         sellingBookAdapter = new ThriftStoreSellingBooksAdapter();
         sellingBookAdapter.setViewType(WhichLayout.SELLING_BOOKS.ordinal());
         sellingBookRecyclerView.setAdapter(sellingBookAdapter);
+
+        this.sfl_store_selling_books.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                sfl_store_selling_books.setRefreshing(true);
+                updateDataAndAdapter();
+                sfl_store_selling_books.setRefreshing(false);
+            }
+        });
 
         fab_add_book.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,15 +114,19 @@ public class SellingBooksActivity extends AppCompatActivity {
 
         dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, user.getUid())
-                .orderBy(BookbayFirestoreReferences.BOOK_TITLE_FIELD).get()
+                .orderBy(BookbayFirestoreReferences.ADD_BOOK_DATE_FIELD, Direction.DESCENDING)
+                .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
                         if(task.isSuccessful()) {
+                            Log.d("Test", user.getUid() + task.getResult().isEmpty());
                             for (QueryDocumentSnapshot document : task.getResult())
                                 books.add(document.toObject(Books_sell.class));
                             sellingBookAdapter.setData(books);
                             sellingBookAdapter.notifyDataSetChanged();
+                        } else {
+                            Log.d("TEST", "Error getting documents: ", task.getException());
                         }
                     }
                 });
