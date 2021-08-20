@@ -22,14 +22,15 @@ public class OrdersViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindData(Books_sell book) {
-//        this.iv_book_image.setImageResource(book.getImageId());
+        //TODO: FIXME
+        //        this.iv_book_image.setImageResource(book.getImageId());
 
-//        this.tv_book_author.setText(book.getBookAuthor());
-//        this.tv_book_title.setText(book.getBookTitle());
+        this.tv_book_author.setText(book.getBookAuthor());
+        this.tv_book_title.setText(book.getBookTitle());
 
-        //FIXME: fix based on database
-//        if (book.getStatus().equals("DECLINED")) {
-//
-//        }
+        // FIXME: fix based on database
+        if (book.getStatus().equals(BookStatus.Declined.name())) {
+
+        }
     }
 }

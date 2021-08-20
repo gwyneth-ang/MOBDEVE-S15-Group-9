@@ -71,7 +71,7 @@
         android:textSize="13sp"
         android:fontFamily="@font/cormorant_garamond_medium"
         android:textColor="#000000"
-        android:background="@drawable/roundable_book_status"
+        android:background="@drawable/pending_roundable_book_status"
         android:paddingTop="2sp"
         android:paddingBottom="2sp"
         android:textAlignment="center"
