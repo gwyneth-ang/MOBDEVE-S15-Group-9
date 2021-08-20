@@ -100,7 +100,7 @@ public class view_my_orders extends Fragment {
         this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
 
         Query myOrdersQuery = dbRef
-                .collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
+                .collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, user.getUid())
                 .orderBy(BookbayFirestoreReferences.ORDER_DATE_FIELD);
 
