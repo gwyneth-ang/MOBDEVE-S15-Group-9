@@ -4,5 +4,4 @@ public class SellingOrdersActivity {
 
     // FIXME: to be change to database
 
-
 }

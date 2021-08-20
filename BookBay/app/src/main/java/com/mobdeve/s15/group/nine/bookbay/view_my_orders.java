@@ -97,7 +97,7 @@ public class view_my_orders extends Fragment {
         //get current user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        this.dbRef = FirebaseFirestore.getInstance();
+        this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
 
         Query myOrdersQuery = dbRef
                 .collection(BookbayFirestoreReferences.ORDERS_COLLECTION)

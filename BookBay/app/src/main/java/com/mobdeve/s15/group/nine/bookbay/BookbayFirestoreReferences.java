@@ -8,6 +8,7 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -19,6 +20,7 @@ public class BookbayFirestoreReferences {
             NOTIFICATIONS_COLLECTION = "Notifications",
             ORDERS_COLLECTION = "Orders",
 
+            ADD_BOOK_DATE_FIELD = "AddBookDate",
             BOOK_AUTHOR_FIELD = "BookAuthor",
             BOOK_TITLE_FIELD = "BookTitle",
             CONDITION_FIELD = "Condition",
@@ -51,6 +53,10 @@ public class BookbayFirestoreReferences {
             storageReferenceInstance = FirebaseStorage.getInstance().getReference();
         }
         return storageReferenceInstance;
+    }
+
+    public static DocumentReference getDocumentReference(String stringRef) {
+        return getFirestoreInstance().document(stringRef);
     }
 
     public static void downloadImageIntoImageViewWithJPEG(Books_sell book, ImageView iv) {

@@ -145,13 +145,14 @@ public class view_thrift_store extends Fragment {
     }
 
     private void updateDataAndAdapter() {
-        ArrayList<Books_sell> books = new ArrayList<>();
         dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                .orderBy(BookbayFirestoreReferences.BOOK_TITLE_FIELD).get()
+                .orderBy(BookbayFirestoreReferences.BOOK_TITLE_FIELD)
+                .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
                         if(task.isSuccessful()) {
+                            ArrayList<Books_sell> books = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult())
                                 books.add(document.toObject(Books_sell.class));
 

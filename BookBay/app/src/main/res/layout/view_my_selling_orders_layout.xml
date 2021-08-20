@@ -13,7 +13,7 @@
         android:scaleType="centerCrop"
         android:layout_marginTop="20sp"
         android:layout_marginStart="20sp"
-        app:srcCompat="@drawable/war"
+        app:srcCompat="@drawable/image_vector"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
