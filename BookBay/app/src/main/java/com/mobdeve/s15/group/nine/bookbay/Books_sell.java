@@ -11,7 +11,7 @@ public class Books_sell {
     private DocumentReference books_sellID;
 
     // Attributes
-    private @ServerTimestamp Date addBookDate;
+    private Date addBookDate;
     private String bookAuthor;
     private String bookTitle;
     private String condition;
@@ -19,9 +19,9 @@ public class Books_sell {
     private Float price;
     private String image;
     private String buyerID;
-    private @ServerTimestamp Date orderDate;
+    private Date orderDate;
     private String status;
-    private @ServerTimestamp Date notificationDateTime;
+    private Date notificationDateTime;
 
     // Do not remove this. This is needed by Firebase when it creates instances of our model class.
     public Books_sell() {

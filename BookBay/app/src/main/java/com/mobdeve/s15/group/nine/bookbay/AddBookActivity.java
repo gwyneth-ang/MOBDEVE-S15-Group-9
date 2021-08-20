@@ -39,10 +39,16 @@ import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Calendar;
+import java.util.TimeZone;
+import java.util.Date;
+
+import java.text.SimpleDateFormat;
 
 public class AddBookActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -118,9 +124,13 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     progressDialog.setTitle("Uploading");
                     progressDialog.show();
 
+                    Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//                    simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+
                     //TODO: adjust to the db later
                     Books_sell book = new Books_sell(
-                            null,
+                            cal.getTime(),
                             author,
                             title,
                             selectorChoice,
