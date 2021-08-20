@@ -10,6 +10,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +55,7 @@ public class view_thrift_store extends Fragment {
     private LinearLayout ll_thriftsellingbooks_search;
     private SearchView Sv_thriftsellingbooks_search_bar;
     private ImageButton Bt_thriftsellingbooks_filter;
+    private SwipeRefreshLayout sfl_store_selling_books;
 
     // DB reference
     private FirebaseFirestore dbRef;
@@ -107,6 +109,7 @@ public class view_thrift_store extends Fragment {
         this.ll_thriftsellingbooks_search = view.findViewById(R.id.ll_thriftsellingbooks_search);
         this.Sv_thriftsellingbooks_search_bar = view.findViewById(R.id.Sv_thriftsellingbooks_seach_bar);
         this.Bt_thriftsellingbooks_filter = view.findViewById(R.id.Bt_thriftsellingbooks_filter);
+        this.sfl_store_selling_books = view.findViewById(R.id.sfl_store_selling_books);
 
         // change font for search view
         int id = this.Sv_thriftsellingbooks_search_bar.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
@@ -124,16 +127,20 @@ public class view_thrift_store extends Fragment {
 
         // Get the book from the Books_sell Collection
         this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
-//        Query query = dbRef
-//                .collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-//                .orderBy(BookbayFirestoreReferences.BOOK_TITLE_FIELD);
-//
-//        FirestoreRecyclerOptions<Books_sell> options = new FirestoreRecyclerOptions.Builder<Books_sell>()
-//                .setQuery(query, Books_sell.class)
-//                .build();
 
+        thriftAdapter = new ThriftStoreSellingBooksAdapter();
+        thriftAdapter.setViewType(WhichLayout.THRIFT_STORE.ordinal());
 
-        updateDataAndAdapter();
+        thriftRecyclerView.setAdapter(thriftAdapter);
+
+        this.sfl_store_selling_books.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                sfl_store_selling_books.setRefreshing(true);
+                updateDataAndAdapter();
+                sfl_store_selling_books.setRefreshing(false);
+            }
+        });
 
     }
 
@@ -156,15 +163,8 @@ public class view_thrift_store extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult())
                                 books.add(document.toObject(Books_sell.class));
 
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    thriftAdapter = new ThriftStoreSellingBooksAdapter(books);
-                                    thriftAdapter.setViewType(WhichLayout.THRIFT_STORE.ordinal());
-
-                                    thriftRecyclerView.setAdapter(thriftAdapter);
-                                }
-                            });
+                            thriftAdapter.setData(books);
+                            thriftAdapter.notifyDataSetChanged();
                         }
                     }
                 });

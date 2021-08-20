@@ -68,7 +68,9 @@ public class SellingBooksActivity extends AppCompatActivity {
         // Get the book from the Books_sell Collection
         this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
 
-        updateDataAndAdapter();
+        sellingBookAdapter = new ThriftStoreSellingBooksAdapter();
+        sellingBookAdapter.setViewType(WhichLayout.SELLING_BOOKS.ordinal());
+        sellingBookRecyclerView.setAdapter(sellingBookAdapter);
 
         fab_add_book.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,16 +98,8 @@ public class SellingBooksActivity extends AppCompatActivity {
                         if(task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult())
                                 books.add(document.toObject(Books_sell.class));
-
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    sellingBookAdapter = new ThriftStoreSellingBooksAdapter(books);
-                                    sellingBookAdapter.setViewType(WhichLayout.SELLING_BOOKS.ordinal());
-
-                                    sellingBookRecyclerView.setAdapter(sellingBookAdapter);
-                                }
-                            });
+                            sellingBookAdapter.setData(books);
+                            sellingBookAdapter.notifyDataSetChanged();
                         }
                     }
                 });
