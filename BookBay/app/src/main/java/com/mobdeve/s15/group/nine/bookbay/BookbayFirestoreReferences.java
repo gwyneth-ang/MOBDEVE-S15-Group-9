@@ -17,8 +17,6 @@ import com.squareup.picasso.Picasso;
 public class BookbayFirestoreReferences {
     public final static String
             BOOKS_SELL_COLLECTION = "Books_sell",
-            NOTIFICATIONS_COLLECTION = "Notifications",
-            ORDERS_COLLECTION = "Orders",
 
             ADD_BOOK_DATE_FIELD = "AddBookDate",
             BOOK_AUTHOR_FIELD = "BookAuthor",
@@ -29,9 +27,7 @@ public class BookbayFirestoreReferences {
             PRICE_FIELD = "Price",
             MESSAGE_FIELD = "Message",
             NOTIFICATION_DATE_TIME_FIELD = "NotificationDateTime",
-            ORDER_ID_FK_FIELD = "OrderID",
             TIMESTAMP_FIELD = "timestamp",
-            BOOK_ID_FK_FIELD = "BookID",
             BUYER_ID_UID_FIELD = "BuyerID",
             ORDER_DATE_FIELD = "OrderDate",
             STATUS_FIELD = "Status";
