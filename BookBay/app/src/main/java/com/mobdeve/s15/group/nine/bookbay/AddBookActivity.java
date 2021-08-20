@@ -85,6 +85,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         this.Et_author_addBook = findViewById(R.id.Et_author_addBook);
         this.Et_bookTitle_addBook = findViewById(R.id.Et_bookTitle_addBook);
         this.Et_price_addBook = findViewById(R.id.Et_price_addBook);
+        this.Bt_addBook = findViewById(R.id.Bt_addBook);
 
         this.Bt_browse_addBook.setOnClickListener(new View.OnClickListener() {
             @Override
