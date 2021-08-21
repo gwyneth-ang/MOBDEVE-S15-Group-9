@@ -48,6 +48,8 @@ public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftS
                 intent.putExtra(IntentKeys.BOOK_IMAGE_KEY.name(), book.get(holder.getAdapterPosition()).getImage());
                 intent.putExtra(IntentKeys.BOOK_ID_KEY.name(), book.get(holder.getAdapterPosition()).getBooks_sellID().getId());
                 intent.putExtra(IntentKeys.OWNER_ID_KEY.name(), book.get(holder.getAdapterPosition()).getOwnerID());
+                intent.putExtra(IntentKeys.OWNER_NAME_KEY.name(), book.get(holder.getAdapterPosition()).getProfileName());
+                intent.putExtra(IntentKeys.OWNER_IMAGE_KEY.name(), book.get(holder.getAdapterPosition()).getProfileImage());
                 //TODO: Get book owner and owner image
                 parent.getContext().startActivity(intent);
             }
