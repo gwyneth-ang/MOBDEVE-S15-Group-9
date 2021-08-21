@@ -1,11 +1,14 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
-import android.content.Context;
-import android.graphics.Color;
+import android.graphics.Color;;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,7 +18,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-public class SellingOrdersActivity extends AppCompatActivity {
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
+public class SellingOrdersActivity extends AppCompatActivity{
 
     private RecyclerView sellerOrdersRecyclerView;
     private OrdersAdapter sellerOrdersAdapter;

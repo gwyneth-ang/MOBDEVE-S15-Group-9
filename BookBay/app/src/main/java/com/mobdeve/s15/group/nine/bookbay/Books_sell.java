@@ -1,6 +1,7 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.ServerTimestamp;
@@ -8,6 +9,9 @@ import com.google.firebase.firestore.ServerTimestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Books_sell {
     @DocumentId
@@ -18,13 +22,10 @@ public class Books_sell {
     private String bookAuthor;
     private String bookTitle;
     private String condition;
+    private String review;
     private String ownerID;
     private Float price;
     private String image;
-    private String buyerID;
-    private Date orderDate;
-    private String status;
-    private Date notificationDateTime;
     private String profileName;
     private String profileImage;
 
@@ -33,18 +34,15 @@ public class Books_sell {
 
     }
 
-    public Books_sell(Date addBookDate, String bookAuthor, String bookTitle, String condition, String ownerID, Float price, String image, String buyerID, Date orderDate, String status, Date NotifcationDateTime, String profileName, String profileImage) {
+    public Books_sell(Date addBookDate, String bookAuthor, String bookTitle, String condition, String review, String ownerID, Float price, String image, String profileName, String profileImage) {
         this.addBookDate = addBookDate;
         this.bookAuthor = bookAuthor;
         this.bookTitle = bookTitle;
         this.condition = condition;
+        this.review = review;
         this.ownerID = ownerID;
         this.price = price;
         this.image = image;
-        this.buyerID = buyerID;
-        this.orderDate = orderDate;
-        this.status = status;
-        this.notificationDateTime = NotifcationDateTime;
         this.profileName = profileName;
         this.profileImage = profileImage;
     }
@@ -89,6 +87,14 @@ public class Books_sell {
         this.condition = condition;
     }
 
+    public String getReview() {
+        return review;
+    }
+
+    public void setReview(String review) {
+        this.review = review;
+    }
+
     public String getOwnerID() {
         return ownerID;
     }
@@ -111,39 +117,6 @@ public class Books_sell {
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-    public String getBuyerID() {
-        return buyerID;
-    }
-
-    public void setBuyerID(String buyerID) {
-        this.buyerID = buyerID;
-    }
-
-    public Date getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getNotificationDateTime() {
-        SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd | hh:mm");
-        return DateForm.format(this.notificationDateTime);
-    }
-
-    public void setNotificationDateTime(Date notificationDateTime) {
-        this.notificationDateTime = notificationDateTime;
     }
 
     public String getProfileName() {

@@ -40,6 +40,8 @@ import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -87,6 +89,8 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_and_edit_book);
 
+        Spinner spinner_addBook = findViewById(R.id.Spinner_addBook);
+
         this.Bt_browse_addBook = findViewById(R.id.Bt_browse_addBook);
         this.Iv_bookImage = findViewById(R.id.Iv_bookImage);
         this.Et_author_addBook = findViewById(R.id.Et_author_addBook);
@@ -99,8 +103,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         //for checking edit or add, check intent
         Intent i = getIntent();
 
-        Spinner spinner_addBook = findViewById(R.id.Spinner_addBook);
-        ArrayAdapter<CharSequence> book_conditions_adapter = ArrayAdapter.createFromResource(this, R.array.conditions, android.R.layout.simple_spinner_item);
+        CustomSpinner<String> book_conditions_adapter = new CustomSpinner(this, android.R.layout.simple_spinner_item, Arrays.asList(getResources().getStringArray(R.array.conditions)), true);
         book_conditions_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_addBook.setAdapter(book_conditions_adapter);
         spinner_addBook.setOnItemSelectedListener(this);
@@ -108,7 +111,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         this.TvAddOrEditTitle.setText("Add a Book");
         this.Bt_addBook.setText("Add Book");
 
-        if (i.getLongExtra(IntentKeys.BOOK_ID_KEY.name(), -1) == -1) {
+        if (i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()) == null) {
             this.TvAddOrEditTitle.setText("Add a Book");
             this.Bt_addBook.setText("Add Book");
             this.ViewKey = 0;
@@ -164,19 +167,29 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 //                    simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 
                         Log.d("TEST", user.getDisplayName());
-                        //TODO: adjust to the db later
+
+
+                        //TODO: to be deleted for testing if adding sub collection order is working
+                        Orders order = new Orders(
+                                null,
+                                null,
+                                BookStatus.PENDING.name(),
+                                null,
+                                null,
+                                null
+                        );
+
+//                        Log.d("TEST", orders.get(0).getProfileName());
+
                         Books_sell book = new Books_sell(
                                 cal.getTime(),
                                 author,
                                 title,
                                 selectorChoice,
+                                "TEMP REVIEW",
                                 user.getUid(),
                                 price,
                                 imageUri.toString(),
-                                null,
-                                null,
-                                null,
-                                null,
                                 user.getDisplayName(),
                                 user.getPhotoUrl().toString()
                         );
@@ -201,7 +214,10 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                         //adding the book to the book_sell collection
                         Task t2 = bookRef.document(ID).set(book);
 
-                        Tasks.whenAllSuccess(t1, t2).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                        //TODO: to be deleted for testing if adding sub collection order is working
+                        Task t3 = bookRef.document(ID).collection(BookbayFirestoreReferences.ORDERS_COLLECTION).document(UUID.randomUUID().toString()).set(order);
+
+                        Tasks.whenAllSuccess(t1, t2, t3).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
                             @Override
                             public void onSuccess(List<Object> objects) {
                                 progressDialog.setCanceledOnTouchOutside(true);

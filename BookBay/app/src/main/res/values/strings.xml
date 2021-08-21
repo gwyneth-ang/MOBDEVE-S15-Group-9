@@ -5,6 +5,11 @@
         <item>"Good"</item>
         <item>"Acceptable"</item>
     </string-array>
+    <string-array name="book_status">
+        <item>"PENDING"</item>
+        <item>"CONFIRMED"</item>
+        <item>"DECLINED"</item>
+    </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

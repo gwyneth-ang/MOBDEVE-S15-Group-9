@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 public class BookbayFirestoreReferences {
     public final static String
             BOOKS_SELL_COLLECTION = "Books_sell",
+            ORDERS_COLLECTION = "Orders",
 
             ADD_BOOK_DATE_FIELD = "addBookDate",
             BOOK_AUTHOR_FIELD = "bookAuthor",

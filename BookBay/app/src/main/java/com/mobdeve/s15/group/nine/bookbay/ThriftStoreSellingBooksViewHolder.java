@@ -32,7 +32,7 @@ public class ThriftStoreSellingBooksViewHolder extends RecyclerView.ViewHolder {
         BookbayFirestoreReferences.downloadImageIntoImageView(book, this.iv_book_image);
 
 
-        this.tv_book_author.setText(book.getBookAuthor());
+        this.tv_book_author.setText(book.getBookAuthor().toUpperCase());
         this.tv_book_title.setText(book.getBookTitle());
 
         if (whichLayout == WhichLayout.SELLING_BOOKS.ordinal()) {

@@ -1,6 +1,8 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,11 +17,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -27,6 +32,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class ViewBookingDetails extends AppCompatActivity {
     private SearchView searchbar;
@@ -59,6 +65,13 @@ public class ViewBookingDetails extends AppCompatActivity {
         this.condition.setText(i.getStringExtra(IntentKeys.CONDITION_KEY.name()));
         this.price.setText("₱" + decimalFormat.format(i.getFloatExtra(IntentKeys.PRICE_KEY.name(),((float)0))));
 
+        // change font for search view
+        int id = this.searchbar.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        Typeface tf = ResourcesCompat.getFont(this,R.font.cormorant_garamond);
+        TextView searchText = (TextView) this.searchbar.findViewById(id);
+        searchText.setTypeface(tf);
+        searchText.setTextColor(Color.BLACK);
+
         String path = "images/" + i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()) + "-" + Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name())).getLastPathSegment();
 
         FirebaseStorage.getInstance().getReference().child(path).getDownloadUrl()
@@ -74,25 +87,18 @@ public class ViewBookingDetails extends AppCompatActivity {
                                 .into(bookImage);
                     }
                 });
-//        TODO: owner image and name
-//        this.ownerName.setText(i.getStringExtra(IntentKeys.OWNER_NAME_KEY.name()));
-//        this.ownerImage.setImageResource(i.getIntExtra(IntentKeys.OWNER_IMAGE_KEY.name()));
 
+        this.ownerName.setText(i.getStringExtra(IntentKeys.OWNER_NAME_KEY.name()));
+        Picasso.get().load(i.getStringExtra(IntentKeys.OWNER_IMAGE_KEY.name())).into(ownerImage);
         placeOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: check if already ordered
-                // TODO:if yes, notify user and destroy activity
-                // TODO: load order confirmation (dialog)
-
                 Intent i = getIntent();
-                if(checkBookSoldDB(i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()))){
-                    ConfirmOrderDialog dialog = new ConfirmOrderDialog(i.getStringExtra(IntentKeys.TITLE_KEY.name()), "₱" + decimalFormat.format(i.getFloatExtra(IntentKeys.PRICE_KEY.name(),((float)0))), i.getStringExtra(IntentKeys.CONDITION_KEY.name()));
-                    dialog.show(getSupportFragmentManager(), "dialog");
-                }
-                else{
-//                    TODO: Book is already sold, alert and return to homepage
-                }
+                ConfirmOrderDialog dialog = new ConfirmOrderDialog(i.getStringExtra(IntentKeys.TITLE_KEY.name()), "₱" + decimalFormat.format(i.getFloatExtra(IntentKeys.PRICE_KEY.name(),((float)0))), i.getStringExtra(IntentKeys.CONDITION_KEY.name()));
+                Bundle bundle = new Bundle();
+                bundle.putString(IntentKeys.BOOK_ID_KEY.name(), i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()));
+                dialog.setArguments(bundle);
+                dialog.show(getSupportFragmentManager(), "dialog");
             }
         });
 
@@ -132,8 +138,6 @@ public class ViewBookingDetails extends AppCompatActivity {
         });
 
     }
-
-
 //  check db
     private boolean checkBookSoldDB(String bookID){
         this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
