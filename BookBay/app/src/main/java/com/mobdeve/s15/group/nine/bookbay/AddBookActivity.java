@@ -40,6 +40,7 @@ import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -166,6 +167,21 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 //                    simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 
                         Log.d("TEST", user.getDisplayName());
+
+                        Orders order = new Orders(
+                                null,
+                                null,
+                                null,
+                                null,
+                                user.getDisplayName(),
+                                user.getPhotoUrl().toString()
+                        );
+
+                        List<Orders> orders = new ArrayList<Orders>();
+                        orders.add(order);
+
+                        Log.d("TEST", orders.get(0).getProfileName());
+
                         //TODO: adjust to the db later
                         Books_sell book = new Books_sell(
                                 cal.getTime(),
@@ -175,12 +191,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                                 user.getUid(),
                                 price,
                                 imageUri.toString(),
-                                null,
-                                null,
-                                null,
-                                null,
-                                user.getDisplayName(),
-                                user.getPhotoUrl().toString()
+                                orders
                         );
 
                         CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);

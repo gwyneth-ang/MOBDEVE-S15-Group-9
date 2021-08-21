@@ -31,6 +31,6 @@ public class NotificationsAdapter extends FirestoreRecyclerAdapter<Books_sell, N
 
     @Override
     protected void onBindViewHolder(@NonNull @NotNull NotificationsViewHolder holder, int position, @NonNull @NotNull Books_sell model) {
-        holder.bindData(model);
+//        holder.bindData(model);
     }
 }

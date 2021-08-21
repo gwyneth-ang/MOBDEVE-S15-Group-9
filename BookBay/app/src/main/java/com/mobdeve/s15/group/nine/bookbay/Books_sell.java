@@ -8,6 +8,7 @@ import com.google.firebase.firestore.ServerTimestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class Books_sell {
     @DocumentId
@@ -21,19 +22,14 @@ public class Books_sell {
     private String ownerID;
     private Float price;
     private String image;
-    private String buyerID;
-    private Date orderDate;
-    private String status;
-    private Date notificationDateTime;
-    private String profileName;
-    private String profileImage;
+    private List<Orders> Orders;
 
     // Do not remove this. This is needed by Firebase when it creates instances of our model class.
     public Books_sell() {
 
     }
 
-    public Books_sell(Date addBookDate, String bookAuthor, String bookTitle, String condition, String ownerID, Float price, String image, String buyerID, Date orderDate, String status, Date NotifcationDateTime, String profileName, String profileImage) {
+    public Books_sell(Date addBookDate, String bookAuthor, String bookTitle, String condition, String ownerID, Float price, String image, List<Orders> orders) {
         this.addBookDate = addBookDate;
         this.bookAuthor = bookAuthor;
         this.bookTitle = bookTitle;
@@ -41,12 +37,7 @@ public class Books_sell {
         this.ownerID = ownerID;
         this.price = price;
         this.image = image;
-        this.buyerID = buyerID;
-        this.orderDate = orderDate;
-        this.status = status;
-        this.notificationDateTime = NotifcationDateTime;
-        this.profileName = profileName;
-        this.profileImage = profileImage;
+        this.Orders = orders;
     }
 
     public DocumentReference getBooks_sellID() {
@@ -113,53 +104,11 @@ public class Books_sell {
         this.image = image;
     }
 
-    public String getBuyerID() {
-        return buyerID;
+    public List<Orders> getOrders() {
+        return Orders;
     }
 
-    public void setBuyerID(String buyerID) {
-        this.buyerID = buyerID;
-    }
-
-    public String getOrderDate() {
-        SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd, yyyy | hh:mm");
-        return DateForm.format(this.orderDate);
-    }
-
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getNotificationDateTime() {
-        SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd, yyyy | hh:mm");
-        return DateForm.format(this.notificationDateTime);
-    }
-
-    public void setNotificationDateTime(Date notificationDateTime) {
-        this.notificationDateTime = notificationDateTime;
-    }
-
-    public String getProfileName() {
-        return profileName;
-    }
-
-    public void setProfileName(String profileName) {
-        this.profileName = profileName;
-    }
-
-    public String getProfileImage() {
-        return profileImage;
-    }
-
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
+    public void setRegions(List<Orders> Orders) {
+        this.Orders = Orders;
     }
 }

@@ -69,7 +69,7 @@ public class OrdersAdapter extends FirestoreRecyclerAdapter<Books_sell, OrdersVi
 
     @Override
     public void onBindViewHolder(OrdersViewHolder holder, int position, Books_sell book) {
-        holder.bindData(book, whichView);
+//        holder.bindData(book, whichView);
         holder.setItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
