@@ -21,11 +21,11 @@ public class Orders {
 
     }
 
-    public Orders(String buyerID, Date orderDate, String status, Date NotifcationDateTime, String profileName, String profileImage) {
+    public Orders(String buyerID, Date orderDate, String status, Date notifcationDateTime, String profileName, String profileImage) {
         this.buyerID = buyerID;
         this.orderDate = orderDate;
         this.status = status;
-        this.notificationDateTime = NotifcationDateTime;
+        this.notificationDateTime = notifcationDateTime;
         this.profileName = profileName;
         this.profileImage = profileImage;
     }

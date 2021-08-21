@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.Query.Direction;
@@ -112,7 +113,7 @@ public class SellingBooksActivity extends AppCompatActivity {
         //get current user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+        dbRef.collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, user.getUid())
                 .whereEqualTo(BookbayFirestoreReferences.STATUS_FIELD, null)
                 .orderBy(BookbayFirestoreReferences.ADD_BOOK_DATE_FIELD, Direction.DESCENDING)
@@ -121,16 +122,34 @@ public class SellingBooksActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
                         if(task.isSuccessful()) {
-                            Log.d("Test", user.getUid() + task.getResult().isEmpty());
-                            for (QueryDocumentSnapshot document : task.getResult())
-                                books.add(document.toObject(Books_sell.class));
-                            sellingBookAdapter.setData(books);
-                            sellingBookAdapter.notifyDataSetChanged();
-                        } else {
-                            Log.d("TEST", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
+                            Log.d("TEST", "Hi");
+                            ArrayList<Books_sell> books = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("TEST", "In the loop" + document.getReference().getId());
+                                document.getReference().getParent().getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(Task<DocumentSnapshot> task3) {
+                                        if(task.isSuccessful()) {
+                                            Books_sell temp = task3.getResult().toObject(Books_sell.class);
+
+                                            Boolean same = false;
+
+                                            for (int i = 0; i < books.size();i++) {
+                                                if (books.get(i).getBooks_sellID().getId().equals(temp.getBooks_sellID().getId()))
+                                                    same = true;
+                                            }
+                                            if (!same)
+                                                books.add(temp);
+                                            Log.d("TEST", String.valueOf(books.size()) + books.get(0).getBookTitle());
+                                        } else {
+                                            Log.d("TEST", "Error getting documents: ", task.getException());
+                                        }
+
+                                        thriftAdapter.setData(books);
+                                        thriftAdapter.notifyDataSetChanged();
+                                    }
+                                });
+                            }
     }
 
     @Override

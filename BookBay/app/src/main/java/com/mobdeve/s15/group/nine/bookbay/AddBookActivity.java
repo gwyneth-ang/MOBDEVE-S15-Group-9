@@ -168,21 +168,19 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 
                         Log.d("TEST", user.getDisplayName());
 
+
+                        //TODO: to be deleted for testing if adding sub collection order is working
                         Orders order = new Orders(
                                 null,
                                 null,
                                 null,
                                 null,
-                                user.getDisplayName(),
-                                user.getPhotoUrl().toString()
+                                null,
+                                null
                         );
 
-                        List<Orders> orders = new ArrayList<Orders>();
-                        orders.add(order);
+//                        Log.d("TEST", orders.get(0).getProfileName());
 
-                        Log.d("TEST", orders.get(0).getProfileName());
-
-                        //TODO: adjust to the db later
                         Books_sell book = new Books_sell(
                                 cal.getTime(),
                                 author,
@@ -191,7 +189,8 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                                 user.getUid(),
                                 price,
                                 imageUri.toString(),
-                                orders
+                                user.getDisplayName(),
+                                user.getPhotoUrl().toString()
                         );
 
                         CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
@@ -214,7 +213,10 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                         //adding the book to the book_sell collection
                         Task t2 = bookRef.document(ID).set(book);
 
-                        Tasks.whenAllSuccess(t1, t2).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                        //TODO: to be deleted for testing if adding sub collection order is working
+                        Task t3 = bookRef.document(ID).collection(BookbayFirestoreReferences.ORDERS_COLLECTION).document(UUID.randomUUID().toString()).set(order);
+
+                        Tasks.whenAllSuccess(t1, t2, t3).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
                             @Override
                             public void onSuccess(List<Object> objects) {
                                 progressDialog.setCanceledOnTouchOutside(true);

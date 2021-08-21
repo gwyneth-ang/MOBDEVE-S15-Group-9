@@ -1,6 +1,7 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.ServerTimestamp;
@@ -8,7 +9,9 @@ import com.google.firebase.firestore.ServerTimestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Books_sell {
     @DocumentId
@@ -22,14 +25,15 @@ public class Books_sell {
     private String ownerID;
     private Float price;
     private String image;
-    private List<Orders> Orders;
+    private String profileName;
+    private String profileImage;
 
     // Do not remove this. This is needed by Firebase when it creates instances of our model class.
     public Books_sell() {
 
     }
 
-    public Books_sell(Date addBookDate, String bookAuthor, String bookTitle, String condition, String ownerID, Float price, String image, List<Orders> orders) {
+    public Books_sell(Date addBookDate, String bookAuthor, String bookTitle, String condition, String ownerID, Float price, String image, String profileName, String profileImage) {
         this.addBookDate = addBookDate;
         this.bookAuthor = bookAuthor;
         this.bookTitle = bookTitle;
@@ -37,7 +41,8 @@ public class Books_sell {
         this.ownerID = ownerID;
         this.price = price;
         this.image = image;
-        this.Orders = orders;
+        this.profileName = profileName;
+        this.profileImage = profileImage;
     }
 
     public DocumentReference getBooks_sellID() {
@@ -104,11 +109,19 @@ public class Books_sell {
         this.image = image;
     }
 
-    public List<Orders> getOrders() {
-        return Orders;
+    public String getProfileName() {
+        return profileName;
     }
 
-    public void setRegions(List<Orders> Orders) {
-        this.Orders = Orders;
+    public void setProfileName(String profileName) {
+        this.profileName = profileName;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 }
