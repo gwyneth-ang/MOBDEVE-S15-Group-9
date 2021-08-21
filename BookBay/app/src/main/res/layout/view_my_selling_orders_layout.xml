@@ -79,6 +79,18 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_book_smallest_price"
         app:layout_constraintBottom_toBottomOf="@+id/iv_book_image"/>
 
+    <Spinner
+        android:id="@+id/s_book_status"
+        android:layout_width="110sp"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown"
+        android:paddingTop="2sp"
+        android:paddingBottom="2sp"
+        android:background="@drawable/status_spinner_background"
+        app:layout_constraintStart_toStartOf="@+id/tv_book_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_book_smallest_price"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_book_image"/>
+
     <TextView
         android:id="@+id/tv_line"
         android:layout_width="match_parent"

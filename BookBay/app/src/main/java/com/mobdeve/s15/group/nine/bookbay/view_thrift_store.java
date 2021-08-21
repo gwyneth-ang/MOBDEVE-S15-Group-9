@@ -154,7 +154,8 @@ public class view_thrift_store extends Fragment {
 
     private void updateDataAndAdapter() {
         dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                .orderBy(BookbayFirestoreReferences.BOOK_TITLE_FIELD, Query.Direction.DESCENDING)
+                .whereEqualTo(BookbayFirestoreReferences.STATUS_FIELD, null)
+                .orderBy(BookbayFirestoreReferences.ADD_BOOK_DATE_FIELD, Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

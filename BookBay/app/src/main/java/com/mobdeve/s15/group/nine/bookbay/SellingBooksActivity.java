@@ -114,6 +114,7 @@ public class SellingBooksActivity extends AppCompatActivity {
 
         dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, user.getUid())
+                .whereEqualTo(BookbayFirestoreReferences.STATUS_FIELD, null)
                 .orderBy(BookbayFirestoreReferences.ADD_BOOK_DATE_FIELD, Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

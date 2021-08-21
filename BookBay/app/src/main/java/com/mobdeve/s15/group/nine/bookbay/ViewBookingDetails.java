@@ -1,6 +1,8 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -56,6 +59,13 @@ public class ViewBookingDetails extends AppCompatActivity {
         this.authorName.setText(i.getStringExtra(IntentKeys.AUTHOR_KEY.name()));
         this.condition.setText(i.getStringExtra(IntentKeys.CONDITION_KEY.name()));
         this.price.setText("₱" + decimalFormat.format(i.getFloatExtra(IntentKeys.PRICE_KEY.name(),((float)0))));
+
+        // change font for search view
+        int id = this.searchbar.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        Typeface tf = ResourcesCompat.getFont(this,R.font.cormorant_garamond);
+        TextView searchText = (TextView) this.searchbar.findViewById(id);
+        searchText.setTypeface(tf);
+        searchText.setTextColor(Color.BLACK);
 
         String path = "images/" + i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()) + "-" + Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name())).getLastPathSegment();
 
