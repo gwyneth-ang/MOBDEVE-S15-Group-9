@@ -22,6 +22,7 @@ public class Books_sell {
     private String bookAuthor;
     private String bookTitle;
     private String condition;
+    private String review;
     private String ownerID;
     private Float price;
     private String image;
@@ -33,11 +34,12 @@ public class Books_sell {
 
     }
 
-    public Books_sell(Date addBookDate, String bookAuthor, String bookTitle, String condition, String ownerID, Float price, String image, String profileName, String profileImage) {
+    public Books_sell(Date addBookDate, String bookAuthor, String bookTitle, String condition, String review, String ownerID, Float price, String image, String profileName, String profileImage) {
         this.addBookDate = addBookDate;
         this.bookAuthor = bookAuthor;
         this.bookTitle = bookTitle;
         this.condition = condition;
+        this.review = review;
         this.ownerID = ownerID;
         this.price = price;
         this.image = image;
@@ -83,6 +85,14 @@ public class Books_sell {
 
     public void setCondition(String condition) {
         this.condition = condition;
+    }
+
+    public String getReview() {
+        return review;
+    }
+
+    public void setReview(String review) {
+        this.review = review;
     }
 
     public String getOwnerID() {

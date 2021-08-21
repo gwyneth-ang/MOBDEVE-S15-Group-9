@@ -186,6 +186,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                                 author,
                                 title,
                                 selectorChoice,
+                                "TEMP REVIEW",
                                 user.getUid(),
                                 price,
                                 imageUri.toString(),
