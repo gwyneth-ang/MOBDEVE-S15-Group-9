@@ -121,7 +121,7 @@ public class SellingBooksActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Log.d("TEST", "Hi");
                             ArrayList<Books_sell> books = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
@@ -129,12 +129,12 @@ public class SellingBooksActivity extends AppCompatActivity {
                                 document.getReference().getParent().getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override
                                     public void onComplete(Task<DocumentSnapshot> task3) {
-                                        if(task.isSuccessful()) {
+                                        if (task.isSuccessful()) {
                                             Books_sell temp = task3.getResult().toObject(Books_sell.class);
 
                                             Boolean same = false;
 
-                                            for (int i = 0; i < books.size();i++) {
+                                            for (int i = 0; i < books.size(); i++) {
                                                 if (books.get(i).getBooks_sellID().getId().equals(temp.getBooks_sellID().getId()))
                                                     same = true;
                                             }
@@ -145,11 +145,14 @@ public class SellingBooksActivity extends AppCompatActivity {
                                             Log.d("TEST", "Error getting documents: ", task.getException());
                                         }
 
-                                        thriftAdapter.setData(books);
-                                        thriftAdapter.notifyDataSetChanged();
+                                        sellingBookAdapter.setData(books);
+                                        sellingBookAdapter.notifyDataSetChanged();
                                     }
                                 });
                             }
+                        }
+                    }
+                });
     }
 
     @Override
