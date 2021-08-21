@@ -1,16 +1,20 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import android.content.DialogInterface;
+import android.graphics.Typeface;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -63,38 +67,12 @@ public class OrdersAdapter extends FirestoreRecyclerAdapter<Books_sell, OrdersVi
 
     }
 
-
-
     @Override
     public void onBindViewHolder(OrdersViewHolder holder, int position, Books_sell book) {
         holder.bindData(book, whichView);
         holder.setItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //TODO: DIALOGUE
-//                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-//                builder.setMessage("CHANGE BLAH BLAH BLAH");
-//                builder.setCancelable(true);
-//
-//                builder.setPositiveButton(
-//                        "Continue",
-//                        new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int id) {
-//
-//                            }
-//                        });
-//
-//                builder.setNegativeButton(
-//                        "Cancel",
-//                        new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog, int id) {
-//                                dialog.cancel();
-//                            }
-//                        });
-//
-//                AlertDialog alert = builder.create();
-//                alert.show();
-
                 String bookStatus = parent.getItemAtPosition(position).toString();
                 Log.d("TEST", prevBookStatus + " " + bookStatus + " " + position + " " + book.getBooks_sellID().getId());
 
@@ -105,23 +83,49 @@ public class OrdersAdapter extends FirestoreRecyclerAdapter<Books_sell, OrdersVi
                 data.put(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, cal.getTime());
 
                 if (!prevBookStatus.equals(bookStatus)) {
-                    dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                            .document(book.getBooks_sellID().getId())
-                            .update(data)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d("TEST2", bookStatus + " " + position + " " + book.getBooks_sellID().getId());
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull @NotNull Exception e) {
-                                    Log.d("TEST 2", e.getMessage());
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                    builder.setMessage(Html.fromHtml("Pressing Continue will notify the buyer that you " + "<b>" + bookStatus + "</b>" + " their order. You may not change it back to pending."));
+                    builder.setCancelable(true);
+
+                    builder.setPositiveButton(
+                            "Continue",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                                            .document(book.getBooks_sellID().getId())
+                                            .update(data)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d("TEST2", bookStatus + " " + position + " " + book.getBooks_sellID().getId());
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull @NotNull Exception e) {
+                                                    Log.d("TEST 2", e.getMessage());
+                                                }
+                                            });
+
+                                    Log.d("TEST", prevBookStatus + " " + bookStatus + " " + position + " " + book.getBooks_sellID().getId());
                                 }
                             });
-//                    prevBookStatus = bookStatus;
-                    Log.d("TEST", prevBookStatus + " " + bookStatus + " " + position + " " + book.getBooks_sellID().getId());
+
+                    builder.setNegativeButton(
+                            "Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                    TextView textView = (TextView) alert.findViewById(android.R.id.message);
+                    Typeface font = ResourcesCompat.getFont(view.getContext(),R.font.cormorant_garamond);
+                    textView.setTypeface(font);
+                    textView.setTextSize(15);
                 }
 
             }

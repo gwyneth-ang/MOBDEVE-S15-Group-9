@@ -121,8 +121,9 @@ public class Books_sell {
         this.buyerID = buyerID;
     }
 
-    public Date getOrderDate() {
-        return orderDate;
+    public String getOrderDate() {
+        SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd, yyyy | hh:mm");
+        return DateForm.format(this.orderDate);
     }
 
     public void setOrderDate(Date orderDate) {
@@ -138,7 +139,7 @@ public class Books_sell {
     }
 
     public String getNotificationDateTime() {
-        SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd | hh:mm");
+        SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd, yyyy | hh:mm");
         return DateForm.format(this.notificationDateTime);
     }
 
