@@ -120,6 +120,13 @@ public class ViewBookingDetails extends AppCompatActivity {
         this.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent i = new Intent(ViewBookingDetails.this, AddBookActivity.class);
+                startActivity(i);
+                i.putExtra(IntentKeys.AUTHOR_KEY.name(), authorName.getText());
+                i.putExtra(IntentKeys.CONDITION_KEY.name(), condition.getText());
+                i.putExtra(IntentKeys.TITLE_KEY.name(), bookTitle.getText());
+                i.putExtra(IntentKeys.PRICE_KEY.name(), price.getText());
+              //  i.putExtra(IntentKeys.BOOK_IMAGE_KEY.name(), bookImage.getContext());
                 Toast.makeText(v.getContext(), "Edit button clicked", Toast.LENGTH_SHORT).show();
             }
         });
