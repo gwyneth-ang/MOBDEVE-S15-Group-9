@@ -33,7 +33,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class SellingBooksActivity extends AppCompatActivity {
+public class  SellingBooksActivity extends AppCompatActivity {
 
     private RecyclerView sellingBookRecyclerView;
     private ThriftStoreSellingBooksAdapter sellingBookAdapter;
