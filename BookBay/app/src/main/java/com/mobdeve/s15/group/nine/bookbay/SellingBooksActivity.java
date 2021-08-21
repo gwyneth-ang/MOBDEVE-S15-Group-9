@@ -108,15 +108,11 @@ public class SellingBooksActivity extends AppCompatActivity {
     }
 
     private void updateDataAndAdapter() {
-        ArrayList<Books_sell> books = new ArrayList<>();
-
         //get current user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         dbRef.collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
-                .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, user.getUid())
-                .whereEqualTo(BookbayFirestoreReferences.STATUS_FIELD, null)
-                .orderBy(BookbayFirestoreReferences.ADD_BOOK_DATE_FIELD, Direction.DESCENDING)
+                .whereNotEqualTo(BookbayFirestoreReferences.STATUS_FIELD, BookStatus.CONFIRMED.name())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -138,9 +134,10 @@ public class SellingBooksActivity extends AppCompatActivity {
                                                 if (books.get(i).getBooks_sellID().getId().equals(temp.getBooks_sellID().getId()))
                                                     same = true;
                                             }
-                                            if (!same)
+
+                                            if (!same && temp.getOwnerID().equals(user.getUid()))
                                                 books.add(temp);
-                                            Log.d("TEST", String.valueOf(books.size()) + books.get(0).getBookTitle());
+
                                         } else {
                                             Log.d("TEST", "Error getting documents: ", task.getException());
                                         }
