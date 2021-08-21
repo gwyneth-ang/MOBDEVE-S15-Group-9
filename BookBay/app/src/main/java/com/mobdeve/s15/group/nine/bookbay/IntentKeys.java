@@ -7,5 +7,6 @@ public enum IntentKeys {
     AUTHOR_KEY,
     CONDITION_KEY,
     OWNER_ID_KEY,
-    BOOK_ID_KEY
+    BOOK_ID_KEY,
+    ADD_EDIT_BOOK_KEY
 }

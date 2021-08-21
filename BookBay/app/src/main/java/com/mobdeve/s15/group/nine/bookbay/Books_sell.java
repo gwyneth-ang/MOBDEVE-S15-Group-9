@@ -4,6 +4,9 @@ package com.mobdeve.s15.group.nine.bookbay;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.ServerTimestamp;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Books_sell {
@@ -134,8 +137,9 @@ public class Books_sell {
         this.status = status;
     }
 
-    public Date getNotificationDateTime() {
-        return notificationDateTime;
+    public String getNotificationDateTime() {
+        SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd | hh:mm");
+        return DateForm.format(this.notificationDateTime);
     }
 
     public void setNotificationDateTime(Date notificationDateTime) {
