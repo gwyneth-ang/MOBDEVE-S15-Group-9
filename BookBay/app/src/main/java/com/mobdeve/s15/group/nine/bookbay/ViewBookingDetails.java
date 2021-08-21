@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,7 +33,7 @@ public class ViewBookingDetails extends AppCompatActivity {
     private ImageButton filter;
     private ImageView bookImage, ownerImage;
     private TextView bookTitle, authorName, ownerName, price, condition;
-    private Button placeOrder;
+    private Button placeOrder, edit;
     private FirebaseFirestore dbRef;
 
     @Override
@@ -49,6 +50,7 @@ public class ViewBookingDetails extends AppCompatActivity {
         this.placeOrder = findViewById(R.id.Bt_viewbookingdetails_place);
         this.price = findViewById(R.id.Tv_viewbookingdetails_price);
         this.condition = findViewById(R.id.Tv_viewbookingdetails_condition);
+        this.edit = findViewById(R.id.edit);
 
         Intent i = getIntent();
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
@@ -115,7 +117,15 @@ public class ViewBookingDetails extends AppCompatActivity {
 //        disable filter for this view
         filter.setEnabled(false);
 
+        this.edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), "Edit button clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
+
 
 //  check db
     private boolean checkBookSoldDB(String bookID){
