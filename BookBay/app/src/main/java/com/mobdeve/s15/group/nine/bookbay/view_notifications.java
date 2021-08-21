@@ -14,10 +14,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 
@@ -33,9 +35,8 @@ public class view_notifications extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private ImageView notifImageView;
-    private TextView tvSellerName_notifLayout, tvBookTitle_notifLayout, tvStatusBook_notifLayout, tvTimePassed_notifLayout;
     private RecyclerView recyclerView;
+    private NotificationsAdapter myNotificationsAdapter;
 
     private FirebaseFirestore dbRef;
     //vars used
@@ -89,25 +90,47 @@ public class view_notifications extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
-        this.tvBookTitle_notifLayout = view.findViewById(R.id.tvBookTitle_notifLayout);
-        this.tvSellerName_notifLayout = view.findViewById(R.id.tvSellerName_notifLayout);
-        this.tvStatusBook_notifLayout = view.findViewById(R.id.tvStatusBook_notifLayout);
-        this.tvTimePassed_notifLayout = view.findViewById(R.id.tvTimePassed_notifLayout);
-        this.notifImageView = view.findViewById(R.id.notifImageView);
+//        this.tvBookTitle_notifLayout = view.findViewById(R.id.tvBookTitle_notifLayout);
+//        this.tvSellerName_notifLayout = view.findViewById(R.id.tvSellerName_notifLayout);
+//        this.tvStatusBook_notifLayout = view.findViewById(R.id.tvStatusBook_notifLayout);
+//        this.tvTimePassed_notifLayout = view.findViewById(R.id.tvTimePassed_notifLayout);
+//        this.notifImageView = view.findViewById(R.id.notifImageView);
 
         this.recyclerView = view.findViewById(R.id.rvNotifications);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
+        //get current user
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-//        this.notifications = new DataHelper().populateNotifications();
-//        this.notificationsRecyclerView = view.findViewById(R.id.rvNotifications);
-//        this.notificationsAdapter = new NotificationsAdapter();
-//
-//        readyRecyclerViewAndAdapter(view.getContext());
+        this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
+
+        Query myNotificationsQuery = dbRef
+                .collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, user.getUid())
+                .whereNotEqualTo(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, null)
+                .orderBy(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, Query.Direction.DESCENDING);
+
+        FirestoreRecyclerOptions<Books_sell> notifOptions = new FirestoreRecyclerOptions.Builder<Books_sell>()
+                .setQuery(myNotificationsQuery, Books_sell.class)
+                .build();
+
+        this.myNotificationsAdapter = new NotificationsAdapter(notifOptions);
+        readyRecyclerViewAndAdapter(view.getContext());
     }
 
-//    private void readyRecyclerViewAndAdapter(Context view) {
-//        this.notificationsRecyclerView.setAdapter(this.notificationsAdapter);
-//        this.notificationsRecyclerView.setLayoutManager(new LinearLayoutManager(view));
-//    }
+    private void readyRecyclerViewAndAdapter(Context view) {
+        this.recyclerView.setAdapter(this.myNotificationsAdapter);
+        this.recyclerView.setLayoutManager(new LinearLayoutManager(view));
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.myNotificationsAdapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        this.myNotificationsAdapter.stopListening();
+    }
 }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -153,7 +154,7 @@ public class view_thrift_store extends Fragment {
 
     private void updateDataAndAdapter() {
         dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                .orderBy(BookbayFirestoreReferences.BOOK_TITLE_FIELD)
+                .orderBy(BookbayFirestoreReferences.BOOK_TITLE_FIELD, Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -165,6 +166,8 @@ public class view_thrift_store extends Fragment {
 
                             thriftAdapter.setData(books);
                             thriftAdapter.notifyDataSetChanged();
+                        } else {
+                            Log.d("TEST", "Error getting documents: ", task.getException());
                         }
                     }
                 });

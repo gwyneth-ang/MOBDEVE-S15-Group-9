@@ -1,6 +1,7 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,11 +38,11 @@ public class view_my_orders extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // FIXME: to be change to database
-    private ArrayList<Books_sell> books;
-
     private RecyclerView myOrdersRecyclerView;
     private OrdersAdapter myOrdersAdapter;
+
+    // Other views
+    private TextView tv_orders;
 
     // DB reference
     private FirebaseFirestore dbRef;
@@ -48,8 +50,6 @@ public class view_my_orders extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    private String TAG = "MY_ORDERS_ACTIVTIY";
 
     public view_my_orders() {
         // Required empty public constructor
@@ -93,6 +93,9 @@ public class view_my_orders extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
         this.myOrdersRecyclerView = view.findViewById(R.id.rv_orders);
+        this.tv_orders = view.findViewById(R.id.tv_orders);
+
+        setUpUI();
 
         //get current user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -102,12 +105,14 @@ public class view_my_orders extends Fragment {
         Query myOrdersQuery = dbRef
                 .collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, user.getUid())
-                .orderBy(BookbayFirestoreReferences.ORDER_DATE_FIELD);
+                .whereNotEqualTo(BookbayFirestoreReferences.ORDER_DATE_FIELD, null)
+                .orderBy(BookbayFirestoreReferences.ORDER_DATE_FIELD, Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<Books_sell> options = new FirestoreRecyclerOptions.Builder<Books_sell>()
                 .setQuery(myOrdersQuery, Books_sell.class)
                 .build();
 
+        this.myOrdersAdapter = new OrdersAdapter(options);
         this.myOrdersAdapter.setViewType(WhichLayout.MY_ORDERS.ordinal());
 
         readyRecyclerViewAndAdapter(view.getContext());
@@ -117,6 +122,12 @@ public class view_my_orders extends Fragment {
         this.myOrdersRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         this.myOrdersRecyclerView.setAdapter(this.myOrdersAdapter);
+    }
+
+    private void setUpUI(){
+        this.tv_orders.setBackgroundColor(Color.parseColor("#FFEFE6D5"));
+        this.tv_orders.setText("My Orders");
+        this.tv_orders.setTextColor(Color.parseColor("#FF000000"));
     }
 
     @Override

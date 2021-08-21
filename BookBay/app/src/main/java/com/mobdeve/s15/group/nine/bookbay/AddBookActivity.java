@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 
@@ -39,18 +40,27 @@ import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Calendar;
+import java.util.TimeZone;
+import java.util.Date;
+
+import java.text.SimpleDateFormat;
 
 public class AddBookActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private Button Bt_browse_addBook, Bt_addBook;
     private ImageView Iv_bookImage;
+    private TextView TvAddOrEditTitle;
     private EditText Et_bookTitle_addBook, Et_author_addBook, Et_price_addBook;
     private Uri imageUri;
     private String selectorChoice = "New";
+    private int ViewKey = 0;
+    private boolean imageChanged = false;
 
     private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -77,22 +87,49 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_and_edit_book);
 
-        Spinner spinner_addBook = findViewById(R.id.Spinner_addBook);
-        ArrayAdapter<CharSequence> book_conditions_adapter = ArrayAdapter.createFromResource(this, R.array.conditions, android.R.layout.simple_spinner_item);
-        book_conditions_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_addBook.setAdapter(book_conditions_adapter);
-        spinner_addBook.setOnItemSelectedListener(this);
-
         this.Bt_browse_addBook = findViewById(R.id.Bt_browse_addBook);
         this.Iv_bookImage = findViewById(R.id.Iv_bookImage);
         this.Et_author_addBook = findViewById(R.id.Et_author_addBook);
         this.Et_bookTitle_addBook = findViewById(R.id.Et_bookTitle_addBook);
         this.Et_price_addBook = findViewById(R.id.Et_price_addBook);
         this.Bt_addBook = findViewById(R.id.Bt_addBook);
+        this.TvAddOrEditTitle = findViewById(R.id.TvAddOrEditTitle);
+
+
+        //for checking edit or add, check intent
+        Intent i = getIntent();
+
+        Spinner spinner_addBook = findViewById(R.id.Spinner_addBook);
+        ArrayAdapter<CharSequence> book_conditions_adapter = ArrayAdapter.createFromResource(this, R.array.conditions, android.R.layout.simple_spinner_item);
+        book_conditions_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_addBook.setAdapter(book_conditions_adapter);
+        spinner_addBook.setOnItemSelectedListener(this);
+
+        this.TvAddOrEditTitle.setText("Add a Book");
+        this.Bt_addBook.setText("Add Book");
+
+        if (i.getLongExtra(IntentKeys.BOOK_ID_KEY.name(), -1) == -1) {
+            this.TvAddOrEditTitle.setText("Add a Book");
+            this.Bt_addBook.setText("Add Book");
+            this.ViewKey = 0;
+        } else {
+            this.TvAddOrEditTitle.setText("Edit Book");
+            this.Bt_addBook.setText("Update");
+            this.ViewKey = 1;
+
+            this.Et_price_addBook.setText(i.getStringExtra(IntentKeys.TITLE_KEY.name()));
+            this.Et_author_addBook.setText(i.getStringExtra(IntentKeys.AUTHOR_KEY.name()));
+            this.Et_price_addBook.setText(i.getStringExtra(IntentKeys.PRICE_KEY.name()));
+            //TODO: Check this part
+            Uri tempUri = Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name()));
+            Picasso.get().load(tempUri).into(Iv_bookImage);
+        }
 
         this.Bt_browse_addBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                imageChanged = true;
+
                 Intent i = new Intent();
                 i.setType("image/*");
                 i.setAction(Intent.ACTION_OPEN_DOCUMENT);
@@ -103,76 +140,96 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         this.Bt_addBook.setOnClickListener((new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //get current user
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                 //get the input
                 String title = Et_bookTitle_addBook.getText().toString();
                 String author = Et_author_addBook.getText().toString();
                 Float price = Float.valueOf(Et_price_addBook.getText().toString());
 
-                //check if inputs are null
-                if (imageUri != null && title != null && author != null && price != null) {
-                    // This is a prompt for the user to know the status of the image upload
-                    final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
-                    progressDialog.setTitle("Uploading");
-                    progressDialog.show();
+                //if the view is for add book
+                if (ViewKey == 0) {
 
-                    //TODO: adjust to the db later
-                    Books_sell book = new Books_sell(
-                            null,
-                            author,
-                            title,
-                            selectorChoice,
-                            user.getUid(),
-                            price,
-                            imageUri.toString(),
-                            null,
-                            null,
-                            null,
-                            null
-                    );
+                    //get current user
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                    CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
-                    String ID = UUID.randomUUID().toString();
+                    //check if inputs are null
+                    if (imageUri != null && title != null && author != null && price != null) {
+                        // This is a prompt for the user to know the status of the image upload
+                        final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
+                        progressDialog.setTitle("Uploading");
+                        progressDialog.show();
 
-                    StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
-                            .child(BookbayFirestoreReferences.generateNewImagePath(ID, imageUri));
+                        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//                    simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 
-                    //task 1 - upload the image to the Firebase
-                    Task t1 = imageRef.putFile(imageUri)
-                            .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
-                                    double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                                    progressDialog.setCanceledOnTouchOutside(false);
-                                    progressDialog.setMessage("Uploaded  " + (int) progress + "%");
-                                }
-                            });
+                        Log.d("TEST", user.getDisplayName());
+                        //TODO: adjust to the db later
+                        Books_sell book = new Books_sell(
+                                cal.getTime(),
+                                author,
+                                title,
+                                selectorChoice,
+                                user.getUid(),
+                                price,
+                                imageUri.toString(),
+                                null,
+                                null,
+                                null,
+                                null,
+                                user.getDisplayName(),
+                                user.getPhotoUrl().toString()
+                        );
 
-                    //adding the book to the book_sell collection
-                    Task t2 = bookRef.document(ID).set(book);
+                        CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
+                        String ID = UUID.randomUUID().toString();
 
-                    Tasks.whenAllSuccess(t1, t2).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
-                        @Override
-                        public void onSuccess(List<Object> objects) {
-                            progressDialog.setCanceledOnTouchOutside(true);
-                            progressDialog.setMessage("Success!");
-                            finish();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull @NotNull Exception e) {
-                            progressDialog.setCanceledOnTouchOutside(true);
-                            progressDialog.setMessage("Error occurred. Please try again.");
-                        }
-                    });
+                        StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
+                                .child(BookbayFirestoreReferences.generateNewImagePath(ID, imageUri));
+
+                        //task 1 - upload the image to the Firebase
+                        Task t1 = imageRef.putFile(imageUri)
+                                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
+                                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                                        progressDialog.setCanceledOnTouchOutside(false);
+                                        progressDialog.setMessage("Uploaded  " + (int) progress + "%");
+                                    }
+                                });
+
+                        //adding the book to the book_sell collection
+                        Task t2 = bookRef.document(ID).set(book);
+
+                        Tasks.whenAllSuccess(t1, t2).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                            @Override
+                            public void onSuccess(List<Object> objects) {
+                                progressDialog.setCanceledOnTouchOutside(true);
+                                progressDialog.setMessage("Success!");
+                                finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull @NotNull Exception e) {
+                                progressDialog.setCanceledOnTouchOutside(true);
+                                progressDialog.setMessage("Error occurred. Please try again.");
+                            }
+                        });
+                    } else {
+                        Toast.makeText(
+                                AddBookActivity.this,
+                                "Please fill up all of the inputs.",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
                 } else {
-                    Toast.makeText(
-                            AddBookActivity.this,
-                            "Please fill up all of the inputs.",
-                            Toast.LENGTH_SHORT
-                    ).show();
+                    //if view is for editing book
+                    BookbayFirestoreReferences.getDocumentReference(i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()));
+
+                    //if the image has been changed:
+                    if (imageChanged){
+
+                    }
                 }
             }
         }));

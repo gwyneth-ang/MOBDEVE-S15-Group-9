@@ -3,19 +3,29 @@ package com.mobdeve.s15.group.nine.bookbay;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.Set;
@@ -27,28 +37,21 @@ import java.util.Set;
  */
 public class view_account extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private FirebaseFirestore dbRef;
+    private int count;
+    private ImageView profilePicture;
+    private TextView userName, numBooks;
+    private Button myBooks, sellingOrder, logout;
 
     public view_account() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment viewAccount.
-     */
-    // TODO: Rename and change types and number of parameters
     public static view_account newInstance(String param1, String param2) {
         view_account fragment = new view_account();
         Bundle args = new Bundle();
@@ -73,17 +76,32 @@ public class view_account extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_view_account, container, false);
 
-        ImageView profilePicture = view.findViewById(R.id.Iv_myaccount_profile_picture);
-        TextView userName = view.findViewById(R.id.Tv_myaccount_user_name);
-        TextView numBooks = view.findViewById(R.id.Tv_myaccount_num_books);
-        Button myBooks = view.findViewById(R.id.Bt_myaccount_my_books);
-        Button sellingOrder = view.findViewById(R.id.Bt_myaccount_selling_orders);
-        Button logout = view.findViewById(R.id.Bt_myaccount_logout);
+        this.profilePicture = view.findViewById(R.id.Iv_myaccount_profile_picture);
+        this.userName = view.findViewById(R.id.Tv_myaccount_user_name);
+        this.numBooks = view.findViewById(R.id.Tv_myaccount_num_books);
+        this.myBooks = view.findViewById(R.id.Bt_myaccount_my_books);
+        this.sellingOrder = view.findViewById(R.id.Bt_myaccount_selling_orders);
+        this.logout = view.findViewById(R.id.Bt_myaccount_logout);
 
         // set profile information
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         userName.setText(user.getDisplayName());
         Picasso.get().load(user.getPhotoUrl()).into(profilePicture);
+        numBooks.setText("SELLING " + "BOOKS");
+        this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
+        dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, user.getUid())
+                .whereEqualTo(BookbayFirestoreReferences.ORDER_DATE_FIELD, null)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            setNumBooksText(task.getResult().size());
+                        } else {
+                            setNumBooksText(-1);
+                        }
+                    }
+                });
 
         //Set on click listeners for buttons
         myBooks.setOnClickListener(new View.OnClickListener() {
@@ -97,8 +115,8 @@ public class view_account extends Fragment {
         sellingOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(getActivity(), SellingOrdersActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(getActivity(), SellingOrdersActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -117,5 +135,15 @@ public class view_account extends Fragment {
         });
 
         return view;
+    }
+
+//   Setter for TextView numBooks
+    private void setNumBooksText(int num){
+        if(num != -1){
+            this.numBooks.setText("SELLING " + Integer.toString(num)+ " BOOKS");
+        }
+        else{
+            this.numBooks.setText("SELLING ?? BOOKS");
+        }
     }
 }
