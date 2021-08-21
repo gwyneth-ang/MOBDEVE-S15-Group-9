@@ -173,7 +173,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                         Orders order = new Orders(
                                 null,
                                 null,
-                                null,
+                                BookStatus.PENDING.name(),
                                 null,
                                 null,
                                 null

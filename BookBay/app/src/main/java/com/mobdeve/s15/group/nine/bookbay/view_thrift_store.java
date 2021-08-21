@@ -153,8 +153,9 @@ public class view_thrift_store extends Fragment {
     }
 
     private void updateDataAndAdapter() {
+        Log.d("TEST", "Check");
         dbRef.collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
-                .whereEqualTo(BookbayFirestoreReferences.STATUS_FIELD, null)
+                .whereNotEqualTo(BookbayFirestoreReferences.STATUS_FIELD, BookStatus.CONFIRMED.name())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -178,7 +179,7 @@ public class view_thrift_store extends Fragment {
                                             }
                                             if (!same)
                                                 books.add(temp);
-                                            Log.d("TEST", String.valueOf(books.size()) + books.get(0).getBookTitle());
+
                                         } else {
                                             Log.d("TEST", "Error getting documents: ", task.getException());
                                         }
