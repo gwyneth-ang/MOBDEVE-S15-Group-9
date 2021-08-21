@@ -37,16 +37,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
-public class OrdersAdapter extends FirestoreRecyclerAdapter<Books_sell, OrdersViewHolder> {
+public class OrdersAdapter extends FirestoreRecyclerAdapter<Orders, OrdersViewHolder> {
 
     private int whichView;
     private String prevBookStatus = BookStatus.PENDING.name();
+    private ArrayList<Books_sell> books;
 
     // DB reference
     private FirebaseFirestore dbRef;
 
-    public OrdersAdapter(FirestoreRecyclerOptions<Books_sell> options) {
+    public OrdersAdapter(FirestoreRecyclerOptions<Orders> options,  ArrayList<Books_sell> books) {
         super(options);
+        this.books = books;
 
         this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
     }
@@ -68,13 +70,13 @@ public class OrdersAdapter extends FirestoreRecyclerAdapter<Books_sell, OrdersVi
     }
 
     @Override
-    public void onBindViewHolder(OrdersViewHolder holder, int position, Books_sell book) {
+    public void onBindViewHolder(OrdersViewHolder holder, int position) {
 //        holder.bindData(book, whichView);
         holder.setItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String bookStatus = parent.getItemAtPosition(position).toString();
-                Log.d("TEST", prevBookStatus + " " + bookStatus + " " + position + " " + book.getBooks_sellID().getId());
+                Log.d("TEST", prevBookStatus + " " + bookStatus + " " + position + " " + books.get(position).getBooks_sellID().getId());
 
                 Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
 
@@ -91,13 +93,14 @@ public class OrdersAdapter extends FirestoreRecyclerAdapter<Books_sell, OrdersVi
                             "Continue",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
+
                                     dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                                            .document(book.getBooks_sellID().getId())
+                                            .document(books.get(position).getBooks_sellID().getId())
                                             .update(data)
                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    Log.d("TEST2", bookStatus + " " + position + " " + book.getBooks_sellID().getId());
+                                                    Log.d("TEST2", bookStatus + " " + position + " " + books.get(position).getBooks_sellID().getId());
                                                 }
                                             })
                                             .addOnFailureListener(new OnFailureListener() {
@@ -107,7 +110,7 @@ public class OrdersAdapter extends FirestoreRecyclerAdapter<Books_sell, OrdersVi
                                                 }
                                             });
 
-                                    Log.d("TEST", prevBookStatus + " " + bookStatus + " " + position + " " + book.getBooks_sellID().getId());
+                                    Log.d("TEST", prevBookStatus + " " + bookStatus + " " + position + " " + books.get(position).getBooks_sellID().getId());
                                 }
                             });
 
@@ -122,6 +125,7 @@ public class OrdersAdapter extends FirestoreRecyclerAdapter<Books_sell, OrdersVi
                     AlertDialog alert = builder.create();
                     alert.show();
 
+                    // set fonts for alert
                     TextView textView = (TextView) alert.findViewById(android.R.id.message);
                     Typeface font = ResourcesCompat.getFont(view.getContext(),R.font.cormorant_garamond);
                     textView.setTypeface(font);

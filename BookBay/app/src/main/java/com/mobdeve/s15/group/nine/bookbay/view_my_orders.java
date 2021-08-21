@@ -20,8 +20,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -103,17 +105,53 @@ public class view_my_orders extends Fragment {
         this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
 
         Query myOrdersQuery = dbRef
-                .collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, user.getUid())
-                .whereNotEqualTo(BookbayFirestoreReferences.ORDER_DATE_FIELD, null)
+                .collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
                 .orderBy(BookbayFirestoreReferences.ORDER_DATE_FIELD, Query.Direction.DESCENDING);
 
-        FirestoreRecyclerOptions<Books_sell> options = new FirestoreRecyclerOptions.Builder<Books_sell>()
-                .setQuery(myOrdersQuery, Books_sell.class)
+        FirestoreRecyclerOptions<Orders> options = new FirestoreRecyclerOptions.Builder<Orders>()
+                .setQuery(myOrdersQuery, Orders.class)
                 .build();
 
-        this.myOrdersAdapter = new OrdersAdapter(options);
-        this.myOrdersAdapter.setViewType(WhichLayout.MY_ORDERS.ordinal());
+        dbRef.collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
+                .whereNotEqualTo(BookbayFirestoreReferences.STATUS_FIELD, BookStatus.CONFIRMED.name())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("TEST", "Hi");
+                            ArrayList<Books_sell> books = new ArrayList<>();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d("TEST", "In the loop" + document.getReference().getId());
+                                document.getReference().getParent().getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(Task<DocumentSnapshot> task3) {
+                                        if (task.isSuccessful()) {
+                                            Books_sell temp = task3.getResult().toObject(Books_sell.class);
+
+                                            Boolean same = false;
+
+                                            for (int i = 0; i < books.size(); i++) {
+                                                if (books.get(i).getBooks_sellID().getId().equals(temp.getBooks_sellID().getId()))
+                                                    same = true;
+                                            }
+
+                                            if (!same && temp.getOwnerID().equals(user.getUid()))
+                                                books.add(temp);
+
+                                        } else {
+                                            Log.d("TEST", "Error getting documents: ", task.getException());
+                                        }
+
+                                        myOrdersAdapter = new OrdersAdapter(options, books);
+                                        myOrdersAdapter.setViewType(WhichLayout.MY_ORDERS.ordinal());
+//                                        sellingBookAdapter.notifyDataSetChanged();
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
 
         readyRecyclerViewAndAdapter(view.getContext());
     }
