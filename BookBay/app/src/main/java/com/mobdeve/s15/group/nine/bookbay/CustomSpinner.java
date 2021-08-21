@@ -14,9 +14,12 @@ import java.util.List;
 public class CustomSpinner<String> extends ArrayAdapter<String> {
     // Initialise custom font, for example:
     Typeface font;
+    Boolean bold;
 
     public CustomSpinner (Context context, int resource, List<String> items, Boolean bold) {
         super(context, resource, items);
+        this.bold = bold;
+
         if (bold) {
             font = ResourcesCompat.getFont(getContext(),R.font.cormorant_garamond_semibold);
         } else {
@@ -29,7 +32,13 @@ public class CustomSpinner<String> extends ArrayAdapter<String> {
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView view = (TextView) super.getView(position, convertView, parent);
         view.setTypeface(font);
-        view.setTextSize(13);
+
+        if (bold) {
+            view.setTextSize(18);
+        } else {
+            view.setTextSize(13);
+        }
+
         return view;
     }
 
@@ -38,7 +47,13 @@ public class CustomSpinner<String> extends ArrayAdapter<String> {
     public View getDropDownView(int position, View convertView, ViewGroup parent) {
         TextView view = (TextView) super.getDropDownView(position, convertView, parent);
         view.setTypeface(font);
-        view.setTextSize(13);
+
+        if (bold) {
+            view.setTextSize(18);
+        } else {
+            view.setTextSize(13);
+        }
+
         return view;
     }
 }

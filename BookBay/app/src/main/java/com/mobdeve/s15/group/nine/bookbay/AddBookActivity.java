@@ -39,6 +39,7 @@ import com.squareup.picasso.Picasso;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +85,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         setContentView(R.layout.add_and_edit_book);
 
         Spinner spinner_addBook = findViewById(R.id.Spinner_addBook);
-        ArrayAdapter<CharSequence> book_conditions_adapter = ArrayAdapter.createFromResource(this, R.array.conditions, android.R.layout.simple_spinner_item);
+        CustomSpinner<String> book_conditions_adapter = new CustomSpinner(this, android.R.layout.simple_spinner_item, Arrays.asList(getResources().getStringArray(R.array.conditions)), true);
         book_conditions_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_addBook.setAdapter(book_conditions_adapter);
         spinner_addBook.setOnItemSelectedListener(this);
