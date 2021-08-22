@@ -111,7 +111,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         this.TvAddOrEditTitle.setText("Add a Book");
         this.Bt_addBook.setText("Add Book");
 
-        if (i.getLongExtra(IntentKeys.BOOK_ID_KEY.name(), -1) == -1) {
+        if (i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()) == null) {
             this.TvAddOrEditTitle.setText("Add a Book");
             this.Bt_addBook.setText("Add Book");
             this.ViewKey = 0;

@@ -21,6 +21,7 @@
         <activity android:name= ".SellingBooksActivity"></activity>
         <activity android:name= ".AddBookActivity"></activity>
         <activity android:name= ".SellingOrdersActivity"></activity>
+        <activity android:name= ".SellingBooksDetails"></activity>
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
