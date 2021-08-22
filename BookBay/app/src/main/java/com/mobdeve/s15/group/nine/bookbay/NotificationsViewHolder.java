@@ -8,6 +8,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 public class NotificationsViewHolder extends RecyclerView.ViewHolder {
 
     private ImageView imageView;
@@ -31,7 +34,9 @@ public class NotificationsViewHolder extends RecyclerView.ViewHolder {
 //
 //        this.tvSellerName_notifLayout.setText(book.getProfileName());
 //        this.tvBookTitle_notifLayout.setText(book.getBookTitle());
-//        this.tvTimePassed_notifLayout.setText(book.getNotificationDateTime().toUpperCase());
+
+//        SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd, yyyy | hh:mm aa");
+//        this.tvTimePassed_notifLayout.setText(DateForm.format(book.getNotificationDateTime()).toUpperCase());
 //
 //        if (book.getStatus().equals("CONFIRMED")) {
 //            this.tvStatusBook_notifLayout.setText(Html.fromHtml("Woohoo! Your purchase of <b>" + book.getBookTitle() + "</b> has been approved by the seller! You will be receiving this book by your doorstep soon"));
