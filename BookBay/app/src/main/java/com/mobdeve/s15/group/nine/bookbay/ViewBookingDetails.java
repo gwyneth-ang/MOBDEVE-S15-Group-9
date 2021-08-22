@@ -38,7 +38,7 @@ public class ViewBookingDetails extends AppCompatActivity {
     private SearchView searchbar;
     private ImageButton filter;
     private ImageView bookImage, ownerImage;
-    private TextView bookTitle, authorName, ownerName, price, condition;
+    private TextView bookTitle, authorName, ownerName, price, condition, review;
     private Button placeOrder;
     private FirebaseFirestore dbRef;
 
@@ -56,6 +56,7 @@ public class ViewBookingDetails extends AppCompatActivity {
         this.placeOrder = findViewById(R.id.Bt_viewbookingdetails_place);
         this.price = findViewById(R.id.Tv_viewbookingdetails_price);
         this.condition = findViewById(R.id.Tv_viewbookingdetails_condition);
+        this.review = findViewById(R.id.Tv_viewbookingdetails_review);
 
         Intent i = getIntent();
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
@@ -63,6 +64,7 @@ public class ViewBookingDetails extends AppCompatActivity {
         this.authorName.setText(i.getStringExtra(IntentKeys.AUTHOR_KEY.name()));
         this.condition.setText(i.getStringExtra(IntentKeys.CONDITION_KEY.name()));
         this.price.setText("₱" + decimalFormat.format(i.getFloatExtra(IntentKeys.PRICE_KEY.name(),((float)0))));
+//        this.review.setText(i.getStringExtra(IntentKeys.REVIEW_KEY.name()));
 
         // change font for search view
         int id = this.searchbar.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
