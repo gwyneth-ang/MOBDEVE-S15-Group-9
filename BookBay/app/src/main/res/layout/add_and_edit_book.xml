@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -158,6 +163,33 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/Tv_Review_addBook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Review"
+            android:fontFamily="@font/cormorant_garamond_semibold"
+            android:textColor="#555555"
+            android:layout_marginTop="10sp"
+            android:textSize="18dp"/>
+
+        <EditText
+            android:id="@+id/Et_review_addBook"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:fontFamily="@font/cormorant_garamond_semibold"
+            android:textSize="18dp"
+            android:textColor="#555555"
+            android:paddingLeft="10sp"
+            android:paddingRight="10sp"
+            android:maxLength="200"
+            android:background="@drawable/custom_add_and_edit_text"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            />
+
+        <TextView
             android:id="@+id/Tv_uploadImage_addBook"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -205,3 +237,4 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -59,8 +59,9 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
     private ImageView Iv_bookImage;
     private TextView TvAddOrEditTitle;
     private EditText Et_bookTitle_addBook, Et_author_addBook, Et_price_addBook;
-    private Uri imageUri;
-    private String selectorChoice = "New";
+    private Uri imageUri, tempUri;
+    private String selectorChoice = "New", oldTitle, oldAuthor, oldCondition, oldDescription, bookID, TAG="inside";
+    private float oldPrice;
     private int ViewKey = 0;
     private boolean imageChanged = false;
 
@@ -111,20 +112,28 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         this.TvAddOrEditTitle.setText("Add a Book");
         this.Bt_addBook.setText("Add Book");
 
+        //if add book
         if (i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()) == null) {
             this.TvAddOrEditTitle.setText("Add a Book");
             this.Bt_addBook.setText("Add Book");
             this.ViewKey = 0;
         } else {
+            //if edit book
             this.TvAddOrEditTitle.setText("Edit Book");
             this.Bt_addBook.setText("Update");
             this.ViewKey = 1;
 
-            this.Et_price_addBook.setText(i.getStringExtra(IntentKeys.TITLE_KEY.name()));
+            bookID = IntentKeys.BOOK_ID_KEY.name();
+            this.Et_bookTitle_addBook.setText(i.getStringExtra(IntentKeys.TITLE_KEY.name()));
+            oldTitle = IntentKeys.TITLE_KEY.name();
             this.Et_author_addBook.setText(i.getStringExtra(IntentKeys.AUTHOR_KEY.name()));
+            oldAuthor = IntentKeys.AUTHOR_KEY.name();
             this.Et_price_addBook.setText(i.getStringExtra(IntentKeys.PRICE_KEY.name()));
+            oldPrice = IntentKeys.PRICE_KEY.ordinal();
+            oldCondition = IntentKeys.CONDITION_KEY.name();
+
             //TODO: Check this part
-            Uri tempUri = Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name()));
+            this.tempUri = Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name()));
             Picasso.get().load(tempUri).into(Iv_bookImage);
         }
 
@@ -240,16 +249,50 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     }
                 } else {
                     //if view is for editing book
-                    BookbayFirestoreReferences.getDocumentReference(i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()));
+                    CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
 
+                    //TODO: add this later on
+                    //Task t2 = bookRef.document(bookID).set(book);
+
+                    //create a hashmap for all the changed values
+                    Map<String, Object> updateBook = new HashMap<>();
+                    //if title is changed
+                    if (!title.equals(oldTitle)) {
+                        updateBook.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, title);
+                    }
+                    //if author is changed
+                    if (!author.equals(oldAuthor)) {
+                        updateBook.put(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, author);
+                    }
+                    //if price is changed
+                    if (price != oldPrice) {
+                        updateBook.put(BookbayFirestoreReferences.PRICE_FIELD, price);
+                    }
+                    //if condition is changed
+                    if (!selectorChoice.equals(oldCondition)) {
+                        updateBook.put(BookbayFirestoreReferences.CONDITION_FIELD, selectorChoice);
+                    }
                     //if the image has been changed:
                     if (imageChanged){
-
+                        StorageReference photoRef = BookbayFirestoreReferences.getStorageReferenceInstance()
+                                .child(BookbayFirestoreReferences.generateNewImagePath(bookID, tempUri));
+                        photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // File deleted successfully
+                                Log.d(TAG, "onSuccess: deleted file");
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Uh-oh, an error occurred!
+                                Log.d(TAG, "onFailure: did not delete file");
+                            }
+                        });
                     }
                 }
             }
         }));
-
     }
 
     @Override
