@@ -24,16 +24,22 @@ public class BookbayFirestoreReferences {
     public final static String
             BOOKS_SELL_COLLECTION = "Books_sell",
             ORDERS_COLLECTION = "Orders",
+            NOTIFICATIONS_COLLECTION = "Notifications",
 
-            ADD_BOOK_DATE_FIELD = "addBookDate",
+    ADD_BOOK_DATE_FIELD = "addBookDate",
             BOOK_AUTHOR_FIELD = "bookAuthor",
             BOOK_TITLE_FIELD = "bookTitle",
             CONDITION_FIELD = "condition",
             IMAGE_FIELD = "image",
             OWNER_ID_UID_FIELD = "ownerID",
             PRICE_FIELD = "price",
+            PROFILE_NAME_FIELD = "profileName",
+            PROFILE_IMAGE_FIELD = "profileImage",
+            REVIEW_FIELD = "review",
             NOTIFICATION_DATE_TIME_FIELD = "notificationDateTime",
             BUYER_ID_UID_FIELD = "buyerID",
+            BUYER_NAME_FIELD = "buyerName",
+            BUYER_IMAGE_FIELD = "buyerImage",
             ORDER_DATE_FIELD = "orderDate",
             STATUS_FIELD = "status";
 
