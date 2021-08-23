@@ -104,10 +104,16 @@ public class view_notifications extends Fragment {
         this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
 
         Query myNotificationsQuery = dbRef
-                .collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                .collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, user.getUid())
                 .whereNotEqualTo(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, null)
                 .orderBy(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, Query.Direction.DESCENDING);
+
+//        Query myNotificationsQuery = dbRef
+//                .collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+//                .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, user.getUid())
+//                .whereNotEqualTo(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, null)
+//                .orderBy(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<Books_sell> notifOptions = new FirestoreRecyclerOptions.Builder<Books_sell>()
                 .setQuery(myNotificationsQuery, Books_sell.class)

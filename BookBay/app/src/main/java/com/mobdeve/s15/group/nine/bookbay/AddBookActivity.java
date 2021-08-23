@@ -58,9 +58,10 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
     private Button Bt_browse_addBook, Bt_addBook;
     private ImageView Iv_bookImage;
     private TextView TvAddOrEditTitle;
-    private EditText Et_bookTitle_addBook, Et_author_addBook, Et_price_addBook;
-    private Uri imageUri;
-    private String selectorChoice = "New";
+    private EditText Et_bookTitle_addBook, Et_author_addBook, Et_price_addBook, Et_review_addBook;
+    private Uri imageUri, tempUri, updateUri;
+    private String selectorChoice = "New", oldTitle, oldAuthor, oldCondition, oldReview, bookID, TAG="inside";
+    private float oldPrice;
     private int ViewKey = 0;
     private boolean imageChanged = false;
 
@@ -97,6 +98,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         this.Et_bookTitle_addBook = findViewById(R.id.Et_bookTitle_addBook);
         this.Et_price_addBook = findViewById(R.id.Et_price_addBook);
         this.Bt_addBook = findViewById(R.id.Bt_addBook);
+        this.Et_review_addBook = findViewById(R.id.Et_review_addBook);
         this.TvAddOrEditTitle = findViewById(R.id.TvAddOrEditTitle);
 
 
@@ -111,20 +113,30 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         this.TvAddOrEditTitle.setText("Add a Book");
         this.Bt_addBook.setText("Add Book");
 
-        if (i.getLongExtra(IntentKeys.BOOK_ID_KEY.name(), -1) == -1) {
+        //if add book
+        if (i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()) == null) {
             this.TvAddOrEditTitle.setText("Add a Book");
             this.Bt_addBook.setText("Add Book");
             this.ViewKey = 0;
         } else {
+            //if edit book
             this.TvAddOrEditTitle.setText("Edit Book");
             this.Bt_addBook.setText("Update");
             this.ViewKey = 1;
 
-            this.Et_price_addBook.setText(i.getStringExtra(IntentKeys.TITLE_KEY.name()));
-            this.Et_author_addBook.setText(i.getStringExtra(IntentKeys.AUTHOR_KEY.name()));
-            this.Et_price_addBook.setText(i.getStringExtra(IntentKeys.PRICE_KEY.name()));
+            bookID = IntentKeys.BOOK_ID_KEY.name();
+            oldTitle = i.getStringExtra(IntentKeys.TITLE_KEY.name());
+            this.Et_bookTitle_addBook.setText(oldTitle.trim());
+            oldAuthor = i.getStringExtra(IntentKeys.AUTHOR_KEY.name());
+            this.Et_author_addBook.setText(oldAuthor.trim());
+            //oldPrice = Float.parseFloat(i.getStringExtra(IntentKeys.PRICE_KEY.name()));
+            //this.Et_price_addBook.setText(String.valueOf(oldPrice));
+            //oldReview = i.getStringExtra(IntentKeys.REVIEW_KEY.name());
+            //this.Et_review_addBook.setText(oldReview);
+            oldCondition = IntentKeys.CONDITION_KEY.name();
+
             //TODO: Check this part
-            Uri tempUri = Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name()));
+            this.tempUri = Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name()));
             Picasso.get().load(tempUri).into(Iv_bookImage);
         }
 
@@ -148,6 +160,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                 String title = Et_bookTitle_addBook.getText().toString();
                 String author = Et_author_addBook.getText().toString();
                 Float price = Float.valueOf(Et_price_addBook.getText().toString());
+                String review = Et_review_addBook.getText().toString();
 
                 //if the view is for add book
                 if (ViewKey == 0) {
@@ -156,7 +169,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                     //check if inputs are null
-                    if (imageUri != null && title != null && author != null && price != null) {
+                    if (imageUri != null && title != null && author != null && price != null && review != null) {
                         // This is a prompt for the user to know the status of the image upload
                         final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
                         progressDialog.setTitle("Uploading");
@@ -186,6 +199,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                                 author,
                                 title,
                                 selectorChoice,
+                                review,
                                 user.getUid(),
                                 price,
                                 imageUri.toString(),
@@ -239,16 +253,60 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     }
                 } else {
                     //if view is for editing book
-                    BookbayFirestoreReferences.getDocumentReference(i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()));
+                    CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
 
+                    //TODO: add this later on
+                    //Task t2 = bookRef.document(bookID).set(book);
+
+                    //create a hashmap for all the changed values
+                    Map<String, Object> updateBook = new HashMap<>();
+                    //if title is changed
+                    if (!title.equals(oldTitle)) {
+                        updateBook.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, title);
+                    }
+                    //if author is changed
+                    if (!author.equals(oldAuthor)) {
+                        updateBook.put(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, author);
+                    }
+                    //if price is changed
+                    if (price != oldPrice) {
+                        updateBook.put(BookbayFirestoreReferences.PRICE_FIELD, price);
+                    }
+                    //if condition is changed
+                    if (!selectorChoice.equals(oldCondition)) {
+                        updateBook.put(BookbayFirestoreReferences.CONDITION_FIELD, selectorChoice);
+                    }
                     //if the image has been changed:
                     if (imageChanged){
+                        StorageReference photoRef = BookbayFirestoreReferences.getStorageReferenceInstance()
+                                .child(BookbayFirestoreReferences.generateNewImagePath(bookID, tempUri));
+                        photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                // File deleted successfully
+                                Log.d(TAG, "onSuccess: deleted file");
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Uh-oh, an error occurred!
+                                Log.d(TAG, "onFailure: did not delete file");
+                            }
+                        });
 
+                        updateBook.put(BookbayFirestoreReferences.IMAGE_FIELD, updateUri);
+
+                        CollectionReference photoRefAdd = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
+                        String ID = UUID.randomUUID().toString();
+
+                        StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
+                                .child(BookbayFirestoreReferences.generateNewImagePath(bookID, updateUri));
                     }
+                    //check
+                    bookRef.document(bookID).update(updateBook);
                 }
             }
         }));
-
     }
 
     @Override

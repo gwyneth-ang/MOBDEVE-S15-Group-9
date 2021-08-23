@@ -33,7 +33,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-public class SellingBooksActivity extends AppCompatActivity {
+public class  SellingBooksActivity extends AppCompatActivity {
 
     private RecyclerView sellingBookRecyclerView;
     private ThriftStoreSellingBooksAdapter sellingBookAdapter;
@@ -44,9 +44,6 @@ public class SellingBooksActivity extends AppCompatActivity {
     private SearchView Sv_thriftsellingbooks_search_bar;
     private ImageButton Bt_thriftsellingbooks_filter;
     private SwipeRefreshLayout sfl_store_selling_books;
-
-    // DB reference
-    private FirebaseFirestore dbRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,9 +70,6 @@ public class SellingBooksActivity extends AppCompatActivity {
         // for recycler view
         this.sellingBookRecyclerView = findViewById(R.id.rv_books);
         this.sellingBookRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-
-        // Get the book from the Books_sell Collection
-        this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
 
         // Recycler and adapter
         sellingBookAdapter = new ThriftStoreSellingBooksAdapter();
@@ -111,45 +105,7 @@ public class SellingBooksActivity extends AppCompatActivity {
         //get current user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        dbRef.collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
-                .whereNotEqualTo(BookbayFirestoreReferences.STATUS_FIELD, BookStatus.CONFIRMED.name())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("TEST", "Hi");
-                            ArrayList<Books_sell> books = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TEST", "In the loop" + document.getReference().getId());
-                                document.getReference().getParent().getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(Task<DocumentSnapshot> task3) {
-                                        if (task.isSuccessful()) {
-                                            Books_sell temp = task3.getResult().toObject(Books_sell.class);
-
-                                            Boolean same = false;
-
-                                            for (int i = 0; i < books.size(); i++) {
-                                                if (books.get(i).getBooks_sellID().getId().equals(temp.getBooks_sellID().getId()))
-                                                    same = true;
-                                            }
-
-                                            if (!same && temp.getOwnerID().equals(user.getUid()))
-                                                books.add(temp);
-
-                                        } else {
-                                            Log.d("TEST", "Error getting documents: ", task.getException());
-                                        }
-
-                                        sellingBookAdapter.setData(books);
-                                        sellingBookAdapter.notifyDataSetChanged();
-                                    }
-                                });
-                            }
-                        }
-                    }
-                });
+        BookbayFirestoreHelper.findAllBooksAvailableSeller(sellingBookAdapter, user.getUid());
     }
 
     @Override

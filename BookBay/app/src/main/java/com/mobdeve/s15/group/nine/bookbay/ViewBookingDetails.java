@@ -123,6 +123,23 @@ public class ViewBookingDetails extends AppCompatActivity {
 
 //        disable filter for this view
         filter.setEnabled(false);
+    }
 
+    //  check db
+    private boolean checkBookSoldDB(String bookID){
+        this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
+        this.dbRef.collection("Books_sell").whereEqualTo("orderDate", null).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            //successful
+
+                        } else {
+                            //error
+                        }
+                    }
+                });
+        return false;
     }
 }

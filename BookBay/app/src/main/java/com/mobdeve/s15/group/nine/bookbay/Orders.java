@@ -14,20 +14,20 @@ public class Orders {
     private Date orderDate;
     private String status;
     private Date notificationDateTime;
-    private String profileName;
-    private String profileImage;
+    private String buyerName;
+    private String buyerImage;
 
     public Orders() {
 
     }
 
-    public Orders(String buyerID, Date orderDate, String status, Date notifcationDateTime, String profileName, String profileImage) {
+    public Orders(String buyerID, Date orderDate, String status, Date notifcationDateTime, String buyerName, String buyerImage) {
         this.buyerID = buyerID;
         this.orderDate = orderDate;
         this.status = status;
         this.notificationDateTime = notifcationDateTime;
-        this.profileName = profileName;
-        this.profileImage = profileImage;
+        this.buyerName = buyerName;
+        this.buyerImage = buyerImage;
     }
 
     public DocumentReference getOrderID() {
@@ -72,19 +72,19 @@ public class Orders {
         this.notificationDateTime = notificationDateTime;
     }
 
-    public String getProfileName() {
-        return profileName;
+    public String getBuyerName() {
+        return buyerName;
     }
 
-    public void setProfileName(String profileName) {
-        this.profileName = profileName;
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
     }
 
-    public String getProfileImage() {
-        return profileImage;
+    public String getBuyerImage() {
+        return buyerImage;
     }
 
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
+    public void setBuyerImage(String buyerImage) {
+        this.buyerImage = buyerImage;
     }
 }
