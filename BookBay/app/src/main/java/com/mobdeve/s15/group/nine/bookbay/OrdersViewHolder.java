@@ -1,6 +1,7 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import android.graphics.Color;
+import android.net.Uri;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -73,8 +74,8 @@ public class OrdersViewHolder extends RecyclerView.ViewHolder {
             this.tv_buyer_name.setVisibility(View.VISIBLE);
             this.iv_buyer_image.setVisibility(View.VISIBLE);
 
-            this.tv_buyer_name.setText(book.getProfileName().toUpperCase());
-            Picasso.get().load(book.getProfileImage()).into(this.iv_book_image);
+            this.tv_buyer_name.setText(order.getBuyerName().toUpperCase());
+            Picasso.get().load(Uri.parse(order.getBuyerImage())).into(this.iv_buyer_image);
 
             this.tv_order_date.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
 
