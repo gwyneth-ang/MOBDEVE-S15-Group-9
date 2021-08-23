@@ -58,9 +58,9 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
     private Button Bt_browse_addBook, Bt_addBook;
     private ImageView Iv_bookImage;
     private TextView TvAddOrEditTitle;
-    private EditText Et_bookTitle_addBook, Et_author_addBook, Et_price_addBook;
-    private Uri imageUri, tempUri;
-    private String selectorChoice = "New", oldTitle, oldAuthor, oldCondition, oldDescription, bookID, TAG="inside";
+    private EditText Et_bookTitle_addBook, Et_author_addBook, Et_price_addBook, Et_review_addBook;
+    private Uri imageUri, tempUri, updateUri;
+    private String selectorChoice = "New", oldTitle, oldAuthor, oldCondition, oldReview, bookID, TAG="inside";
     private float oldPrice;
     private int ViewKey = 0;
     private boolean imageChanged = false;
@@ -98,6 +98,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         this.Et_bookTitle_addBook = findViewById(R.id.Et_bookTitle_addBook);
         this.Et_price_addBook = findViewById(R.id.Et_price_addBook);
         this.Bt_addBook = findViewById(R.id.Bt_addBook);
+        this.Et_review_addBook = findViewById(R.id.Et_review_addBook);
         this.TvAddOrEditTitle = findViewById(R.id.TvAddOrEditTitle);
 
 
@@ -124,12 +125,14 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
             this.ViewKey = 1;
 
             bookID = IntentKeys.BOOK_ID_KEY.name();
-            this.Et_bookTitle_addBook.setText(i.getStringExtra(IntentKeys.TITLE_KEY.name()));
-            oldTitle = IntentKeys.TITLE_KEY.name();
-            this.Et_author_addBook.setText(i.getStringExtra(IntentKeys.AUTHOR_KEY.name()));
-            oldAuthor = IntentKeys.AUTHOR_KEY.name();
-            this.Et_price_addBook.setText(i.getStringExtra(IntentKeys.PRICE_KEY.name()));
-            oldPrice = IntentKeys.PRICE_KEY.ordinal();
+            oldTitle = i.getStringExtra(IntentKeys.TITLE_KEY.name());
+            this.Et_bookTitle_addBook.setText(oldTitle.trim());
+            oldAuthor = i.getStringExtra(IntentKeys.AUTHOR_KEY.name());
+            this.Et_author_addBook.setText(oldAuthor.trim());
+            //oldPrice = Float.parseFloat(i.getStringExtra(IntentKeys.PRICE_KEY.name()));
+            //this.Et_price_addBook.setText(String.valueOf(oldPrice));
+            //oldReview = i.getStringExtra(IntentKeys.REVIEW_KEY.name());
+            //this.Et_review_addBook.setText(oldReview);
             oldCondition = IntentKeys.CONDITION_KEY.name();
 
             //TODO: Check this part
@@ -157,6 +160,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                 String title = Et_bookTitle_addBook.getText().toString();
                 String author = Et_author_addBook.getText().toString();
                 Float price = Float.valueOf(Et_price_addBook.getText().toString());
+                String review = Et_review_addBook.getText().toString();
 
                 //if the view is for add book
                 if (ViewKey == 0) {
@@ -165,7 +169,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                     //check if inputs are null
-                    if (imageUri != null && title != null && author != null && price != null) {
+                    if (imageUri != null && title != null && author != null && price != null && review != null) {
                         // This is a prompt for the user to know the status of the image upload
                         final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
                         progressDialog.setTitle("Uploading");
@@ -195,7 +199,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                                 author,
                                 title,
                                 selectorChoice,
-                                "TEMP REVIEW",
+                                review,
                                 user.getUid(),
                                 price,
                                 imageUri.toString(),
@@ -289,7 +293,17 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                                 Log.d(TAG, "onFailure: did not delete file");
                             }
                         });
+
+                        updateBook.put(BookbayFirestoreReferences.IMAGE_FIELD, updateUri);
+
+                        CollectionReference photoRefAdd = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
+                        String ID = UUID.randomUUID().toString();
+
+                        StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
+                                .child(BookbayFirestoreReferences.generateNewImagePath(bookID, updateUri));
                     }
+                    //check
+                    bookRef.document(bookID).update(updateBook);
                 }
             }
         }));
