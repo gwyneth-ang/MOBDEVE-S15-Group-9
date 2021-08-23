@@ -302,10 +302,6 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                             }
                         });
 
-                        final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
-                        progressDialog.setTitle("Uploading");
-                        progressDialog.show();
-
                         updateBook.put(BookbayFirestoreReferences.IMAGE_FIELD, updateUri);
 
                         CollectionReference photoRefAdd = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
@@ -313,16 +309,22 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 
                         StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
                                 .child(BookbayFirestoreReferences.generateNewImagePath(bookID, updateUri));
+                    }
 
+                    final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
+                    progressDialog.setTitle("Uploading");
+                    progressDialog.show();
+
+                    if (ViewKey == 0) {
                         //upload the image to the Firebase
                         imageRef.putFile(updateUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
-                                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                                        progressDialog.setCanceledOnTouchOutside(false);
-                                        progressDialog.setMessage("Uploaded  " + (int) progress + "%");
-                                    }
-                                });
+                            @Override
+                            public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
+                                double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                                progressDialog.setCanceledOnTouchOutside(false);
+                                progressDialog.setMessage("Uploaded  " + (int) progress + "%");
+                            }
+                        });
                     }
 
                     //check
