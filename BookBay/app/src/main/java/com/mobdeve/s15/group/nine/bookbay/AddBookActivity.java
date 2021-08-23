@@ -294,13 +294,11 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 
                         StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
                                 .child(BookbayFirestoreReferences.generateNewImagePath(bookID, updateUri));
-                    }
 
-                    final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
-                    progressDialog.setTitle("Uploading");
-                    progressDialog.show();
+                        final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
+                        progressDialog.setTitle("Uploading");
+                        progressDialog.show();
 
-                    if (ViewKey == 0) {
                         //upload the image to the Firebase
                         imageRef.putFile(updateUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                             @Override
@@ -311,6 +309,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                             }
                         });
                     }
+
 
                     //check
                     if (changed) {
