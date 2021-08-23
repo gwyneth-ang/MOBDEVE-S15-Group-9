@@ -1,15 +1,26 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import android.util.Log;
+import android.content.Context;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BookbayFirestoreHelper {
     public static void findAllBooksAvailable(ThriftStoreSellingBooksAdapter thriftStoreSellingBooksAdapter) {
@@ -21,7 +32,9 @@ public class BookbayFirestoreHelper {
                     public void onComplete(Task<QuerySnapshot> task) {
                         if(task.isSuccessful()) {
                             Log.d("TEST", "Hi");
-                            java.util.ArrayList<com.mobdeve.s15.group.nine.bookbay.Books_sell> books = new ArrayList<>();
+
+                            ArrayList<Books_sell> books = new ArrayList<>();
+
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d("TEST", "In the loop" + document.getReference().getId());
                                 document.getReference().getParent().getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -65,7 +78,9 @@ public class BookbayFirestoreHelper {
                     public void onComplete(Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             Log.d("TEST", "Hi");
+
                             ArrayList<Books_sell> books = new ArrayList<>();
+
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d("TEST", "In the loop" + document.getReference().getId());
                                 document.getReference().getParent().getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -181,6 +196,39 @@ public class BookbayFirestoreHelper {
                                 });
                             }
                         }
+                    }
+                });
+    }
+
+    public static void updateStatusAndNotifications (BooksOrders booksOrders, Map<String, Object> data, Context context, Map<String, Object> notification) {
+
+        Task t1 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                .document(booksOrders.getBook().getBooks_sellID().getId())
+                .collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
+                .document(booksOrders.getOrder().getOrderID().getId())
+                .update(data);
+
+        Task t2 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.NOTIFICATIONS_COLLECTION)
+                .add(notification);
+
+        Tasks.whenAllSuccess(t1, t2)
+                .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                    @Override
+                    public void onSuccess(List<Object> objects) {
+
+                        //TODO: change all orders of this book to decline when a seller approved
+                        ((SellingOrdersActivity)context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((SellingOrdersActivity) context).updateDataAndAdapter();
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull @NotNull Exception updateStatus) {
+                        Log.d("TEST 2", updateStatus.getMessage());
                     }
                 });
     }
