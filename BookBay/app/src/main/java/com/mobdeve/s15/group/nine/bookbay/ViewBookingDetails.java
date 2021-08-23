@@ -64,7 +64,7 @@ public class ViewBookingDetails extends AppCompatActivity {
         this.authorName.setText(i.getStringExtra(IntentKeys.AUTHOR_KEY.name()));
         this.condition.setText(i.getStringExtra(IntentKeys.CONDITION_KEY.name()));
         this.price.setText("₱" + decimalFormat.format(i.getFloatExtra(IntentKeys.PRICE_KEY.name(),((float)0))));
-//        this.review.setText(i.getStringExtra(IntentKeys.REVIEW_KEY.name()));
+        this.review.setText(i.getStringExtra(IntentKeys.REVIEW_KEY.name()));
 
         // change font for search view
         int id = this.searchbar.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);

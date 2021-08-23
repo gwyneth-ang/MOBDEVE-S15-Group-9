@@ -43,10 +43,11 @@ public class ConfirmOrderDialog extends AppCompatDialogFragment {
     private String price_holder;
     private FirebaseFirestore dbRef;
     private Context viewBookingDetailsContext;
-    public ConfirmOrderDialog(String title, String price, String condition){
-            this.title_holder = title;
-            this.price_holder = price;
-            this.condition_holder = condition;
+
+    public ConfirmOrderDialog(String title, String price, String condition) {
+        this.title_holder = title;
+        this.price_holder = price;
+        this.condition_holder = condition;
     }
 
     @Override
@@ -56,7 +57,7 @@ public class ConfirmOrderDialog extends AppCompatDialogFragment {
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState){
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.confirm_order_dialog, null);
@@ -77,9 +78,8 @@ public class ConfirmOrderDialog extends AppCompatDialogFragment {
                 .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-//                        TODO: Send order data here, redirect to thrift store
                         Bundle bundle = getArguments();
-                        String bookID = bundle.getString(IntentKeys.BOOK_ID_KEY.name(),"");
+                        String bookID = bundle.getString(IntentKeys.BOOK_ID_KEY.name(), "");
                         dialog.cancel();
                         ProgressDialog progress = new ProgressDialog(getActivity()); // this = YourActivity
                         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -88,104 +88,9 @@ public class ConfirmOrderDialog extends AppCompatDialogFragment {
                         progress.setIndeterminate(true);
                         progress.setCanceledOnTouchOutside(false);
                         progress.show();
-                        placeOrderQuery(bookID, progress);
+                        BookbayFirestoreHelper.placeOrder(bookID, progress, viewBookingDetailsContext);
                     }
                 });
         return builder.create();
-    }
-
-    private void placeOrderQuery(String bookID, ProgressDialog progress){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
-        this.dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                .document(bookID)
-                .collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
-                .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, user.getUid())
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    if(task.getResult().size() == 0){
-                        BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                                .document(bookID)
-                                .collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
-                                .add(new Orders(user.getUid(), cal.getTime(),BookStatus.PENDING.name(), null, user.getDisplayName(), user.getPhotoUrl().toString()))
-                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                    @Override
-                                    public void onSuccess(DocumentReference documentReference) {
-                                        Context context = progress.getContext();
-                                        progress.dismiss();
-                                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
-                                                .setTitle("Order Successful")
-                                                .setMessage("Your order has successfully been placed!")
-                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
-                                                        closeActivity();
-                                                    }
-                                                });
-                                        Dialog dialog = dialogBuilder.create();
-                                        dialog.setCanceledOnTouchOutside(false);
-                                        dialog.show();
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull @NotNull Exception e) {
-                                        Context context = progress.getContext();
-                                        progress.dismiss();
-                                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
-                                                .setTitle("Order Unsuccessful")
-                                                .setMessage("An error is encountered while processing your order, please try again later")
-                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
-                                                        closeActivity();
-                                                    }
-                                                });
-                                        Dialog dialog = dialogBuilder.create();
-                                        dialog.setCanceledOnTouchOutside(false);
-                                        dialog.show();
-                                    }
-                                });
-                    }
-                    else{
-                        Context context = progress.getContext();
-                        progress.dismiss();
-                        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
-                                .setTitle("Order Unsuccessful")
-                                .setMessage("You have already ordered this book!")
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        closeActivity();
-                                    }
-                                });
-                        Dialog dialog = dialogBuilder.create();
-                        dialog.setCanceledOnTouchOutside(false);
-                        dialog.show();
-                    }
-                } else {
-                   //unsuccessful
-                    Context context = progress.getContext();
-                    progress.dismiss();
-                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
-                            .setTitle("Order Unsuccessful")
-                            .setMessage("An error is encountered while processing your order, please try again later")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    closeActivity();
-                                }
-                            });
-                    Dialog dialog = dialogBuilder.create();
-                    dialog.setCanceledOnTouchOutside(false);
-                    dialog.show();
-                }
-            }
-        });
-    }
-    private void closeActivity(){
-        ((Activity)this.viewBookingDetailsContext).finish();
     }
 }
