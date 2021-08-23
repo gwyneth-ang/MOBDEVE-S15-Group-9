@@ -60,7 +60,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
     private ImageView Iv_bookImage;
     private TextView TvAddOrEditTitle;
     private EditText Et_bookTitle_addBook, Et_author_addBook, Et_price_addBook, Et_review_addBook;
-    private Uri imageUri, tempUri, updateUri;
+    private Uri imageUri, tempUri;
     private String selectorChoice = "New", oldTitle, oldAuthor, oldCondition, oldReview, bookID, TAG="inside";
     private float oldPrice;
     private int ViewKey = 0;
@@ -257,9 +257,6 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
                     Boolean changed = false;
 
-                    //TODO: add this later on
-                    //Task t2 = bookRef.document(bookID).set(book);
-
                     //create a hashmap for all the changed values
                     Map<String, Object> updateBook = new HashMap<>();
                     //if title is changed
@@ -284,6 +281,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     }
                     //if the image has been changed:
                     if (imageChanged){
+                        //used for deleting
                         StorageReference photoRef = BookbayFirestoreReferences.getStorageReferenceInstance()
                                 .child(BookbayFirestoreReferences.generateNewImagePath(bookID, tempUri));
 
@@ -302,20 +300,18 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                             }
                         });
 
-                        updateBook.put(BookbayFirestoreReferences.IMAGE_FIELD, updateUri);
+                        updateBook.put(BookbayFirestoreReferences.IMAGE_FIELD, imageUri.toString());
 
-                        CollectionReference photoRefAdd = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
-                        String ID = UUID.randomUUID().toString();
-
-                        StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
-                                .child(BookbayFirestoreReferences.generateNewImagePath(bookID, updateUri));
+                        //used for updating
+                        StorageReference photoRefAdd = BookbayFirestoreReferences.getStorageReferenceInstance()
+                                .child(BookbayFirestoreReferences.generateNewImagePath(bookID, imageUri));
 
                         final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
                         progressDialog.setTitle("Uploading");
                         progressDialog.show();
 
                         //upload the image to the Firebase
-                        imageRef.putFile(updateUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        Task uploadFirebase = photoRefAdd.putFile(imageUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
                                 double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
@@ -323,11 +319,28 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                                 progressDialog.setMessage("Uploaded  " + (int) progress + "%");
                             }
                         });
+
+                        Task update = bookRef.document(bookID).update(updateBook);
+
+                        Tasks.whenAllSuccess(uploadFirebase, update).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                            @Override
+                            public void onSuccess(List<Object> objects) {
+                                progressDialog.setCanceledOnTouchOutside(true);
+                                progressDialog.setMessage("Success!");
+                                finish();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull @NotNull Exception e) {
+                                progressDialog.setCanceledOnTouchOutside(true);
+                                progressDialog.setMessage("Error occurred. Please try again.");
+                            }
+                        });
                     }
 
 
                     //check
-                    if (changed) {
+                    if (changed && !imageChanged) {
                         Log.d("TEST EDIT", bookID);
                         bookRef.document(bookID)
                                 .update(updateBook)
