@@ -31,7 +31,6 @@ public class SellingBooksDetails extends AppCompatActivity {
     private TextView bookTitle, authorName, price, condition;
     private Button editBook, deleteBook;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +76,7 @@ public class SellingBooksDetails extends AppCompatActivity {
                 intent.putExtra(IntentKeys.BOOK_IMAGE_KEY.name(),i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name()));
                 intent.putExtra(IntentKeys.TITLE_KEY.name(), i.getStringExtra(IntentKeys.TITLE_KEY.name()));
                 intent.putExtra(IntentKeys.AUTHOR_KEY.name(), i.getStringExtra(IntentKeys.AUTHOR_KEY.name()));
-                intent.putExtra(IntentKeys.PRICE_KEY.name(), i.getStringExtra(IntentKeys.PRICE_KEY.name()));
+                intent.putExtra(IntentKeys.PRICE_KEY.name(), i.getFloatExtra(IntentKeys.PRICE_KEY.name(), 0));
                 intent.putExtra(IntentKeys.CONDITION_KEY.name(), i.getStringExtra(IntentKeys.CONDITION_KEY.name()));
                 intent.putExtra(IntentKeys.REVIEW_KEY.name(), i.getStringExtra(IntentKeys.REVIEW_KEY.name()));
                 startActivity(intent);

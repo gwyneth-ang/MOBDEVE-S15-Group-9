@@ -124,13 +124,13 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
             this.Bt_addBook.setText("Update");
             this.ViewKey = 1;
 
-            bookID = IntentKeys.BOOK_ID_KEY.name();
+            bookID = i.getStringExtra(IntentKeys.BOOK_ID_KEY.name());
             oldTitle = i.getStringExtra(IntentKeys.TITLE_KEY.name());
             this.Et_bookTitle_addBook.setText(oldTitle.trim());
             oldAuthor = i.getStringExtra(IntentKeys.AUTHOR_KEY.name());
             this.Et_author_addBook.setText(oldAuthor.trim());
-            //oldPrice = Float.parseFloat(i.getStringExtra(IntentKeys.PRICE_KEY.name()));
-            //this.Et_price_addBook.setText(String.valueOf(oldPrice));
+            oldPrice = i.getFloatExtra(IntentKeys.PRICE_KEY.name(), 0);
+            this.Et_price_addBook.setText(String.valueOf(oldPrice));
             //oldReview = i.getStringExtra(IntentKeys.REVIEW_KEY.name());
             //this.Et_review_addBook.setText(oldReview);
             oldCondition = IntentKeys.CONDITION_KEY.name();
@@ -254,6 +254,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                 } else {
                     //if view is for editing book
                     CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
+                    Boolean changed = false;
 
                     //TODO: add this later on
                     //Task t2 = bookRef.document(bookID).set(book);
@@ -262,24 +263,30 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     Map<String, Object> updateBook = new HashMap<>();
                     //if title is changed
                     if (!title.equals(oldTitle)) {
+                        changed = true;
                         updateBook.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, title);
                     }
                     //if author is changed
                     if (!author.equals(oldAuthor)) {
+                        changed = true;
                         updateBook.put(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, author);
                     }
                     //if price is changed
                     if (price != oldPrice) {
+                        changed = true;
                         updateBook.put(BookbayFirestoreReferences.PRICE_FIELD, price);
                     }
                     //if condition is changed
                     if (!selectorChoice.equals(oldCondition)) {
+                        changed = true;
                         updateBook.put(BookbayFirestoreReferences.CONDITION_FIELD, selectorChoice);
                     }
                     //if the image has been changed:
                     if (imageChanged){
                         StorageReference photoRef = BookbayFirestoreReferences.getStorageReferenceInstance()
                                 .child(BookbayFirestoreReferences.generateNewImagePath(bookID, tempUri));
+
+                        // Delete picture from firestore
                         photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
@@ -302,8 +309,25 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                         StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
                                 .child(BookbayFirestoreReferences.generateNewImagePath(bookID, updateUri));
                     }
+
                     //check
-                    bookRef.document(bookID).update(updateBook);
+                    if (changed) {
+                        Log.d("TEST EDIT", bookID);
+                        bookRef.document(bookID)
+                                .update(updateBook)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("Edit Book", "Edit successful");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull @NotNull Exception e) {
+                                        Log.d("Edit Book", e.getMessage());
+                                    }
+                                });
+                    }
                 }
             }
         }));
