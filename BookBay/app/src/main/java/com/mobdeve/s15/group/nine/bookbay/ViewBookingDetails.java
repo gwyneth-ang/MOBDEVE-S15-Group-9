@@ -39,7 +39,7 @@ public class ViewBookingDetails extends AppCompatActivity {
     private ImageButton filter;
     private ImageView bookImage, ownerImage;
     private TextView bookTitle, authorName, ownerName, price, condition;
-    private Button placeOrder, edit;
+    private Button placeOrder;
     private FirebaseFirestore dbRef;
 
     @Override
@@ -56,7 +56,6 @@ public class ViewBookingDetails extends AppCompatActivity {
         this.placeOrder = findViewById(R.id.Bt_viewbookingdetails_place);
         this.price = findViewById(R.id.Tv_viewbookingdetails_price);
         this.condition = findViewById(R.id.Tv_viewbookingdetails_condition);
-        this.edit = findViewById(R.id.edit);
 
         Intent i = getIntent();
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
@@ -122,23 +121,9 @@ public class ViewBookingDetails extends AppCompatActivity {
 
 //        disable filter for this view
         filter.setEnabled(false);
-
-        this.edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(ViewBookingDetails.this, AddBookActivity.class);
-                startActivity(i);
-                i.putExtra(IntentKeys.AUTHOR_KEY.name(), authorName.getText());
-                i.putExtra(IntentKeys.CONDITION_KEY.name(), condition.getText());
-                i.putExtra(IntentKeys.TITLE_KEY.name(), bookTitle.getText());
-                i.putExtra(IntentKeys.PRICE_KEY.name(), price.getText());
-              //  i.putExtra(IntentKeys.BOOK_IMAGE_KEY.name(), bookImage.getContext());
-                Toast.makeText(v.getContext(), "Edit button clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
-
     }
-//  check db
+
+    //  check db
     private boolean checkBookSoldDB(String bookID){
         this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
         this.dbRef.collection("Books_sell").whereEqualTo("orderDate", null).get()
