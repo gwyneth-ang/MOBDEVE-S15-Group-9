@@ -48,11 +48,7 @@ public class OrdersAdapter extends RecyclerView.Adapter <OrdersViewHolder> {
     private ArrayList<BooksOrders> booksOrders;
     private Context context;
 
-    // DB reference
-    private FirebaseFirestore dbRef;
-
     public OrdersAdapter(Context context) {
-        this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
         this.booksOrders = new ArrayList<>();
         this.context = context;
     }
@@ -92,6 +88,16 @@ public class OrdersAdapter extends RecyclerView.Adapter <OrdersViewHolder> {
                 data.put(BookbayFirestoreReferences.STATUS_FIELD, bookStatus);
                 data.put(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, cal.getTime());
 
+                Map<String, Object> notification = new HashMap<>();
+
+                notification.put(BookbayFirestoreReferences.BOOK_REF_FIELD, booksOrders.get(position).getBook().getBooks_sellID());
+                notification.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, booksOrders.get(position).getBook().getBookTitle());
+                notification.put(BookbayFirestoreReferences.IMAGE_FIELD, booksOrders.get(position).getBook().getImage());
+                notification.put(BookbayFirestoreReferences.PROFILE_NAME_FIELD, booksOrders.get(position).getBook().getProfileName());
+                notification.put(BookbayFirestoreReferences.STATUS_FIELD, bookStatus);
+                notification.put(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, cal.getTime());
+                notification.put(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, booksOrders.get(position).getOrder().getBuyerID());
+
                 if (!prevBookStatus.equals(bookStatus)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                     builder.setMessage(Html.fromHtml("Pressing Continue will notify the buyer that you " + "<b>" + bookStatus + "</b>" + " their order. You may not change it back to pending."));
@@ -102,34 +108,7 @@ public class OrdersAdapter extends RecyclerView.Adapter <OrdersViewHolder> {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
 
-                                    dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                                            .document(booksOrders.get(position).getBook().getBooks_sellID().getId())
-                                            .collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
-                                            .document(booksOrders.get(position).getOrder().getOrderID().getId())
-                                            .update(data)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-
-                                                    Log.d("TEST2", bookStatus + " " + booksOrders.get(position).getBook().getBooks_sellID().getId() + booksOrders.get(position).getOrder().getOrderID().getId());
-
-                                                    
-                                                    //TODO: change all orders of this book to decline when a seller approved
-                                                    ((SellingOrdersActivity)context).runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            ((SellingOrdersActivity) context).updateDataAndAdapter();
-                                                            notifyDataSetChanged();
-                                                        }
-                                                    });
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull @NotNull Exception updateStatus) {
-                                                    Log.d("TEST 2", updateStatus.getMessage());
-                                                }
-                                            });
+                                    BookbayFirestoreHelper.updateStatusAndNotifications(booksOrders.get(position), data, context, notification);
 
                                     Log.d("TEST", prevBookStatus + " " + bookStatus + " " + position + " " + booksOrders.get(position).getBook().getBooks_sellID().getId());
                                 }

@@ -29,22 +29,22 @@ public class NotificationsViewHolder extends RecyclerView.ViewHolder {
         this.ibButton_notifLayout = itemView.findViewById(R.id.ibButton_notifLayout);
     }
 
-//    public void bindData(Books_sell book) {
-//        BookbayFirestoreReferences.downloadImageIntoImageView(book, this.imageView);
-//
-//        this.tvSellerName_notifLayout.setText(book.getProfileName());
-//        this.tvBookTitle_notifLayout.setText(book.getBookTitle());
+    public void bindData(Notifications notification) {
+        BookbayFirestoreReferences.downloadImageIntoImageViewNotifcation(notification, this.imageView);
 
-//        SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd, yyyy | hh:mm aa");
-//        this.tvTimePassed_notifLayout.setText(DateForm.format(book.getNotificationDateTime()).toUpperCase());
-//
-//        if (book.getStatus().equals("CONFIRMED")) {
-//            this.tvStatusBook_notifLayout.setText(Html.fromHtml("Woohoo! Your purchase of <b>" + book.getBookTitle() + "</b> has been approved by the seller! You will be receiving this book by your doorstep soon"));
-//            this.ibButton_notifLayout.setImageResource(R.drawable.check_mark);
-//        } else {
-//            this.tvStatusBook_notifLayout.setText(Html.fromHtml("I’m sorry, your purchase of <b>" + book.getBookTitle() + "</b> has been denied by the seller. Check our Thrift Store for more book options."));
-//            this.ibButton_notifLayout.setImageResource(R.drawable.cancel);
-//        }
-//
-//    }
+        this.tvSellerName_notifLayout.setText(notification.getProfileName());
+        this.tvBookTitle_notifLayout.setText(notification.getBookTitle());
+
+        SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd, yyyy | hh:mm aa");
+        this.tvTimePassed_notifLayout.setText(DateForm.format(notification.getNotificationDateTime()).toUpperCase());
+
+        if (notification.getStatus().equals("CONFIRMED")) {
+            this.tvStatusBook_notifLayout.setText(Html.fromHtml("Woohoo! Your purchase of <b>" + notification.getBookTitle() + "</b> has been approved by the seller! You will be receiving this book by your doorstep soon"));
+            this.ibButton_notifLayout.setImageResource(R.drawable.check_mark);
+        } else {
+            this.tvStatusBook_notifLayout.setText(Html.fromHtml("I’m sorry, your purchase of <b>" + notification.getBookTitle() + "</b> has been denied by the seller. Check our Thrift Store for more book options."));
+            this.ibButton_notifLayout.setImageResource(R.drawable.cancel);
+        }
+
+    }
 }
