@@ -1,6 +1,7 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -152,7 +153,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
             }
         });
 
-        this.Bt_addBook.setOnClickListener((new View.OnClickListener() {
+        this.Bt_addBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -301,6 +302,10 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                             }
                         });
 
+                        final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
+                        progressDialog.setTitle("Uploading");
+                        progressDialog.show();
+
                         updateBook.put(BookbayFirestoreReferences.IMAGE_FIELD, updateUri);
 
                         CollectionReference photoRefAdd = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
@@ -308,6 +313,16 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 
                         StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
                                 .child(BookbayFirestoreReferences.generateNewImagePath(bookID, updateUri));
+
+                        //upload the image to the Firebase
+                        imageRef.putFile(updateUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
+                                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                                        progressDialog.setCanceledOnTouchOutside(false);
+                                        progressDialog.setMessage("Uploaded  " + (int) progress + "%");
+                                    }
+                                });
                     }
 
                     //check
@@ -330,7 +345,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     }
                 }
             }
-        }));
+        });
     }
 
     @Override
