@@ -74,8 +74,8 @@ public class OrdersViewHolder extends RecyclerView.ViewHolder {
             this.tv_buyer_name.setVisibility(View.VISIBLE);
             this.iv_buyer_image.setVisibility(View.VISIBLE);
 
-            this.tv_buyer_name.setText(book.getProfileName().toUpperCase());
-            Picasso.get().load(Uri.parse(book.getProfileImage())).into(this.iv_buyer_image);
+            this.tv_buyer_name.setText(order.getBuyerName().toUpperCase());
+            Picasso.get().load(Uri.parse(order.getBuyerImage())).into(this.iv_buyer_image);
 
             this.tv_order_date.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
 

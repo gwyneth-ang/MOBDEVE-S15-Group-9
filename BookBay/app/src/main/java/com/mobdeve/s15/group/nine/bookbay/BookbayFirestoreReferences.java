@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -61,50 +62,6 @@ public class BookbayFirestoreReferences {
 
     public static DocumentReference getDocumentReference(String stringRef) {
         return getFirestoreInstance().document(stringRef);
-    }
-
-    public static void findAllBooksAvailable(ThriftStoreSellingBooksAdapter thriftStoreSellingBooksAdapter) {
-        getFirestoreInstance().collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
-                .whereNotEqualTo(BookbayFirestoreReferences.STATUS_FIELD, BookStatus.CONFIRMED.name())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()) {
-                            Log.d("TEST", "Hi");
-                            java.util.ArrayList<com.mobdeve.s15.group.nine.bookbay.Books_sell> books = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TEST", "In the loop" + document.getReference().getId());
-                                document.getReference().getParent().getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(Task<DocumentSnapshot> task3) {
-                                        if(task.isSuccessful()) {
-                                            com.mobdeve.s15.group.nine.bookbay.Books_sell temp = task3.getResult().toObject(com.mobdeve.s15.group.nine.bookbay.Books_sell.class);
-
-                                            Boolean same = false;
-
-                                            for (int i = 0; i < books.size();i++) {
-                                                if (books.get(i).getBooks_sellID().getId().equals(temp.getBooks_sellID().getId()))
-                                                    same = true;
-                                            }
-                                            if (!same)
-                                                books.add(temp);
-
-                                        } else {
-                                            Log.d("TEST", "Error getting documents: ", task.getException());
-                                        }
-
-                                        thriftStoreSellingBooksAdapter.setData(books);
-                                        thriftStoreSellingBooksAdapter.notifyDataSetChanged();
-
-                                    }
-                                });
-                            }
-                        } else {
-                            Log.d("TEST", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
     }
 
     public static void downloadImageIntoImageView(Books_sell book, ImageView iv) {

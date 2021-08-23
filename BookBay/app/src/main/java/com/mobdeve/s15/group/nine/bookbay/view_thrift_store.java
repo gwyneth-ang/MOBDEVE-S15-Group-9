@@ -153,7 +153,7 @@ public class view_thrift_store extends Fragment {
     }
 
     private void updateDataAndAdapter() {
-        BookbayFirestoreReferences.findAllBooksAvailable(this.thriftAdapter);
+        BookbayFirestoreHelper.findAllBooksAvailable(this.thriftAdapter);
 
     }
 

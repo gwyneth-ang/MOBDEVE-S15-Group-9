@@ -38,9 +38,6 @@ public class SellingOrdersActivity extends AppCompatActivity{
     private TextView tv_orders;
     private SwipeRefreshLayout sfl_orders;
 
-    // DB reference
-    private FirebaseFirestore dbRef;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,8 +50,6 @@ public class SellingOrdersActivity extends AppCompatActivity{
         this.sellerOrdersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         setUpUI();
-
-        this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
 
         sellerOrdersAdapter = new OrdersAdapter(this);
         sellerOrdersAdapter.setViewType(WhichLayout.SELLING_ORDERS.ordinal());
@@ -81,51 +76,7 @@ public class SellingOrdersActivity extends AppCompatActivity{
         //get current user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        dbRef.collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
-                .orderBy(BookbayFirestoreReferences.ORDER_DATE_FIELD, Query.Direction.DESCENDING).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("TEST", "Hi");
-
-                            ArrayList<BooksOrders> booksOrders = new ArrayList<>();
-
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TEST", "In the loop" + document.getReference().getId());
-                                Orders orderTemp = document.toObject(Orders.class);
-
-                                document.getReference().getParent().getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(Task<DocumentSnapshot> task3) {
-                                        Books_sell bookTemp = null;
-
-                                        if (task.isSuccessful()) {
-                                            bookTemp = task3.getResult().toObject(Books_sell.class);
-
-                                            Boolean same = false;
-
-                                            for (int i = 0; i < booksOrders.size(); i++) {
-                                                if (booksOrders.get(i).getBook().getBooks_sellID().equals(bookTemp.getBooks_sellID().getId()))
-                                                    same = true;
-                                            }
-
-                                            if (!same && bookTemp.getOwnerID().equals(user.getUid()))
-                                                booksOrders.add(new BooksOrders(orderTemp, bookTemp));
-                                        } else {
-                                            Log.d("TEST", "Error getting documents: ", task.getException());
-                                        }
-
-                                        sellerOrdersAdapter.setData(booksOrders);
-                                        sellerOrdersAdapter.notifyDataSetChanged();
-
-                                        Log.d("TEST", "Size: " + String.valueOf(booksOrders.size()));
-                                    }
-                                });
-                            }
-                        }
-                    }
-                });
+        BookbayFirestoreHelper.findSellerOrders(sellerOrdersAdapter, user.getUid());
     }
 
     @Override
