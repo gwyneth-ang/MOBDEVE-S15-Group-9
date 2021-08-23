@@ -153,47 +153,8 @@ public class view_thrift_store extends Fragment {
     }
 
     private void updateDataAndAdapter() {
-        Log.d("TEST", "Check");
-        dbRef.collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
-                .whereNotEqualTo(BookbayFirestoreReferences.STATUS_FIELD, BookStatus.CONFIRMED.name())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()) {
-                            Log.d("TEST", "Hi");
-                            ArrayList<Books_sell> books = new ArrayList<>();
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TEST", "In the loop" + document.getReference().getId());
-                                document.getReference().getParent().getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(Task<DocumentSnapshot> task3) {
-                                        if(task.isSuccessful()) {
-                                            Books_sell temp = task3.getResult().toObject(Books_sell.class);
+        BookbayFirestoreReferences.findAllBooksAvailable(this.thriftAdapter);
 
-                                            Boolean same = false;
-                                            
-                                            for (int i = 0; i < books.size();i++) {
-                                                if (books.get(i).getBooks_sellID().getId().equals(temp.getBooks_sellID().getId()))
-                                                    same = true;
-                                            }
-                                            if (!same)
-                                                books.add(temp);
-
-                                        } else {
-                                            Log.d("TEST", "Error getting documents: ", task.getException());
-                                        }
-
-                                        thriftAdapter.setData(books);
-                                        thriftAdapter.notifyDataSetChanged();
-                                    }
-                                });
-                            }
-                        } else {
-                            Log.d("TEST", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
     }
 
     @Override
