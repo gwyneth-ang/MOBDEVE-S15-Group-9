@@ -5,6 +5,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -231,5 +232,18 @@ public class BookbayFirestoreHelper {
                         Log.d("TEST 2", updateStatus.getMessage());
                     }
                 });
+    }
+
+    public static FirestoreRecyclerOptions<Notifications> findNotificationOptions (String buyerID) {
+        Query myNotificationsQuery = BookbayFirestoreReferences.getFirestoreInstance()
+                .collection(BookbayFirestoreReferences.NOTIFICATIONS_COLLECTION)
+                .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, buyerID)
+                .orderBy(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, Query.Direction.DESCENDING);
+
+        FirestoreRecyclerOptions<Notifications> notifOptions = new FirestoreRecyclerOptions.Builder<Notifications>()
+                .setQuery(myNotificationsQuery, Notifications.class)
+                .build();
+
+        return notifOptions;
     }
 }
