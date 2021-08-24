@@ -72,8 +72,8 @@ public class BookbayFirestoreReferences {
         return getFirestoreInstance().document(stringRef);
     }
 
-    public static void downloadImageIntoImageView(Books_sell book, ImageView iv) {
-        String path = "images/" + book.getBooks_sellID().getId() + "-" + Uri.parse(book.getImage()).getLastPathSegment();
+    public static void downloadImageIntoImageViewNotifcation(Notifications notifications, ImageView iv) {
+        String path = "images/" + notifications.getBookRef().getId() + "-" + Uri.parse(notifications.getImage()).getLastPathSegment();
 
         Log.d("TEST", path);
 
@@ -92,8 +92,8 @@ public class BookbayFirestoreReferences {
                 });
     }
 
-    public static void downloadImageIntoImageViewNotifcation(Notifications notifications, ImageView iv) {
-        String path = "images/" + notifications.getBookRef().getId() + "-" + Uri.parse(notifications.getImage()).getLastPathSegment();
+    public static void downloadImageIntoImageView(Books_sell book, ImageView iv) {
+        String path = "images/" + book.getBooks_sellID().getId() + "-" + Uri.parse(book.getImage()).getLastPathSegment();
 
         Log.d("TEST", path);
 

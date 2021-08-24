@@ -2,6 +2,8 @@ package com.mobdeve.s15.group.nine.bookbay;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +19,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -100,6 +103,13 @@ public class SellingBooksDetails extends AppCompatActivity {
                                 .into(bookImage);
                     }
                 });
+
+        // change font for search view
+        int id = this.searchbar.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
+        Typeface tf = ResourcesCompat.getFont(this,R.font.cormorant_garamond);
+        TextView searchText = (TextView) this.searchbar.findViewById(id);
+        searchText.setTypeface(tf);
+        searchText.setTextColor(Color.BLACK);
 
         this.editBook.setOnClickListener(new View.OnClickListener() {
             @Override
