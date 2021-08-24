@@ -55,7 +55,13 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 public class AddBookActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    public static String TITLE_KEY = "TITLE_KEY";
+    public static String
+            BOOKID_KEY = "BOOKID_KEY",
+            TITLE_KEY = "TITLE_KEY",
+            AUTHOR_KEY = "AUTHOR_KEY",
+            CONDITION_KEY = "CONDITION_KEY",
+            PRICE_KEY = "PRICE_KEY",
+            IMAGE_KEY = "IMAGE_KEY";
 
     private Button Bt_browse_addBook, Bt_addBook;
     private ImageView Iv_bookImage;
@@ -136,10 +142,10 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
             //oldReview = i.getStringExtra(IntentKeys.REVIEW_KEY.name());
             //this.Et_review_addBook.setText(oldReview);
             oldCondition = IntentKeys.CONDITION_KEY.name();
-
             //TODO: Check this part
             this.tempUri = Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name()));
             Picasso.get().load(tempUri).into(Iv_bookImage);
+            imageUri = tempUri;
         }
 
         this.Bt_browse_addBook.setOnClickListener(new View.OnClickListener() {
@@ -270,11 +276,17 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                         BookbayFirestoreHelper.editBookNoImage(bookID, updateBook);
                     }
 
+                   /* Log.d("askdjkadajd:", bookID);
                     //TODO: Make intent
                     Intent return_intent = new Intent();
+                    return_intent.putExtra(BOOKID_KEY, bookID);
                     return_intent.putExtra(TITLE_KEY, title);
+                    return_intent.putExtra(AUTHOR_KEY, author);
+                    return_intent.putExtra(CONDITION_KEY, selectorChoice);
+                    return_intent.putExtra(PRICE_KEY, price);
+                    return_intent.putExtra(IMAGE_KEY, imageUri.toString());
                     setResult(Activity.RESULT_OK, return_intent);
-                    finish();
+                    finish();*/
                 }
             }
         });

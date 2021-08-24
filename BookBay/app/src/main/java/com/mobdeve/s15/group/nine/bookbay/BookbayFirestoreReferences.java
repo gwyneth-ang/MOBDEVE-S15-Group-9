@@ -111,4 +111,24 @@ public class BookbayFirestoreReferences {
                     }
                 });
     }
+
+    public static void downloadImageIntoImageViewUsingId(String ID, String image,ImageView iv) {
+        String path = "images/" + ID + "-" + Uri.parse(image).getLastPathSegment();
+
+        Log.d("TEST", path);
+
+        getStorageReferenceInstance().child(path).getDownloadUrl()
+                .addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(Task<Uri> task) {
+                        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(iv.getContext());
+                        circularProgressDrawable.setCenterRadius(30);
+                        Picasso.get()
+                                .load(task.getResult())
+                                .error(R.drawable.ic_error)
+                                .placeholder(circularProgressDrawable)
+                                .into(iv);
+                    }
+                });
+    }
 }

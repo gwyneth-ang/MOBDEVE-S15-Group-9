@@ -36,18 +36,33 @@ public class SellingBooksDetails extends AppCompatActivity {
     private TextView bookTitle, authorName, price, condition;
     private Button editBook, deleteBook;
 
-    private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult({
+    private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if(result.getResultCode() == Activity.RESULT_OK) {
+                        /*
+                        * return_intent.putExtra(TITLE_KEY, title);
+                        * return_intent.putExtra(AUTHOR_KEY, author);
+                        *  return_intent.putExtra(CONDITION_KEY, selectorChoice);
+                        * return_intent.putExtra(PRICE_KEY, price);
+                        * return_intent.putExtra(IMAGE_KEY, imageUri.toString());
+                        * */
+                        String bookID = result.getData().getStringExtra(AddBookActivity.BOOKID_KEY);
                         String title = result.getData().getStringExtra(AddBookActivity.TITLE_KEY);
                         bookTitle.setText(title);
+                        String author = result.getData().getStringExtra(AddBookActivity.AUTHOR_KEY);
+                        authorName.setText(author);
+                        String conditionStr = result.getData().getStringExtra(AddBookActivity.CONDITION_KEY);
+                        condition.setText(conditionStr);
+                        Float priceStr = result.getData().getFloatExtra(AddBookActivity.PRICE_KEY, 0);
+                        price.setText(String.valueOf(priceStr));
+                        String imageUri = result.getData().getStringExtra(AddBookActivity.IMAGE_KEY);
+                        BookbayFirestoreReferences.downloadImageIntoImageViewUsingId(bookID, imageUri, bookImage);
                     }
                 }
-            }
-    });
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
