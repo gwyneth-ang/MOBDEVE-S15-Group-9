@@ -55,6 +55,7 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 public class AddBookActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    public static String TITLE_KEY = "TITLE_KEY";
 
     private Button Bt_browse_addBook, Bt_addBook;
     private ImageView Iv_bookImage;
@@ -268,6 +269,12 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                         Log.d("TEST EDIT", bookID);
                         BookbayFirestoreHelper.editBookNoImage(bookID, updateBook);
                     }
+
+                    //TODO: Make intent
+                    Intent return_intent = new Intent();
+                    return_intent.putExtra(TITLE_KEY, title);
+                    setResult(Activity.RESULT_OK, return_intent);
+                    finish();
                 }
             }
         });

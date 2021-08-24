@@ -1,5 +1,6 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,10 @@ import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
@@ -30,6 +35,19 @@ public class SellingBooksDetails extends AppCompatActivity {
     private ImageView bookImage;
     private TextView bookTitle, authorName, price, condition;
     private Button editBook, deleteBook;
+
+    private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult({
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if(result.getResultCode() == Activity.RESULT_OK) {
+                        String title = result.getData().getStringExtra(AddBookActivity.TITLE_KEY);
+                        bookTitle.setText(title);
+                    }
+                }
+            }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +97,7 @@ public class SellingBooksDetails extends AppCompatActivity {
                 intent.putExtra(IntentKeys.PRICE_KEY.name(), i.getFloatExtra(IntentKeys.PRICE_KEY.name(), 0));
                 intent.putExtra(IntentKeys.CONDITION_KEY.name(), i.getStringExtra(IntentKeys.CONDITION_KEY.name()));
                 intent.putExtra(IntentKeys.REVIEW_KEY.name(), i.getStringExtra(IntentKeys.REVIEW_KEY.name()));
-                startActivity(intent);
+                myActivityResultLauncher.launch(intent);
             }
         });
     }
