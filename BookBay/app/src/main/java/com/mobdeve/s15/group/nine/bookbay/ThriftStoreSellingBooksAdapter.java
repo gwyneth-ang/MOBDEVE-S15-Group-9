@@ -37,23 +37,40 @@ public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftS
         ThriftStoreSellingBooksViewHolder holder = new ThriftStoreSellingBooksViewHolder(itemView);
 
         // Determine which subclass of CustomViewHolder to generate based on the viewType
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(parent.getContext(), ViewBookingDetails.class);
-                intent.putExtra(IntentKeys.AUTHOR_KEY.name(), book.get(holder.getAdapterPosition()).getBookAuthor());
-                intent.putExtra(IntentKeys.CONDITION_KEY.name(), book.get(holder.getAdapterPosition()).getCondition());
-                intent.putExtra(IntentKeys.TITLE_KEY.name(), book.get(holder.getAdapterPosition()).getBookTitle());
-                intent.putExtra(IntentKeys.PRICE_KEY.name(), book.get(holder.getAdapterPosition()).getPrice());
-                intent.putExtra(IntentKeys.BOOK_IMAGE_KEY.name(), book.get(holder.getAdapterPosition()).getImage());
-                intent.putExtra(IntentKeys.BOOK_ID_KEY.name(), book.get(holder.getAdapterPosition()).getBooks_sellID().getId());
-                intent.putExtra(IntentKeys.OWNER_ID_KEY.name(), book.get(holder.getAdapterPosition()).getOwnerID());
-                intent.putExtra(IntentKeys.OWNER_NAME_KEY.name(), book.get(holder.getAdapterPosition()).getProfileName());
-                intent.putExtra(IntentKeys.OWNER_IMAGE_KEY.name(), book.get(holder.getAdapterPosition()).getProfileImage());
-                intent.putExtra(IntentKeys.REVIEW_KEY.name(), book.get(holder.getAdapterPosition()).getReview());
-                parent.getContext().startActivity(intent);
-            }
-        });
+        if(this.whichView == WhichLayout.THRIFT_STORE.ordinal()) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(parent.getContext(), ViewBookingDetails.class);
+                    intent.putExtra(IntentKeys.AUTHOR_KEY.name(), book.get(holder.getAdapterPosition()).getBookAuthor());
+                    intent.putExtra(IntentKeys.CONDITION_KEY.name(), book.get(holder.getAdapterPosition()).getCondition());
+                    intent.putExtra(IntentKeys.TITLE_KEY.name(), book.get(holder.getAdapterPosition()).getBookTitle());
+                    intent.putExtra(IntentKeys.PRICE_KEY.name(), book.get(holder.getAdapterPosition()).getPrice());
+                    intent.putExtra(IntentKeys.BOOK_IMAGE_KEY.name(), book.get(holder.getAdapterPosition()).getImage());
+                    intent.putExtra(IntentKeys.BOOK_ID_KEY.name(), book.get(holder.getAdapterPosition()).getBooks_sellID().getId());
+                    intent.putExtra(IntentKeys.OWNER_ID_KEY.name(), book.get(holder.getAdapterPosition()).getOwnerID());
+                    intent.putExtra(IntentKeys.OWNER_NAME_KEY.name(), book.get(holder.getAdapterPosition()).getProfileName());
+                    intent.putExtra(IntentKeys.OWNER_IMAGE_KEY.name(), book.get(holder.getAdapterPosition()).getProfileImage());
+                    intent.putExtra(IntentKeys.REVIEW_KEY.name(), book.get(holder.getAdapterPosition()).getReview());
+                    parent.getContext().startActivity(intent);
+                }
+            });
+        }
+        else if(this.whichView == WhichLayout.SELLING_BOOKS.ordinal()) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(parent.getContext(), SellingBooksDetails.class);
+                    intent.putExtra(IntentKeys.AUTHOR_KEY.name(), book.get(holder.getAdapterPosition()).getBookAuthor());
+                    intent.putExtra(IntentKeys.CONDITION_KEY.name(), book.get(holder.getAdapterPosition()).getCondition());
+                    intent.putExtra(IntentKeys.TITLE_KEY.name(), book.get(holder.getAdapterPosition()).getBookTitle());
+                    intent.putExtra(IntentKeys.PRICE_KEY.name(), book.get(holder.getAdapterPosition()).getPrice());
+                    intent.putExtra(IntentKeys.BOOK_IMAGE_KEY.name(), book.get(holder.getAdapterPosition()).getImage());
+                    intent.putExtra(IntentKeys.BOOK_ID_KEY.name(), book.get(holder.getAdapterPosition()).getBooks_sellID().getId());
+                    parent.getContext().startActivity(intent);
+                }
+            });
+        }
 
         return holder;
     }

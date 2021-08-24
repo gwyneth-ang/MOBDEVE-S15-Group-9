@@ -75,7 +75,7 @@
             android:id="@+id/Iv_sellingbooksdetails_book_image"
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            app:srcCompat="@drawable/little_prince" />
+            app:srcCompat="@drawable/image_vector" />
 
         <TextView
             android:id="@+id/Tv_sellingbooksdetails_title"
