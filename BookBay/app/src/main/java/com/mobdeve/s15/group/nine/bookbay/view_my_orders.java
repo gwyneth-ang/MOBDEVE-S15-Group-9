@@ -48,9 +48,6 @@ public class view_my_orders extends Fragment {
     private TextView tv_orders;
     private SwipeRefreshLayout sfl_orders;
 
-    // DB reference
-    private FirebaseFirestore dbRef;
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -106,8 +103,6 @@ public class view_my_orders extends Fragment {
 
         setUpUI();
 
-        this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
-
         myOrdersAdapter = new OrdersAdapter(view.getContext());
         myOrdersAdapter.setViewType(WhichLayout.MY_ORDERS.ordinal());
 
@@ -133,46 +128,7 @@ public class view_my_orders extends Fragment {
         //get current user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        dbRef.collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
-                .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, user.getUid())
-                .orderBy(BookbayFirestoreReferences.ORDER_DATE_FIELD, Query.Direction.DESCENDING).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("TEST", "Hi");
-
-                            ArrayList<BooksOrders> booksOrders = new ArrayList<>();
-
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TEST", "In the loop" + document.getReference().getId());
-                                Orders orderTemp = document.toObject(Orders.class);
-
-                                document.getReference().getParent().getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(Task<DocumentSnapshot> task3) {
-                                        Books_sell bookTemp = null;
-
-                                        if (task.isSuccessful()) {
-                                             bookTemp = task3.getResult().toObject(Books_sell.class);
-                                        } else {
-                                            Log.d("TEST", "Error getting documents: ", task.getException());
-                                        }
-
-                                        booksOrders.add(new BooksOrders(orderTemp, bookTemp));
-
-                                        myOrdersAdapter.setData(booksOrders);
-                                        myOrdersAdapter.notifyDataSetChanged();
-
-
-
-                                        Log.d("TEST", "Size: " + String.valueOf(booksOrders.size()));
-                                    }
-                                });
-                            }
-                        }
-                    }
-                });
+        BookbayFirestoreHelper.findBuyerOrders(myOrdersAdapter, user.getUid());
     }
 
     @Override

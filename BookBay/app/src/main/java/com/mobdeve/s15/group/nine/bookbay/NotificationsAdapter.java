@@ -15,10 +15,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class NotificationsAdapter extends FirestoreRecyclerAdapter<Books_sell, NotificationsViewHolder> {
+public class NotificationsAdapter extends FirestoreRecyclerAdapter<Notifications, NotificationsViewHolder> {
 
 
-    public NotificationsAdapter(FirestoreRecyclerOptions<Books_sell> notifOptions) { super(notifOptions); }
+    public NotificationsAdapter(FirestoreRecyclerOptions<Notifications> notifOptions) { super(notifOptions); }
 
     @Override
     public NotificationsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -30,7 +30,7 @@ public class NotificationsAdapter extends FirestoreRecyclerAdapter<Books_sell, N
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull @NotNull NotificationsViewHolder holder, int position, @NonNull @NotNull Books_sell model) {
-//        holder.bindData(model);
+    protected void onBindViewHolder(@NonNull @NotNull NotificationsViewHolder holder, int position, @NonNull @NotNull Notifications model) {
+        holder.bindData(model);
     }
 }
