@@ -135,12 +135,38 @@ public class view_thrift_store extends Fragment {
 
         thriftRecyclerView.setAdapter(thriftAdapter);
 
+        // For swipe down refresh layout
         this.sfl_store_selling_books.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 sfl_store_selling_books.setRefreshing(true);
                 updateDataAndAdapter();
                 sfl_store_selling_books.setRefreshing(false);
+            }
+        });
+
+        this.Sv_thriftsellingbooks_search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                callSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                callSearch(newText);
+                return true;
+            }
+
+            public void callSearch(String query) {
+                //Do searching
+            }
+        });
+
+        this.Bt_thriftsellingbooks_filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                openOptionsMenu();
             }
         });
     }

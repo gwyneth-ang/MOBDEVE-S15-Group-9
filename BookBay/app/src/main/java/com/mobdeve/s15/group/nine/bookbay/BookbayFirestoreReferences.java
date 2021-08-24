@@ -72,6 +72,26 @@ public class BookbayFirestoreReferences {
         return getFirestoreInstance().document(stringRef);
     }
 
+    public static void downloadImageIntoImageViewNotifcation(Notifications notifications, ImageView iv) {
+        String path = "images/" + notifications.getBookRef().getId() + "-" + Uri.parse(notifications.getImage()).getLastPathSegment();
+
+        Log.d("TEST", path);
+
+        getStorageReferenceInstance().child(path).getDownloadUrl()
+                .addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(Task<Uri> task) {
+                        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(iv.getContext());
+                        circularProgressDrawable.setCenterRadius(30);
+                        Picasso.get()
+                                .load(task.getResult())
+                                .error(R.drawable.ic_error)
+                                .placeholder(circularProgressDrawable)
+                                .into(iv);
+                    }
+                });
+    }
+
     public static void downloadImageIntoImageView(Books_sell book, ImageView iv) {
         String path = "images/" + book.getBooks_sellID().getId() + "-" + Uri.parse(book.getImage()).getLastPathSegment();
 
