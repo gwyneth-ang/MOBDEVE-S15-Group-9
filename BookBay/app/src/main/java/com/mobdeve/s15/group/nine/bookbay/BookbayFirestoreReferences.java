@@ -42,7 +42,8 @@ public class BookbayFirestoreReferences {
             BUYER_NAME_FIELD = "buyerName",
             BUYER_IMAGE_FIELD = "buyerImage",
             ORDER_DATE_FIELD = "orderDate",
-            STATUS_FIELD = "status";
+            STATUS_FIELD = "status",
+            AVAILABLE_FIELD = "available";
 
     // All our instances of Firestore and Storage
     private static FirebaseFirestore firebaseFirestoreInstance = null;

@@ -29,6 +29,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +37,11 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class BookbayFirestoreHelper {
+
     public static void findAllBooksAvailable(ThriftStoreSellingBooksAdapter thriftStoreSellingBooksAdapter) {
-        BookbayFirestoreReferences.getFirestoreInstance().collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
-                .whereNotEqualTo(BookbayFirestoreReferences.STATUS_FIELD, BookStatus.CONFIRMED.name())
+        BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
+                .orderBy(BookbayFirestoreReferences.ADD_BOOK_DATE_FIELD, Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -48,33 +51,11 @@ public class BookbayFirestoreHelper {
 
                             ArrayList<Books_sell> books = new ArrayList<>();
 
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TEST", "In the loop" + document.getReference().getId());
-                                document.getReference().getParent().getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(Task<DocumentSnapshot> task3) {
-                                        if(task.isSuccessful()) {
-                                            com.mobdeve.s15.group.nine.bookbay.Books_sell temp = task3.getResult().toObject(com.mobdeve.s15.group.nine.bookbay.Books_sell.class);
+                            for (QueryDocumentSnapshot document : task.getResult())
+                                books.add(document.toObject(Books_sell.class));
 
-                                            Boolean same = false;
-
-                                            for (int i = 0; i < books.size();i++) {
-                                                if (books.get(i).getBooks_sellID().getId().equals(temp.getBooks_sellID().getId()))
-                                                    same = true;
-                                            }
-                                            if (!same)
-                                                books.add(temp);
-
-                                        } else {
-                                            Log.d("TEST", "Error getting documents: ", task.getException());
-                                        }
-
-                                        thriftStoreSellingBooksAdapter.setData(books);
-                                        thriftStoreSellingBooksAdapter.notifyDataSetChanged();
-
-                                    }
-                                });
-                            }
+                            thriftStoreSellingBooksAdapter.setData(books);
+                            thriftStoreSellingBooksAdapter.notifyDataSetChanged();
                         } else {
                             Log.d("TEST", "Error getting documents: ", task.getException());
                         }
@@ -83,8 +64,10 @@ public class BookbayFirestoreHelper {
     }
 
     public static void findAllBooksAvailableSeller(ThriftStoreSellingBooksAdapter sellingBookAdapter, String sellerUID) {
-        BookbayFirestoreReferences.getFirestoreInstance().collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
-                .whereNotEqualTo(BookbayFirestoreReferences.STATUS_FIELD, BookStatus.CONFIRMED.name())
+        BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
+                .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, sellerUID)
+                .orderBy(BookbayFirestoreReferences.ADD_BOOK_DATE_FIELD, Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -94,33 +77,11 @@ public class BookbayFirestoreHelper {
 
                             ArrayList<Books_sell> books = new ArrayList<>();
 
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TEST", "In the loop" + document.getReference().getId());
-                                document.getReference().getParent().getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onComplete(Task<DocumentSnapshot> task3) {
-                                        if (task.isSuccessful()) {
-                                            Books_sell temp = task3.getResult().toObject(Books_sell.class);
+                            for (QueryDocumentSnapshot document : task.getResult())
+                                books.add(document.toObject(Books_sell.class));
 
-                                            Boolean same = false;
-
-                                            for (int i = 0; i < books.size(); i++) {
-                                                if (books.get(i).getBooks_sellID().getId().equals(temp.getBooks_sellID().getId()))
-                                                    same = true;
-                                            }
-
-                                            if (!same && temp.getOwnerID().equals(sellerUID))
-                                                books.add(temp);
-
-                                        } else {
-                                            Log.d("TEST", "Error getting documents: ", task.getException());
-                                        }
-
-                                        sellingBookAdapter.setData(books);
-                                        sellingBookAdapter.notifyDataSetChanged();
-                                    }
-                                });
-                            }
+                            sellingBookAdapter.setData(books);
+                            sellingBookAdapter.notifyDataSetChanged();
                         }
                     }
                 });
@@ -213,7 +174,24 @@ public class BookbayFirestoreHelper {
                 });
     }
 
-    public static void updateStatusAndNotifications (BooksOrders booksOrders, Map<String, Object> data, Context context, Map<String, Object> notification) {
+    public static void updateStatusAndNotifications (BooksOrders booksOrders, String bookStatus, Context context) {
+
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+        Map<String, Object> data = new HashMap<>();
+
+        data.put(BookbayFirestoreReferences.STATUS_FIELD, bookStatus);
+        data.put(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, cal.getTime());
+
+        Map<String, Object> notification = new HashMap<>();
+
+        notification.put(BookbayFirestoreReferences.BOOK_REF_FIELD, booksOrders.getBook().getBooks_sellID());
+        notification.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, booksOrders.getBook().getBookTitle());
+        notification.put(BookbayFirestoreReferences.IMAGE_FIELD, booksOrders.getBook().getImage());
+        notification.put(BookbayFirestoreReferences.PROFILE_NAME_FIELD, booksOrders.getBook().getProfileName());
+        notification.put(BookbayFirestoreReferences.STATUS_FIELD, bookStatus);
+        notification.put(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, cal.getTime());
+        notification.put(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, booksOrders.getOrder().getBuyerID());
+
 
         Task t1 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                 .document(booksOrders.getBook().getBooks_sellID().getId())
@@ -224,26 +202,58 @@ public class BookbayFirestoreHelper {
         Task t2 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.NOTIFICATIONS_COLLECTION)
                 .add(notification);
 
-        Tasks.whenAllSuccess(t1, t2)
-                .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
-                    @Override
-                    public void onSuccess(List<Object> objects) {
+        if (bookStatus.equals(BookStatus.CONFIRMED.name())) {
 
-                        //TODO: change all orders of this book to decline when a seller approved
-                        ((SellingOrdersActivity)context).runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ((SellingOrdersActivity) context).updateDataAndAdapter();
-                            }
-                        });
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull @NotNull Exception updateStatus) {
-                        Log.d("TEST 2", updateStatus.getMessage());
-                    }
-                });
+            Map<String, Object> available = new HashMap<>();
+
+            available.put(BookbayFirestoreReferences.AVAILABLE_FIELD, false);
+
+            Task t3 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION).document(booksOrders.getBook().getBooks_sellID().getId())
+                    .update(available);
+
+            Tasks.whenAllSuccess(t1, t2, t3)
+                    .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                        @Override
+                        public void onSuccess(List<Object> objects) {
+
+                            //TODO: change all orders of this book to decline when a seller confirmed
+                            ((SellingOrdersActivity)context).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ((SellingOrdersActivity) context).updateDataAndAdapter();
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull @NotNull Exception updateStatus) {
+                            Log.d("TEST 2", updateStatus.getMessage());
+                        }
+                    });
+
+        } else if (bookStatus.equals(BookStatus.DECLINED.name())) {
+
+            Tasks.whenAllSuccess(t1, t2)
+                    .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                        @Override
+                        public void onSuccess(List<Object> objects) {
+                            ((SellingOrdersActivity) context).runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ((SellingOrdersActivity) context).updateDataAndAdapter();
+                                }
+                            });
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull @NotNull Exception updateStatus) {
+                            Log.d("TEST 2", updateStatus.getMessage());
+                        }
+                    });
+
+        }
     }
 
     public static FirestoreRecyclerOptions<Notifications> findNotificationOptions (String buyerID) {
