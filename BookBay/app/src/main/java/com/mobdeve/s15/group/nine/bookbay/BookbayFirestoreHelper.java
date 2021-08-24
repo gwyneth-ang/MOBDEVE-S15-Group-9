@@ -404,4 +404,56 @@ public class BookbayFirestoreHelper {
 
 
     }
+
+    public static void deleteBook (String bookID, Context context){
+        ProgressDialog progress = new ProgressDialog(context);
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setTitle("Loading");
+        progress.setMessage("Your book is being deleted. Please wait...");
+        progress.setIndeterminate(true);
+        progress.setCanceledOnTouchOutside(false);
+        progress.show();
+        BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                .document(bookID).collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
+                if (task.getResult().size() > 0){
+                    //TODO: cannot delete (CHECK)
+                    progress.dismiss();
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
+                            .setTitle("Delete Unsuccessful")
+                            .setMessage("Book cannot be deleted!")
+                            .setPositiveButton("OK", null);
+                    Dialog dialog = dialogBuilder.create();
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
+                }
+                else{
+                    //TODO: delete image in storage(?)
+                    //delete
+                    BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                            .document(bookID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            ((Activity) context).finish();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull @NotNull Exception e) {
+                            progress.dismiss();
+                            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
+                                    .setTitle("Delete Unsuccessful")
+                                    .setMessage("An error has occured please try again")
+                                    .setPositiveButton("OK", null);
+                            Dialog dialog = dialogBuilder.create();
+                            dialog.setCanceledOnTouchOutside(false);
+                            dialog.show();
+                        }
+                    });
+                }
+            }
+        });
+
+    }
 }
