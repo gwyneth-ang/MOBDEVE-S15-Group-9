@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.util.Log;
 import android.content.Context;
 
@@ -20,11 +21,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.UUID;
 
 public class BookbayFirestoreHelper {
 
@@ -403,5 +409,95 @@ public class BookbayFirestoreHelper {
                 });
 
 
+    }
+
+    public static void AddBook(ProgressDialog progressDialog, Uri imageUri, Books_sell book, Context context) {
+        CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
+        String ID = UUID.randomUUID().toString();
+
+        StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
+                .child(BookbayFirestoreReferences.generateNewImagePath(ID, imageUri));
+
+        //task 1 - upload the image to the Firebase
+        Task t1 = imageRef.putFile(imageUri)
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
+                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.setMessage("Uploaded  " + (int) progress + "%");
+                    }
+                });
+
+        //adding the book to the book_sell collection
+        Task t2 = bookRef.document(ID).set(book);
+
+
+        Tasks.whenAllSuccess(t1, t2).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+            @Override
+            public void onSuccess(List<Object> objects) {
+                progressDialog.setCanceledOnTouchOutside(true);
+                progressDialog.setMessage("Success!");
+                ((AddBookActivity)context).finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
+                progressDialog.setCanceledOnTouchOutside(true);
+                progressDialog.setMessage("Error occurred. Please try again.");
+            }
+        });
+    }
+
+    public static void editBookWithImage(ProgressDialog progressDialog, String bookID, Uri imageUri, Map<String, Object> updateBook, Context context) {
+        CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
+
+        StorageReference photoRefAdd = BookbayFirestoreReferences.getStorageReferenceInstance()
+                .child(BookbayFirestoreReferences.generateNewImagePath(bookID, imageUri));
+
+        //upload the image to the Firebase
+        Task uploadFirebase = photoRefAdd.putFile(imageUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
+                double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setMessage("Uploaded  " + (int) progress + "%");
+            }
+        });
+
+        Task update = bookRef.document(bookID).update(updateBook);
+
+        Tasks.whenAllSuccess(uploadFirebase, update).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+            @Override
+            public void onSuccess(List<Object> objects) {
+                progressDialog.setCanceledOnTouchOutside(true);
+                progressDialog.setMessage("Success!");
+                ((AddBookActivity)context).finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
+                progressDialog.setCanceledOnTouchOutside(true);
+                progressDialog.setMessage("Error occurred. Please try again.");
+            }
+        });
+    }
+
+    public static void editBookNoImage(String bookID, Map<String, Object> updateBook) {
+        CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
+        bookRef.document(bookID)
+                .update(updateBook)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Edit Book", "Edit successful");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull @NotNull Exception e) {
+                        Log.d("Edit Book", e.getMessage());
+                    }
+                });
     }
 }

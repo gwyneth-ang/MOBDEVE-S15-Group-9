@@ -182,21 +182,6 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 
                         Log.d("TEST", user.getDisplayName());
 
-<<<<<<< HEAD
-                        //TODO: to be deleted for testing if adding sub collection order is working
-                        Orders order = new Orders(
-                                null,
-                                null,
-                                BookStatus.PENDING.name(),
-                                null,
-                                null,
-                                null
-                        );
-
-//                        Log.d("TEST", orders.get(0).getProfileName());
-
-=======
->>>>>>> main
                         Books_sell book = new Books_sell(
                                 cal.getTime(),
                                 author,
@@ -211,48 +196,9 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                                 true
                         );
 
-                        CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
-                        String ID = UUID.randomUUID().toString();
+                        //TODO: start here
+                        BookbayFirestoreHelper.AddBook(progressDialog, imageUri, book, AddBookActivity.this);
 
-                        StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
-                                .child(BookbayFirestoreReferences.generateNewImagePath(ID, imageUri));
-
-                        //task 1 - upload the image to the Firebase
-                        Task t1 = imageRef.putFile(imageUri)
-                                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
-                                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                                        progressDialog.setCanceledOnTouchOutside(false);
-                                        progressDialog.setMessage("Uploaded  " + (int) progress + "%");
-                                    }
-                                });
-
-                        //adding the book to the book_sell collection
-                        Task t2 = bookRef.document(ID).set(book);
-
-<<<<<<< HEAD
-                        //TODO: to be deleted for testing if adding sub collection order is working
-                        Task t3 = bookRef.document(ID).collection(BookbayFirestoreReferences.ORDERS_COLLECTION).document(UUID.randomUUID().toString()).set(order);
-
-
-                        Tasks.whenAllSuccess(t1, t2, t3).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
-=======
-                        Tasks.whenAllSuccess(t1, t2).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
->>>>>>> main
-                            @Override
-                            public void onSuccess(List<Object> objects) {
-                                progressDialog.setCanceledOnTouchOutside(true);
-                                progressDialog.setMessage("Success!");
-                                finish();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull @NotNull Exception e) {
-                                progressDialog.setCanceledOnTouchOutside(true);
-                                progressDialog.setMessage("Error occurred. Please try again.");
-                            }
-                        });
                     } else {
                         Toast.makeText(
                                 AddBookActivity.this,
@@ -262,7 +208,6 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     }
                 } else {
                     //if view is for editing book
-                    CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
                     Boolean changed = false;
 
                     //create a hashmap for all the changed values
@@ -310,60 +255,18 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 
                         updateBook.put(BookbayFirestoreReferences.IMAGE_FIELD, imageUri.toString());
 
-                        //used for updating
-                        StorageReference photoRefAdd = BookbayFirestoreReferences.getStorageReferenceInstance()
-                                .child(BookbayFirestoreReferences.generateNewImagePath(bookID, imageUri));
-
                         final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
                         progressDialog.setTitle("Uploading");
                         progressDialog.show();
 
-                        //upload the image to the Firebase
-                        Task uploadFirebase = photoRefAdd.putFile(imageUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
-                                double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                                progressDialog.setCanceledOnTouchOutside(false);
-                                progressDialog.setMessage("Uploaded  " + (int) progress + "%");
-                            }
-                        });
-
-                        Task update = bookRef.document(bookID).update(updateBook);
-
-                        Tasks.whenAllSuccess(uploadFirebase, update).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
-                            @Override
-                            public void onSuccess(List<Object> objects) {
-                                progressDialog.setCanceledOnTouchOutside(true);
-                                progressDialog.setMessage("Success!");
-                                finish();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull @NotNull Exception e) {
-                                progressDialog.setCanceledOnTouchOutside(true);
-                                progressDialog.setMessage("Error occurred. Please try again.");
-                            }
-                        });
+                        BookbayFirestoreHelper.editBookWithImage(progressDialog, bookID, imageUri, updateBook, AddBookActivity.this);
                     }
 
 
                     //check
                     if (changed && !imageChanged) {
                         Log.d("TEST EDIT", bookID);
-                        bookRef.document(bookID)
-                                .update(updateBook)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d("Edit Book", "Edit successful");
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull @NotNull Exception e) {
-                                        Log.d("Edit Book", e.getMessage());
-                                    }
-                                });
+                        BookbayFirestoreHelper.editBookNoImage(bookID, updateBook);
                     }
                 }
             }
