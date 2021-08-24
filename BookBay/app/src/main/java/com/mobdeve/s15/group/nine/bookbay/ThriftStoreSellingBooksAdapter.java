@@ -79,6 +79,9 @@ public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftS
     public void onBindViewHolder(ThriftStoreSellingBooksViewHolder holder, int position) {
 //        Log.d(TAG, book.get().getBookTitle());
         holder.bindData(book.get(position), this.whichView);
+
+        if (!book.get(position).getAvailable())
+            holder.itemView.setClickable(false);
     }
 
     @Override
