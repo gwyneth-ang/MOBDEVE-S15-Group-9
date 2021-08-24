@@ -28,13 +28,14 @@ public class Books_sell {
     private String image;
     private String profileName;
     private String profileImage;
+    private Boolean isAvailable;
 
     // Do not remove this. This is needed by Firebase when it creates instances of our model class.
     public Books_sell() {
 
     }
 
-    public Books_sell(Date addBookDate, String bookAuthor, String bookTitle, String condition, String review, String ownerID, Float price, String image, String profileName, String profileImage) {
+    public Books_sell(Date addBookDate, String bookAuthor, String bookTitle, String condition, String review, String ownerID, Float price, String image, String profileName, String profileImage, Boolean isAvailable) {
         this.addBookDate = addBookDate;
         this.bookAuthor = bookAuthor;
         this.bookTitle = bookTitle;
@@ -45,6 +46,7 @@ public class Books_sell {
         this.image = image;
         this.profileName = profileName;
         this.profileImage = profileImage;
+        this.isAvailable = isAvailable;
     }
 
     public DocumentReference getBooks_sellID() {
@@ -133,5 +135,13 @@ public class Books_sell {
 
     public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
+    }
+
+    public Boolean getAvailable() {
+        return isAvailable;
+    }
+
+    public void setAvailable(Boolean available) {
+        isAvailable = available;
     }
 }

@@ -82,22 +82,6 @@ public class OrdersAdapter extends RecyclerView.Adapter <OrdersViewHolder> {
                 String bookStatus = parent.getItemAtPosition(choice).toString();
                 Log.d("TEST", prevBookStatus + " " + bookStatus + " " + position + " " + booksOrders.get(position).getBook().getBooks_sellID().getId());
 
-                Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
-                Map<String, Object> data = new HashMap<>();
-
-                data.put(BookbayFirestoreReferences.STATUS_FIELD, bookStatus);
-                data.put(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, cal.getTime());
-
-                Map<String, Object> notification = new HashMap<>();
-
-                notification.put(BookbayFirestoreReferences.BOOK_REF_FIELD, booksOrders.get(position).getBook().getBooks_sellID());
-                notification.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, booksOrders.get(position).getBook().getBookTitle());
-                notification.put(BookbayFirestoreReferences.IMAGE_FIELD, booksOrders.get(position).getBook().getImage());
-                notification.put(BookbayFirestoreReferences.PROFILE_NAME_FIELD, booksOrders.get(position).getBook().getProfileName());
-                notification.put(BookbayFirestoreReferences.STATUS_FIELD, bookStatus);
-                notification.put(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, cal.getTime());
-                notification.put(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, booksOrders.get(position).getOrder().getBuyerID());
-
                 if (!prevBookStatus.equals(bookStatus)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                     builder.setMessage(Html.fromHtml("Pressing Continue will notify the buyer that you " + "<b>" + bookStatus + "</b>" + " their order. You may not change it back to pending."));
@@ -108,7 +92,7 @@ public class OrdersAdapter extends RecyclerView.Adapter <OrdersViewHolder> {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
 
-                                    BookbayFirestoreHelper.updateStatusAndNotifications(booksOrders.get(position), data, context, notification);
+                                    BookbayFirestoreHelper.updateStatusAndNotifications(booksOrders.get(position), bookStatus, context);
 
                                     Log.d("TEST", prevBookStatus + " " + bookStatus + " " + position + " " + booksOrders.get(position).getBook().getBooks_sellID().getId());
                                 }
