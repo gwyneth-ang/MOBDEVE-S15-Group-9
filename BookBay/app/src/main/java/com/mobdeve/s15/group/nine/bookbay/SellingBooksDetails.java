@@ -30,8 +30,7 @@ public class SellingBooksDetails extends AppCompatActivity {
     private ImageView bookImage;
     private TextView bookTitle, authorName, price, condition;
     private Button editBook, deleteBook;
-
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

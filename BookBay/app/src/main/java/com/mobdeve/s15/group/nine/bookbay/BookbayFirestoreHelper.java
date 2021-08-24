@@ -133,7 +133,6 @@ public class BookbayFirestoreHelper {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            Log.d("TEST", "Hi");
 
                             ArrayList<BooksOrders> booksOrders = new ArrayList<>();
 
@@ -192,13 +191,14 @@ public class BookbayFirestoreHelper {
         notification.put(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, cal.getTime());
         notification.put(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, booksOrders.getOrder().getBuyerID());
 
-
+        //update the status of the order
         Task t1 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                 .document(booksOrders.getBook().getBooks_sellID().getId())
                 .collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
                 .document(booksOrders.getOrder().getOrderID().getId())
                 .update(data);
 
+        // Notify the user that the seller declined or confirmed
         Task t2 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.NOTIFICATIONS_COLLECTION)
                 .add(notification);
 
