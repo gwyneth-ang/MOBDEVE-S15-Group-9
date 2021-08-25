@@ -703,12 +703,33 @@ public class BookbayFirestoreHelper {
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             String image = documentSnapshot.getString(BookbayFirestoreReferences.IMAGE_FIELD);
                             BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                                    .document(bookID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    .document(bookID).collection(BookbayFirestoreReferences.ORDERS_COLLECTION).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                 @Override
-                                public void onSuccess(Void unused) {
-                                    deleteBookImageFromStorage(bookID, Uri.parse(image));
-                                    progress.dismiss();
-                                    ((Activity) context).finish();
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        document.getReference().delete();
+                                    }
+                                    BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                                            .document(bookID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            deleteBookImageFromStorage(bookID, Uri.parse(image));
+                                            progress.dismiss();
+                                            ((Activity) context).finish();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull @NotNull Exception e) {
+                                            progress.dismiss();
+                                            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
+                                                    .setTitle("Delete Unsuccessful")
+                                                    .setMessage("An error has occured please try again")
+                                                    .setPositiveButton("OK", null);
+                                            Dialog dialog = dialogBuilder.create();
+                                            dialog.setCanceledOnTouchOutside(false);
+                                            dialog.show();
+                                        }
+                                    });
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -723,20 +744,8 @@ public class BookbayFirestoreHelper {
                                     dialog.show();
                                 }
                             });
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull @NotNull Exception e) {
-                            progress.dismiss();
-                            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
-                                    .setTitle("Delete Unsuccessful")
-                                    .setMessage("An error has occured please try again")
-                                    .setPositiveButton("OK", null);
-                            Dialog dialog = dialogBuilder.create();
-                            dialog.setCanceledOnTouchOutside(false);
-                            dialog.show();
-                        }
-                    });
+                                }
+                            });
                 }
             }
         });
