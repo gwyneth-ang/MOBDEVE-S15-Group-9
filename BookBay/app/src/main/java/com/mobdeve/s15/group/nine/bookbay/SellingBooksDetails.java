@@ -1,5 +1,10 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -90,6 +95,25 @@ public class SellingBooksDetails extends AppCompatActivity {
                 intent.putExtra(IntentKeys.CONDITION_KEY.name(), i.getStringExtra(IntentKeys.CONDITION_KEY.name()));
                 intent.putExtra(IntentKeys.REVIEW_KEY.name(), i.getStringExtra(IntentKeys.REVIEW_KEY.name()));
                 startActivity(intent);
+            }
+        });
+
+        this.deleteBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = deleteBook.getContext();
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
+                        .setTitle("Delete Book")
+                        .setMessage("Are you sure you want to delete this book?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //call delete function
+                                BookbayFirestoreHelper.deleteBook(i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()), SellingBooksDetails.this);
+                            }
+                        }).setNegativeButton("Cancel", null);
+                Dialog dialog = dialogBuilder.create();
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
             }
         });
     }

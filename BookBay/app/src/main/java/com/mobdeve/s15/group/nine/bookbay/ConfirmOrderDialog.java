@@ -81,7 +81,7 @@ public class ConfirmOrderDialog extends AppCompatDialogFragment {
                         Bundle bundle = getArguments();
                         String bookID = bundle.getString(IntentKeys.BOOK_ID_KEY.name(), "");
                         dialog.cancel();
-                        ProgressDialog progress = new ProgressDialog(getActivity()); // this = YourActivity
+                        ProgressDialog progress = new ProgressDialog(getActivity());
                         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                         progress.setTitle("Loading");
                         progress.setMessage("Your order is being processed. Please wait...");
