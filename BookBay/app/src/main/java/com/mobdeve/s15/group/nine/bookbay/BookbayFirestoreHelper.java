@@ -54,7 +54,7 @@ public class BookbayFirestoreHelper {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Log.d("TEST", "Hi");
 
                             ArrayList<Books_sell> books = new ArrayList<>();
@@ -95,7 +95,7 @@ public class BookbayFirestoreHelper {
                 });
     }
 
-    public static void searchFilterBooks (String searchText, String strDirection, String whichFilter, ThriftStoreSellingBooksAdapter adapter) {
+    public static void searchFilterBooks(String searchText, String strDirection, String whichFilter, ThriftStoreSellingBooksAdapter adapter) {
 
         Direction direction = Direction.ASCENDING;
         if (strDirection.equals("DES")) {
@@ -117,7 +117,7 @@ public class BookbayFirestoreHelper {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Log.d("TEST", "Hi");
 
                             ArrayList<Books_sell> books = new ArrayList<>();
@@ -134,11 +134,11 @@ public class BookbayFirestoreHelper {
                 });
     }
 
-    public static void searchFilterBooksSeller () {
+    public static void searchFilterBooksSeller() {
 
     }
 
-    public static void findBuyerOrders (OrdersAdapter myOrdersAdapter, String buyerUID) {
+    public static void findBuyerOrders(OrdersAdapter myOrdersAdapter, String buyerUID) {
         BookbayFirestoreReferences.getFirestoreInstance().collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, buyerUID)
                 .orderBy(BookbayFirestoreReferences.ORDER_DATE_FIELD, Query.Direction.DESCENDING).get()
@@ -177,7 +177,7 @@ public class BookbayFirestoreHelper {
                 });
     }
 
-    public static void findSellerOrders (OrdersAdapter sellerOrdersAdapter, String sellerUID) {
+    public static void findSellerOrders(OrdersAdapter sellerOrdersAdapter, String sellerUID) {
         BookbayFirestoreReferences.getFirestoreInstance().collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
                 .orderBy(BookbayFirestoreReferences.ORDER_DATE_FIELD, Query.Direction.DESCENDING).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -224,7 +224,7 @@ public class BookbayFirestoreHelper {
                 });
     }
 
-    public static void updateStatusAndNotifications (BooksOrders booksOrders, String bookStatus, Context context) {
+    public static void updateStatusAndNotifications(BooksOrders booksOrders, String bookStatus, Context context) {
 
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setTitle("Processing");
@@ -359,7 +359,7 @@ public class BookbayFirestoreHelper {
         }
     }
 
-    public static FirestoreRecyclerOptions<Notifications> findNotificationOptions (String buyerID) {
+    public static FirestoreRecyclerOptions<Notifications> findNotificationOptions(String buyerID) {
         Query myNotificationsQuery = BookbayFirestoreReferences.getFirestoreInstance()
                 .collection(BookbayFirestoreReferences.NOTIFICATIONS_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, buyerID)
@@ -372,7 +372,7 @@ public class BookbayFirestoreHelper {
         return notifOptions;
     }
 
-    public static void placeOrder(String  bookID, ProgressDialog progress, Context activityContext){
+    public static void placeOrder(String bookID, ProgressDialog progress, Context activityContext) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
         BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
@@ -380,8 +380,8 @@ public class BookbayFirestoreHelper {
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
-                            if(task.getResult().getString(BookbayFirestoreReferences.OWNER_ID_UID_FIELD).equals(user.getUid())){
+                        if (task.isSuccessful()) {
+                            if (task.getResult().getString(BookbayFirestoreReferences.OWNER_ID_UID_FIELD).equals(user.getUid())) {
                                 Context context = progress.getContext();
                                 progress.dismiss();
                                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
@@ -396,8 +396,7 @@ public class BookbayFirestoreHelper {
                                 Dialog dialog = dialogBuilder.create();
                                 dialog.setCanceledOnTouchOutside(false);
                                 dialog.show();
-                            }
-                            else{
+                            } else {
                                 BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                                         .document(bookID)
                                         .collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
@@ -485,8 +484,7 @@ public class BookbayFirestoreHelper {
                                     }
                                 });
                             }
-                        }
-                        else{
+                        } else {
                             Context context = progress.getContext();
                             progress.dismiss();
                             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
@@ -508,7 +506,6 @@ public class BookbayFirestoreHelper {
 
     }
 
-<<<<<<< HEAD
     public static void AddBook(ProgressDialog progressDialog, Uri imageUri, Books_sell book, Context context) {
         CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
         String ID = UUID.randomUUID().toString();
@@ -536,7 +533,7 @@ public class BookbayFirestoreHelper {
             public void onSuccess(List<Object> objects) {
                 progressDialog.setCanceledOnTouchOutside(true);
                 progressDialog.setMessage("Success!");
-                ((AddBookActivity)context).finish();
+                ((AddBookActivity) context).finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -547,7 +544,7 @@ public class BookbayFirestoreHelper {
         });
     }
 
-    public static void editBookWithImage(ProgressDialog progressDialog, String bookID, Uri imageUri, Map<String, Object> updateBook, Context context, String title, String author, String selectorChoice, Float price) {
+    public static void editBookWithImage(ProgressDialog progressDialog, String bookID, Uri imageUri, Map<String, Object> updateBook, Context context, String title, String author, String selectorChoice, Float price, String review) {
         CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
 
         StorageReference photoRefAdd = BookbayFirestoreReferences.getStorageReferenceInstance()
@@ -578,6 +575,7 @@ public class BookbayFirestoreHelper {
                 return_intent.putExtra(AddBookActivity.CONDITION_KEY, selectorChoice);
                 return_intent.putExtra(AddBookActivity.PRICE_KEY, price);
                 return_intent.putExtra(AddBookActivity.IMAGE_KEY, imageUri.toString());
+                return_intent.putExtra(AddBookActivity.REVIEW_KEY, review);
                 ((AddBookActivity) context).setResult(Activity.RESULT_OK, return_intent);
                 ((AddBookActivity) context).finish();
             }
@@ -606,7 +604,8 @@ public class BookbayFirestoreHelper {
                         Log.d("Edit Book", e.getMessage());
                     }
                 });
-=======
+    }
+
     public static void deleteBook (String bookID, Context context){
         ProgressDialog progress = new ProgressDialog(context);
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -620,7 +619,7 @@ public class BookbayFirestoreHelper {
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
-                if (task.getResult().size() > 0){
+                if (task.getResult().size() > 0) {
                     //TODO: cannot delete (CHECK)
                     progress.dismiss();
                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
@@ -630,8 +629,7 @@ public class BookbayFirestoreHelper {
                     Dialog dialog = dialogBuilder.create();
                     dialog.setCanceledOnTouchOutside(false);
                     dialog.show();
-                }
-                else{
+                } else {
                     //TODO: delete image in storage(?)
                     //delete
                     BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
@@ -656,7 +654,6 @@ public class BookbayFirestoreHelper {
                 }
             }
         });
-
->>>>>>> main
     }
 }
+

@@ -1,13 +1,12 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import android.app.Activity;
-<<<<<<< HEAD
-=======
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
->>>>>>> main
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -46,6 +45,8 @@ public class SellingBooksDetails extends AppCompatActivity {
     private ImageView bookImage;
     private TextView bookTitle, authorName, price, condition;
     private Button editBook, deleteBook;
+    private String bookID, title, author, conditionStr, imageUri, review;
+    private Float priceFlt;
 
     private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -53,23 +54,17 @@ public class SellingBooksDetails extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if(result.getResultCode() == Activity.RESULT_OK) {
-                        /*
-                         * return_intent.putExtra(TITLE_KEY, title);
-                         * return_intent.putExtra(AUTHOR_KEY, author);
-                         *  return_intent.putExtra(CONDITION_KEY, selectorChoice);
-                         * return_intent.putExtra(PRICE_KEY, price);
-                         * return_intent.putExtra(IMAGE_KEY, imageUri.toString());
-                         * */
-                        String bookID = result.getData().getStringExtra(AddBookActivity.BOOKID_KEY);
-                        String title = result.getData().getStringExtra(AddBookActivity.TITLE_KEY);
+                        bookID = result.getData().getStringExtra(AddBookActivity.BOOKID_KEY);
+                        title = result.getData().getStringExtra(AddBookActivity.TITLE_KEY);
                         bookTitle.setText(title);
-                        String author = result.getData().getStringExtra(AddBookActivity.AUTHOR_KEY);
+                        author = result.getData().getStringExtra(AddBookActivity.AUTHOR_KEY);
                         authorName.setText(author);
-                        String conditionStr = result.getData().getStringExtra(AddBookActivity.CONDITION_KEY);
+                        conditionStr = result.getData().getStringExtra(AddBookActivity.CONDITION_KEY);
                         condition.setText(conditionStr);
-                        Float priceStr = result.getData().getFloatExtra(AddBookActivity.PRICE_KEY, 0);
-                        price.setText(String.valueOf(priceStr));
-                        String imageUri = result.getData().getStringExtra(AddBookActivity.IMAGE_KEY);
+                        priceFlt = result.getData().getFloatExtra(AddBookActivity.PRICE_KEY, 0);
+                        price.setText(String.valueOf(priceFlt));
+                        review = result.getData().getStringExtra(AddBookActivity.REVIEW_KEY);
+                        imageUri = result.getData().getStringExtra(AddBookActivity.IMAGE_KEY);
                         BookbayFirestoreReferences.downloadImageIntoImageViewUsingId(bookID, imageUri, bookImage);
                     }
                 }
@@ -91,10 +86,17 @@ public class SellingBooksDetails extends AppCompatActivity {
 
         Intent i = getIntent();
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
-        this.bookTitle.setText(i.getStringExtra(IntentKeys.TITLE_KEY.name()));
-        this.authorName.setText(i.getStringExtra(IntentKeys.AUTHOR_KEY.name()));
-        this.condition.setText(i.getStringExtra(IntentKeys.CONDITION_KEY.name()));
-        this.price.setText("₱" + decimalFormat.format(i.getFloatExtra(IntentKeys.PRICE_KEY.name(),((float)0))));
+        this.bookID = i.getStringExtra(IntentKeys.BOOK_ID_KEY.name());
+        this.title = i.getStringExtra(IntentKeys.TITLE_KEY.name());
+        this.bookTitle.setText(title);
+        this.author = i.getStringExtra(IntentKeys.AUTHOR_KEY.name());
+        this.authorName.setText(author);
+        this.conditionStr = i.getStringExtra(IntentKeys.CONDITION_KEY.name());
+        this.condition.setText(conditionStr);
+        this.priceFlt = i.getFloatExtra(IntentKeys.PRICE_KEY.name(),((float)0));
+        this.price.setText("₱" + decimalFormat.format(priceFlt));
+        this.review = i.getStringExtra(IntentKeys.REVIEW_KEY.name());
+        this.imageUri = i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name());
 
         String path = "images/" + i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()) + "-" + Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name())).getLastPathSegment();
 
@@ -123,13 +125,13 @@ public class SellingBooksDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SellingBooksDetails.this.getBaseContext(), AddBookActivity.class);
-                intent.putExtra(IntentKeys.BOOK_ID_KEY.name(),i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()));
-                intent.putExtra(IntentKeys.BOOK_IMAGE_KEY.name(),i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name()));
-                intent.putExtra(IntentKeys.TITLE_KEY.name(), i.getStringExtra(IntentKeys.TITLE_KEY.name()));
-                intent.putExtra(IntentKeys.AUTHOR_KEY.name(), i.getStringExtra(IntentKeys.AUTHOR_KEY.name()));
-                intent.putExtra(IntentKeys.PRICE_KEY.name(), i.getFloatExtra(IntentKeys.PRICE_KEY.name(), 0));
-                intent.putExtra(IntentKeys.CONDITION_KEY.name(), i.getStringExtra(IntentKeys.CONDITION_KEY.name()));
-                intent.putExtra(IntentKeys.REVIEW_KEY.name(), i.getStringExtra(IntentKeys.REVIEW_KEY.name()));
+                intent.putExtra(IntentKeys.BOOK_ID_KEY.name(), bookID);
+                intent.putExtra(IntentKeys.BOOK_IMAGE_KEY.name(), imageUri);
+                intent.putExtra(IntentKeys.TITLE_KEY.name(), title);
+                intent.putExtra(IntentKeys.AUTHOR_KEY.name(), author);
+                intent.putExtra(IntentKeys.PRICE_KEY.name(), priceFlt);
+                intent.putExtra(IntentKeys.CONDITION_KEY.name(), conditionStr);
+                intent.putExtra(IntentKeys.REVIEW_KEY.name(), review);
                 myActivityResultLauncher.launch(intent);
             }
         });

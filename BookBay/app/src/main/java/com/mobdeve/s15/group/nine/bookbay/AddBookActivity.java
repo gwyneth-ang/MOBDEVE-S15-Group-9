@@ -61,6 +61,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
             AUTHOR_KEY = "AUTHOR_KEY",
             CONDITION_KEY = "CONDITION_KEY",
             PRICE_KEY = "PRICE_KEY",
+            REVIEW_KEY = "REVIEW_KEY",
             IMAGE_KEY = "IMAGE_KEY";
 
     private Button Bt_browse_addBook, Bt_addBook;
@@ -134,6 +135,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 
             bookID = i.getStringExtra(IntentKeys.BOOK_ID_KEY.name());
             oldTitle = i.getStringExtra(IntentKeys.TITLE_KEY.name());
+            Log.d("OLD TITLE EDITING", oldTitle);
             this.Et_bookTitle_addBook.setText(oldTitle.trim());
             oldAuthor = i.getStringExtra(IntentKeys.AUTHOR_KEY.name());
             this.Et_author_addBook.setText(oldAuthor.trim());
@@ -281,7 +283,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                             progressDialog.setTitle("Uploading");
                             progressDialog.show();
 
-                            BookbayFirestoreHelper.editBookWithImage(progressDialog, bookID, imageUri, updateBook, AddBookActivity.this);
+                            BookbayFirestoreHelper.editBookWithImage(progressDialog, bookID, imageUri, updateBook, AddBookActivity.this, title, author, selectorChoice, price, review);
                         }
 
 
@@ -295,6 +297,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                             return_intent.putExtra(TITLE_KEY, title);
                             return_intent.putExtra(AUTHOR_KEY, author);
                             return_intent.putExtra(CONDITION_KEY, selectorChoice);
+                            return_intent.putExtra(REVIEW_KEY, review);
                             return_intent.putExtra(PRICE_KEY, price);
                             return_intent.putExtra(IMAGE_KEY, imageUri.toString());
                             setResult(Activity.RESULT_OK, return_intent);
