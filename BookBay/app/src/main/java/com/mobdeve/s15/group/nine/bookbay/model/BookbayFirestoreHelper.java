@@ -673,28 +673,21 @@ public class BookbayFirestoreHelper {
                 });
     }
 
-    public static void deleteBook (String bookID, Context context){
-        ProgressDialog progress = new ProgressDialog(context);
-        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progress.setTitle("Loading");
-        progress.setMessage("Your book is being deleted. Please wait...");
-        progress.setIndeterminate(true);
-        progress.setCanceledOnTouchOutside(false);
-        progress.show();
+    public static void deleteBook (String bookID, AlertDialog progress, Context context){
         BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                 .document(bookID).collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
-                boolean notDenied = false;
+                boolean notDeclined = false;
                 if (task.getResult().size() > 0) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        if (document.get(BookbayFirestoreReferences.STATUS_FIELD) == BookStatus.CONFIRMED || document.get(BookbayFirestoreReferences.STATUS_FIELD) == BookStatus.PENDING) {
-                            notDenied = true;
+                        if (!(document.getData().get(BookbayFirestoreReferences.STATUS_FIELD).toString().equals(BookStatus.DECLINED.name()))) {
+                            notDeclined = true;
                         }
                     }
                 }
-                if(task.getResult().size() > 0 && notDenied) {
+                if(task.getResult().size() > 0 && notDeclined) {
                     progress.dismiss();
                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
                             .setTitle("Delete Unsuccessful")
@@ -713,7 +706,9 @@ public class BookbayFirestoreHelper {
                                     .document(bookID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    //delete book image
+                                    deleteBookImageFromStorage(bookID, Uri.parse(image));
+                                    progress.dismiss();
+                                    ((Activity) context).finish();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
