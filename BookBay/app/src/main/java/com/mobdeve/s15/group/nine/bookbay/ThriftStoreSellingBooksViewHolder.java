@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 import com.mobdeve.s15.group.nine.bookbay.model.Books_sell;
 
+import java.text.DecimalFormat;
+
 public class ThriftStoreSellingBooksViewHolder extends RecyclerView.ViewHolder {
 
     private TextView tv_book_author, tv_book_title, tv_book_smallest_price;
@@ -34,8 +36,10 @@ public class ThriftStoreSellingBooksViewHolder extends RecyclerView.ViewHolder {
         if (whichLayout == WhichLayout.SELLING_BOOKS.ordinal()) {
             this.tv_book_smallest_price.setVisibility(View.GONE);
         } else if (whichLayout == WhichLayout.THRIFT_STORE.ordinal()) {
+            DecimalFormat decimalFormat = new DecimalFormat("#.00");
+
             this.tv_book_smallest_price.setVisibility(View.VISIBLE);
-            this.tv_book_smallest_price.setText("₱" + String.valueOf(book.getPrice()) + " - " + book.getCondition());
+            this.tv_book_smallest_price.setText("₱" + decimalFormat.format(book.getPrice()) + " - " + book.getCondition());
         }
     }
 }
