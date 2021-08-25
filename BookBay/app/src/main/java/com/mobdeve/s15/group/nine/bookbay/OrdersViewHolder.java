@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
@@ -43,9 +44,11 @@ public class OrdersViewHolder extends RecyclerView.ViewHolder {
     public void bindData(Orders order, Books_sell book, int whichView) {
         BookbayFirestoreReferences.downloadImageIntoImageView(book, this.iv_book_image);
 
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+
         this.tv_book_author.setText(book.getBookAuthor().toUpperCase());
         this.tv_book_title.setText(book.getBookTitle());
-        this.tv_book_smallest_price.setText("₱" + String.valueOf(book.getPrice()) + " - " + book.getCondition());
+        this.tv_book_smallest_price.setText("₱" + decimalFormat.format(book.getPrice()) + " - " + book.getCondition());
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         CustomSpinner<String> adapter = new CustomSpinner(itemView.getContext(), android.R.layout.simple_spinner_item, Arrays.asList(itemView.getContext().getResources().getStringArray(R.array.book_status)), false);

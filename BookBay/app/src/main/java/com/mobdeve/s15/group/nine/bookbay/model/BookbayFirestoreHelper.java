@@ -114,6 +114,7 @@ public class BookbayFirestoreHelper {
             filter = BookbayFirestoreReferences.PRICE_FIELD;
         }
 
+        // FIXME: wrong because where euqal to title and author should be 'OR'
         BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
                 .whereEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
@@ -140,11 +141,48 @@ public class BookbayFirestoreHelper {
                 });
     }
 
-    public static void searchFilterBooksSeller() {
+    public static void searchFilterBooksSeller(String searchText, String strDirection, String whichFilter, ThriftStoreSellingBooksAdapter adapter, String sellerUID) {
 
+        Direction direction = Direction.ASCENDING;
+        if (strDirection.equals("DES")) {
+            direction = Direction.DESCENDING;
+        }
+
+        String filter = BookbayFirestoreReferences.BOOK_TITLE_FIELD;
+
+        if (whichFilter.equals(BookbayFirestoreReferences.PRICE_FIELD)) {
+            filter = BookbayFirestoreReferences.PRICE_FIELD;
+        }
+
+        // FIXME: wrong because where euqal to title and author should be 'OR'
+        BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
+                .whereEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
+                .whereEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText)
+                .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, sellerUID)
+                .orderBy(filter, direction)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("TEST", "Hi");
+
+                            ArrayList<Books_sell> books = new ArrayList<>();
+
+                            for (QueryDocumentSnapshot document : task.getResult())
+                                books.add(document.toObject(Books_sell.class));
+
+                            adapter.setData(books);
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            Log.d("TEST", "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
     }
 
-    public static void findBuyerOrders(OrdersAdapter myOrdersAdapter, String buyerUID) {
+    public static void findBuyerOrders(OrdersAdapter myOrdersAdapter, String buyerUID, ProgressDialog progressDialog) {
         BookbayFirestoreReferences.getFirestoreInstance().collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, buyerUID)
                 .orderBy(BookbayFirestoreReferences.ORDER_DATE_FIELD, Query.Direction.DESCENDING).get()
@@ -181,11 +219,15 @@ public class BookbayFirestoreHelper {
                                 });
                             }
                         }
+
+                        if (progressDialog != null) {
+                            progressDialog.dismiss();
+                        }
                     }
                 });
     }
 
-    public static void findSellerOrders(OrdersAdapter sellerOrdersAdapter, String sellerUID) {
+    public static void findSellerOrders(OrdersAdapter sellerOrdersAdapter, String sellerUID, ProgressDialog progressDialog) {
         BookbayFirestoreReferences.getFirestoreInstance().collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
                 .orderBy(BookbayFirestoreReferences.ORDER_DATE_FIELD, Query.Direction.DESCENDING).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -229,6 +271,10 @@ public class BookbayFirestoreHelper {
                                     }
                                 });
                             }
+                        }
+
+                        if (progressDialog != null) {
+                            progressDialog.dismiss();
                         }
                     }
                 });
@@ -304,7 +350,7 @@ public class BookbayFirestoreHelper {
                                                     // if statement - do not update the one that was just confirmed
                                                     if (!document.getId().equals(booksOrders.getOrder().getOrderID().getId())) {
                                                         String buyerID = document.getString(BookbayFirestoreReferences.BUYER_ID_UID_FIELD);
-                                                        declineOthersAndNotify(declineAll, booksOrders, document.getId(), cal, buyerID, progressDialog, context);
+                                                        declineOthersAndNotify(declineAll, booksOrders, document.getId(), cal, buyerID, progressDialog, context, ordersAdapter);
 
                                                     }
                                                 }
@@ -353,7 +399,7 @@ public class BookbayFirestoreHelper {
     }
 
 
-    public static void declineOthersAndNotify (Map<String, Object> declineAll, BooksOrders booksOrders, String orderID, Calendar cal, String buyerID, ProgressDialog progressDialog, Context context) {
+    public static void declineOthersAndNotify (Map<String, Object> declineAll, BooksOrders booksOrders, String orderID, Calendar cal, String buyerID, ProgressDialog progressDialog, Context context, OrdersAdapter ordersAdapter) {
 
         Map<String, Object> notificationDecline = new HashMap<>();
 
@@ -380,11 +426,10 @@ public class BookbayFirestoreHelper {
                     public void onSuccess(List<Object> objects) {
                         Log.d("TEST 2", "Decline all orders and notify");
 
-                        ((SellingOrdersActivity) context).updateDataAndAdapter();
+                        ((SellingOrdersActivity) context).updateDataAndAdapter(progressDialog);
 
                         progressDialog.setCanceledOnTouchOutside(true);
                         progressDialog.setMessage("Success!");
-                        progressDialog.dismiss();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -543,8 +588,6 @@ public class BookbayFirestoreHelper {
                         }
                     }
                 });
-
-
     }
 
     public static void AddBook(ProgressDialog progressDialog, Uri imageUri, Books_sell book, Context context) {

@@ -1,5 +1,6 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -44,7 +45,7 @@ public class SellingOrdersActivity extends AppCompatActivity{
             @Override
             public void onRefresh() {
                 sfl_orders.setRefreshing(true);
-                updateDataAndAdapter();
+                updateDataAndAdapter(null);
                 sfl_orders.setRefreshing(false);
             }
         });
@@ -56,22 +57,16 @@ public class SellingOrdersActivity extends AppCompatActivity{
         this.tv_orders.setTextColor(Color.parseColor("#FFFFFFFF"));
     }
 
-    public void updateDataAndAdapter() {
+    public void updateDataAndAdapter(ProgressDialog progressDialog) {
         //get current user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        BookbayFirestoreHelper.findSellerOrders(sellerOrdersAdapter, user.getUid());
+        BookbayFirestoreHelper.findSellerOrders(sellerOrdersAdapter, user.getUid(), progressDialog);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        updateDataAndAdapter();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
+        updateDataAndAdapter(null);
     }
 }

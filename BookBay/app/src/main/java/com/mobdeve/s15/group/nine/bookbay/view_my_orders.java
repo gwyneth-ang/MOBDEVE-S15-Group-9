@@ -1,5 +1,6 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -11,6 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -116,7 +118,7 @@ public class view_my_orders extends Fragment {
         //get current user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        BookbayFirestoreHelper.findBuyerOrders(myOrdersAdapter, user.getUid());
+        BookbayFirestoreHelper.findBuyerOrders(myOrdersAdapter, user.getUid(), null);
     }
 
     @Override
