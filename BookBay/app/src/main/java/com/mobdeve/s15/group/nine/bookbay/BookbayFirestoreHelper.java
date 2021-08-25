@@ -284,27 +284,14 @@ public class BookbayFirestoreHelper {
                                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                                     Log.d("ORDER TEST", document.getId());
 
-                                                    // do not update the one that was just confirmed
+                                                    // if statement - do not update the one that was just confirmed
                                                     if (!document.getId().equals(booksOrders.getOrder().getOrderID().getId())) {
-                                                        BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                                                                .document(booksOrders.getBook().getBooks_sellID().getId())
-                                                                .collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
-                                                                .document(document.getId())
-                                                                .update(declineAll);
+                                                        String buyerID = document.getString(BookbayFirestoreReferences.BUYER_ID_UID_FIELD);
+                                                        declineOthersAndNotify(declineAll, booksOrders, document.getId(), cal, buyerID, progressDialog, context);
+
                                                     }
                                                 }
                                             }
-
-                                            ((SellingOrdersActivity) context).runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    ((SellingOrdersActivity) context).updateDataAndAdapter();
-
-                                                    progressDialog.setCanceledOnTouchOutside(true);
-                                                    progressDialog.setMessage("Success!");
-                                                    progressDialog.dismiss();
-                                                }
-                                            });
                                         }
                                     });
                         }
@@ -350,6 +337,58 @@ public class BookbayFirestoreHelper {
                     });
 
         }
+    }
+
+    public static void declineOthersAndNotify (Map<String, Object> declineAll, BooksOrders booksOrders, String orderID, Calendar cal, String buyerID, ProgressDialog progressDialog, Context context) {
+
+        Map<String, Object> notificationDecline = new HashMap<>();
+
+        notificationDecline.put(BookbayFirestoreReferences.BOOK_REF_FIELD, booksOrders.getBook().getBooks_sellID());
+        notificationDecline.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, booksOrders.getBook().getBookTitle());
+        notificationDecline.put(BookbayFirestoreReferences.IMAGE_FIELD, booksOrders.getBook().getImage());
+        notificationDecline.put(BookbayFirestoreReferences.PROFILE_NAME_FIELD, booksOrders.getBook().getProfileName());
+        notificationDecline.put(BookbayFirestoreReferences.STATUS_FIELD, BookStatus.DECLINED.name());
+        notificationDecline.put(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, cal.getTime());
+        notificationDecline.put(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, buyerID);
+
+        Task task1 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                .document(booksOrders.getBook().getBooks_sellID().getId())
+                .collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
+                .document(orderID)
+                .update(declineAll);
+
+        Task task2 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.NOTIFICATIONS_COLLECTION)
+                .add(notificationDecline);
+
+        Tasks.whenAllSuccess(task1, task2)
+                .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                    @Override
+                    public void onSuccess(List<Object> objects) {
+                        Log.d("TEST 2", "Decline all orders and notify");
+
+                        ((SellingOrdersActivity) context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((SellingOrdersActivity) context).updateDataAndAdapter();
+
+                                progressDialog.setCanceledOnTouchOutside(true);
+                                progressDialog.setMessage("Success!");
+                                progressDialog.dismiss();
+                            }
+                        });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull @NotNull Exception e) {
+                        Log.d("TEST 2", e.getMessage());
+
+                        progressDialog.setCanceledOnTouchOutside(true);
+                        progressDialog.setMessage("Error occurred. Please try again.");
+                        progressDialog.dismiss();
+                    }
+                });
+
     }
 
     public static FirestoreRecyclerOptions<Notifications> findNotificationOptions (String buyerID) {
