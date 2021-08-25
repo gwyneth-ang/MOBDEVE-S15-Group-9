@@ -70,7 +70,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
     private Uri imageUri, tempUri;
     private String selectorChoice = "New", oldTitle, oldAuthor, oldCondition, oldReview, bookID, TAG="inside";
     private float oldPrice;
-    private int ViewKey = 0;
+    private int ViewKey = 0, spinnerIndex;
     private boolean imageChanged = false;
 
     private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult(
@@ -139,9 +139,19 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
             this.Et_author_addBook.setText(oldAuthor.trim());
             oldPrice = i.getFloatExtra(IntentKeys.PRICE_KEY.name(), 0);
             this.Et_price_addBook.setText(String.valueOf(oldPrice));
-            //oldReview = i.getStringExtra(IntentKeys.REVIEW_KEY.name());
-            //this.Et_review_addBook.setText(oldReview);
+            oldReview = i.getStringExtra(IntentKeys.REVIEW_KEY.name());
+            this.Et_review_addBook.setText(oldReview);
             oldCondition = IntentKeys.CONDITION_KEY.name();
+            if (oldCondition == "New") {
+                spinnerIndex = 0;
+            } else if (oldCondition == "Good") {
+                spinnerIndex = 1;
+            } else {
+                spinnerIndex = 2;
+            }
+            spinner_addBook.setSelection(spinnerIndex);
+
+
             //TODO: Check this part
             this.tempUri = Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name()));
             Picasso.get().load(tempUri).into(Iv_bookImage);
@@ -218,75 +228,87 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     Boolean changed = false;
 
                     //create a hashmap for all the changed values
-                    Map<String, Object> updateBook = new HashMap<>();
-                    //if title is changed
-                    if (!title.equals(oldTitle)) {
-                        changed = true;
-                        updateBook.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, title);
+                    if (imageUri != null && title != null && author != null && price != null && review != null) {
+                        Map<String, Object> updateBook = new HashMap<>();
+                        //if title is changed
+                        if (!title.equals(oldTitle)) {
+                            changed = true;
+                            updateBook.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, title);
+                        }
+                        //if author is changed
+                        if (!author.equals(oldAuthor)) {
+                            changed = true;
+                            updateBook.put(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, author);
+                        }
+                        //if price is changed
+                        if (price != oldPrice) {
+                            changed = true;
+                            updateBook.put(BookbayFirestoreReferences.PRICE_FIELD, price);
+                        }
+                        //if condition is changed
+                        if (!selectorChoice.equals(oldCondition)) {
+                            changed = true;
+                            updateBook.put(BookbayFirestoreReferences.CONDITION_FIELD, selectorChoice);
+                        }
+                        if (!review.equals(oldReview)){
+                            changed = true;
+                            updateBook.put(BookbayFirestoreReferences.REVIEW_FIELD, review);
+                        }
+                        //if the image has been changed:
+                        if (imageChanged){
+                            //used for deleting
+                            StorageReference photoRef = BookbayFirestoreReferences.getStorageReferenceInstance()
+                                    .child(BookbayFirestoreReferences.generateNewImagePath(bookID, tempUri));
+
+                            // Delete picture from firestore
+                            photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    // File deleted successfully
+                                    Log.d(TAG, "onSuccess: deleted file");
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception exception) {
+                                    // Uh-oh, an error occurred!
+                                    Log.d(TAG, "onFailure: did not delete file");
+                                }
+                            });
+
+                            updateBook.put(BookbayFirestoreReferences.IMAGE_FIELD, imageUri.toString());
+
+                            final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
+                            progressDialog.setTitle("Uploading");
+                            progressDialog.show();
+
+                            BookbayFirestoreHelper.editBookWithImage(progressDialog, bookID, imageUri, updateBook, AddBookActivity.this);
+                        }
+
+
+                        //check
+                        if (changed && !imageChanged) {
+                            Log.d("TEST EDIT", bookID);
+                            BookbayFirestoreHelper.editBookNoImage(bookID, updateBook);
+                        }
+
+                        Log.d("askdjkadajd:", bookID);
+                        //TODO: Make intent
+                        Intent return_intent = new Intent();
+                        return_intent.putExtra(BOOKID_KEY, bookID);
+                        return_intent.putExtra(TITLE_KEY, title);
+                        return_intent.putExtra(AUTHOR_KEY, author);
+                        return_intent.putExtra(CONDITION_KEY, selectorChoice);
+                        return_intent.putExtra(PRICE_KEY, price);
+                        return_intent.putExtra(IMAGE_KEY, imageUri.toString());
+                        setResult(Activity.RESULT_OK, return_intent);
+                        finish();
+                    } else {
+                        Toast.makeText(
+                                AddBookActivity.this,
+                                "Please fill up all of the inputs.",
+                                Toast.LENGTH_SHORT
+                        ).show();
                     }
-                    //if author is changed
-                    if (!author.equals(oldAuthor)) {
-                        changed = true;
-                        updateBook.put(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, author);
-                    }
-                    //if price is changed
-                    if (price != oldPrice) {
-                        changed = true;
-                        updateBook.put(BookbayFirestoreReferences.PRICE_FIELD, price);
-                    }
-                    //if condition is changed
-                    if (!selectorChoice.equals(oldCondition)) {
-                        changed = true;
-                        updateBook.put(BookbayFirestoreReferences.CONDITION_FIELD, selectorChoice);
-                    }
-                    //if the image has been changed:
-                    if (imageChanged){
-                        //used for deleting
-                        StorageReference photoRef = BookbayFirestoreReferences.getStorageReferenceInstance()
-                                .child(BookbayFirestoreReferences.generateNewImagePath(bookID, tempUri));
-
-                        // Delete picture from firestore
-                        photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // File deleted successfully
-                                Log.d(TAG, "onSuccess: deleted file");
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                // Uh-oh, an error occurred!
-                                Log.d(TAG, "onFailure: did not delete file");
-                            }
-                        });
-
-                        updateBook.put(BookbayFirestoreReferences.IMAGE_FIELD, imageUri.toString());
-
-                        final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
-                        progressDialog.setTitle("Uploading");
-                        progressDialog.show();
-
-                        BookbayFirestoreHelper.editBookWithImage(progressDialog, bookID, imageUri, updateBook, AddBookActivity.this);
-                    }
-
-
-                    //check
-                    if (changed && !imageChanged) {
-                        Log.d("TEST EDIT", bookID);
-                        BookbayFirestoreHelper.editBookNoImage(bookID, updateBook);
-                    }
-
-                   /* Log.d("askdjkadajd:", bookID);
-                    //TODO: Make intent
-                    Intent return_intent = new Intent();
-                    return_intent.putExtra(BOOKID_KEY, bookID);
-                    return_intent.putExtra(TITLE_KEY, title);
-                    return_intent.putExtra(AUTHOR_KEY, author);
-                    return_intent.putExtra(CONDITION_KEY, selectorChoice);
-                    return_intent.putExtra(PRICE_KEY, price);
-                    return_intent.putExtra(IMAGE_KEY, imageUri.toString());
-                    setResult(Activity.RESULT_OK, return_intent);
-                    finish();*/
                 }
             }
         });

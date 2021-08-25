@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -62,7 +63,7 @@ public class SellingBooksDetails extends AppCompatActivity {
                         Float priceStr = result.getData().getFloatExtra(AddBookActivity.PRICE_KEY, 0);
                         price.setText(String.valueOf(priceStr));
                         String imageUri = result.getData().getStringExtra(AddBookActivity.IMAGE_KEY);
-                        BookbayFirestoreReferences.downloadImageIntoImageViewUsingId(bookID, imageUri, bookImage);
+                        //BookbayFirestoreReferences.downloadImageIntoImageViewUsingId(bookID, imageUri, bookImage);
                     }
                 }
             });
