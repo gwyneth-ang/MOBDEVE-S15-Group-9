@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
@@ -142,8 +143,15 @@ public class SellingBooksDetails extends AppCompatActivity {
                         .setMessage("Are you sure you want to delete this book?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                //call delete function
-                                BookbayFirestoreHelper.deleteBook(i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()), SellingBooksDetails.this);
+                                dialog.dismiss();
+                                ProgressDialog progress = new ProgressDialog(context);
+                                progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                                progress.setTitle("Loading");
+                                progress.setMessage("Your book is being deleted. Please wait...");
+                                progress.setIndeterminate(true);
+                                progress.setCanceledOnTouchOutside(false);
+                                progress.show();
+                                BookbayFirestoreHelper.deleteBook(i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()), progress,context);
                             }
                         }).setNegativeButton("Cancel", null);
                 Dialog dialog = dialogBuilder.create();
