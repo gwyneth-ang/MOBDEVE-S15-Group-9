@@ -13,6 +13,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -38,6 +39,10 @@ import com.mobdeve.s15.group.nine.bookbay.OrdersAdapter;
 import com.mobdeve.s15.group.nine.bookbay.SellingOrdersActivity;
 import com.mobdeve.s15.group.nine.bookbay.SortByOrderDate;
 import com.mobdeve.s15.group.nine.bookbay.ThriftStoreSellingBooksAdapter;
+import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
+import com.mobdeve.s15.group.nine.bookbay.model.Books_sell;
+import com.mobdeve.s15.group.nine.bookbay.model.Notifications;
+import com.mobdeve.s15.group.nine.bookbay.model.Orders;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -192,6 +197,7 @@ public class BookbayFirestoreHelper {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
+                            Log.d("TEST", "Hi");
 
                             ArrayList<BooksOrders> booksOrders = new ArrayList<>();
 
@@ -398,7 +404,7 @@ public class BookbayFirestoreHelper {
                     }
                 });
 
-    }
+        }
 
     public static FirestoreRecyclerOptions<Notifications> findNotificationOptions (String buyerID) {
         Query myNotificationsQuery = BookbayFirestoreReferences.getFirestoreInstance()
@@ -680,8 +686,15 @@ public class BookbayFirestoreHelper {
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
+                boolean notDenied = false;
                 if (task.getResult().size() > 0) {
-                    //TODO: cannot delete (CHECK)
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (document.get(BookbayFirestoreReferences.STATUS_FIELD) == BookStatus.CONFIRMED || document.get(BookbayFirestoreReferences.STATUS_FIELD) == BookStatus.PENDING) {
+                            notDenied = true;
+                        }
+                    }
+                }
+                if(task.getResult().size() > 0 && notDenied) {
                     progress.dismiss();
                     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
                             .setTitle("Delete Unsuccessful")
@@ -691,13 +704,30 @@ public class BookbayFirestoreHelper {
                     dialog.setCanceledOnTouchOutside(false);
                     dialog.show();
                 } else {
-                    //TODO: delete image in storage(?) - check function above "deleteBookImageFromStorage" if needed
-                    //delete
                     BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                            .document(bookID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            .document(bookID).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
-                        public void onSuccess(Void unused) {
-                            ((Activity) context).finish();
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            String image = documentSnapshot.getString(BookbayFirestoreReferences.IMAGE_FIELD);
+                            BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                                    .document(bookID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    //delete book image
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull @NotNull Exception e) {
+                                    progress.dismiss();
+                                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
+                                            .setTitle("Delete Unsuccessful")
+                                            .setMessage("An error has occured please try again")
+                                            .setPositiveButton("OK", null);
+                                    Dialog dialog = dialogBuilder.create();
+                                    dialog.setCanceledOnTouchOutside(false);
+                                    dialog.show();
+                                }
+                            });
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
