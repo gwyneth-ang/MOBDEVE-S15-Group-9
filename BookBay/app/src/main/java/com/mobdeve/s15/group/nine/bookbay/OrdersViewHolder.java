@@ -2,19 +2,19 @@ package com.mobdeve.s15.group.nine.bookbay;
 
 import android.graphics.Color;
 import android.net.Uri;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
-import java.text.DateFormat;
+
 import java.text.SimpleDateFormat;
 
+import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
+import com.mobdeve.s15.group.nine.bookbay.model.Books_sell;
+import com.mobdeve.s15.group.nine.bookbay.model.Orders;
 import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
@@ -54,7 +54,7 @@ public class OrdersViewHolder extends RecyclerView.ViewHolder {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         this.s_book_status.setAdapter(adapter);
-        this.s_book_status.setSelection(0,false);
+        this.s_book_status.setSelection(0, false);
 
         SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd, yyyy | hh:mm aa");
 
@@ -119,6 +119,10 @@ public class OrdersViewHolder extends RecyclerView.ViewHolder {
 
     public void setItemSelectedListener(AdapterView.OnItemSelectedListener onItemSelectedListener) {
         this.s_book_status.setOnItemSelectedListener(onItemSelectedListener);
+    }
+
+    public void setSelectedToPending(){
+        this.s_book_status.setSelection(0);
     }
 
 

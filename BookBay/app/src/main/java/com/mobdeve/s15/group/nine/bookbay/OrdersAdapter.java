@@ -1,7 +1,6 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.text.Html;
 import android.util.Log;
@@ -9,37 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import org.jetbrains.annotations.NotNull;
+import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
 
 public class OrdersAdapter extends RecyclerView.Adapter <OrdersViewHolder> {
 
@@ -91,10 +69,7 @@ public class OrdersAdapter extends RecyclerView.Adapter <OrdersViewHolder> {
                             "Continue",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-
-                                    BookbayFirestoreHelper.updateStatusAndNotifications(booksOrders.get(position), bookStatus, context);
-
-                                    Log.d("TEST", prevBookStatus + " " + bookStatus + " " + position + " " + booksOrders.get(position).getBook().getBooks_sellID().getId());
+                                    BookbayFirestoreHelper.updateStatusAndNotifications(booksOrders.get(position), position, bookStatus, context, OrdersAdapter.this);
                                 }
                             });
 
@@ -102,6 +77,7 @@ public class OrdersAdapter extends RecyclerView.Adapter <OrdersViewHolder> {
                             "Cancel",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
+                                    holder.setSelectedToPending(); // change selected to pending
                                     dialog.cancel();
                                 }
                             });

@@ -6,14 +6,12 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -21,14 +19,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 import com.squareup.picasso.Picasso;
-
-import java.util.Set;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,7 +85,7 @@ public class view_account extends Fragment {
         this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
         dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, user.getUid())
-                .whereEqualTo(BookbayFirestoreReferences.ORDER_DATE_FIELD, null)
+                .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {

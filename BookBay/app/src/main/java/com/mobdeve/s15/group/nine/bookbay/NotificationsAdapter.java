@@ -1,8 +1,6 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -10,10 +8,9 @@ import android.view.View;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.mobdeve.s15.group.nine.bookbay.model.Notifications;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
 
 public class NotificationsAdapter extends FirestoreRecyclerAdapter<Notifications, NotificationsViewHolder> {
 

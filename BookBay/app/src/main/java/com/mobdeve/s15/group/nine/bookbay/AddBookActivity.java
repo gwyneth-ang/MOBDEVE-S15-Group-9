@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -20,49 +19,39 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
+import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
+import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
+import com.mobdeve.s15.group.nine.bookbay.model.Books_sell;
 import com.squareup.picasso.Picasso;
 
-import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Document;
-
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Calendar;
 import java.util.TimeZone;
-import java.util.Date;
-
-import java.text.SimpleDateFormat;
 
 public class AddBookActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    public static String
+            BOOKID_KEY = "BOOKID_KEY",
+            TITLE_KEY = "TITLE_KEY",
+            AUTHOR_KEY = "AUTHOR_KEY",
+            CONDITION_KEY = "CONDITION_KEY",
+            PRICE_KEY = "PRICE_KEY",
+            REVIEW_KEY = "REVIEW_KEY",
+            IMAGE_KEY = "IMAGE_KEY";
 
     private Button Bt_browse_addBook, Bt_addBook;
     private ImageView Iv_bookImage;
     private TextView TvAddOrEditTitle;
     private EditText Et_bookTitle_addBook, Et_author_addBook, Et_price_addBook, Et_review_addBook;
-    private Uri imageUri, tempUri, updateUri;
+    private Uri imageUri, tempUri;
     private String selectorChoice = "New", oldTitle, oldAuthor, oldCondition, oldReview, bookID, TAG="inside";
     private float oldPrice;
-    private int ViewKey = 0;
+    private int ViewKey = 0, spinnerIndex;
     private boolean imageChanged = false;
 
     private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult(
@@ -124,20 +113,31 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
             this.Bt_addBook.setText("Update");
             this.ViewKey = 1;
 
-            bookID = IntentKeys.BOOK_ID_KEY.name();
+            bookID = i.getStringExtra(IntentKeys.BOOK_ID_KEY.name());
             oldTitle = i.getStringExtra(IntentKeys.TITLE_KEY.name());
+            Log.d("OLD TITLE EDITING", oldTitle);
             this.Et_bookTitle_addBook.setText(oldTitle.trim());
             oldAuthor = i.getStringExtra(IntentKeys.AUTHOR_KEY.name());
             this.Et_author_addBook.setText(oldAuthor.trim());
-            //oldPrice = Float.parseFloat(i.getStringExtra(IntentKeys.PRICE_KEY.name()));
-            //this.Et_price_addBook.setText(String.valueOf(oldPrice));
-            //oldReview = i.getStringExtra(IntentKeys.REVIEW_KEY.name());
-            //this.Et_review_addBook.setText(oldReview);
+            oldPrice = i.getFloatExtra(IntentKeys.PRICE_KEY.name(), 0);
+            this.Et_price_addBook.setText(String.valueOf(oldPrice));
+            oldReview = i.getStringExtra(IntentKeys.REVIEW_KEY.name());
+            this.Et_review_addBook.setText(oldReview);
             oldCondition = IntentKeys.CONDITION_KEY.name();
+            if (oldCondition == "New") {
+                spinnerIndex = 0;
+            } else if (oldCondition == "Good") {
+                spinnerIndex = 1;
+            } else {
+                spinnerIndex = 2;
+            }
+            spinner_addBook.setSelection(spinnerIndex);
+
 
             //TODO: Check this part
             this.tempUri = Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name()));
             Picasso.get().load(tempUri).into(Iv_bookImage);
+            imageUri = tempUri;
         }
 
         this.Bt_browse_addBook.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +152,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
             }
         });
 
-        this.Bt_addBook.setOnClickListener((new View.OnClickListener() {
+        this.Bt_addBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -195,40 +195,9 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                                 true
                         );
 
-                        CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
-                        String ID = UUID.randomUUID().toString();
+                        //TODO: start here
+                        BookbayFirestoreHelper.AddBook(progressDialog, imageUri, book, AddBookActivity.this);
 
-                        StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
-                                .child(BookbayFirestoreReferences.generateNewImagePath(ID, imageUri));
-
-                        //task 1 - upload the image to the Firebase
-                        Task t1 = imageRef.putFile(imageUri)
-                                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
-                                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                                        progressDialog.setCanceledOnTouchOutside(false);
-                                        progressDialog.setMessage("Uploaded  " + (int) progress + "%");
-                                    }
-                                });
-
-                        //adding the book to the book_sell collection
-                        Task t2 = bookRef.document(ID).set(book);
-
-                        Tasks.whenAllSuccess(t1, t2).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
-                            @Override
-                            public void onSuccess(List<Object> objects) {
-                                progressDialog.setCanceledOnTouchOutside(true);
-                                progressDialog.setMessage("Success!");
-                                finish();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull @NotNull Exception e) {
-                                progressDialog.setCanceledOnTouchOutside(true);
-                                progressDialog.setMessage("Error occurred. Please try again.");
-                            }
-                        });
                     } else {
                         Toast.makeText(
                                 AddBookActivity.this,
@@ -238,60 +207,76 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     }
                 } else {
                     //if view is for editing book
-                    CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
-
-                    //TODO: add this later on
-                    //Task t2 = bookRef.document(bookID).set(book);
+                    Boolean changed = false;
 
                     //create a hashmap for all the changed values
-                    Map<String, Object> updateBook = new HashMap<>();
-                    //if title is changed
-                    if (!title.equals(oldTitle)) {
-                        updateBook.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, title);
-                    }
-                    //if author is changed
-                    if (!author.equals(oldAuthor)) {
-                        updateBook.put(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, author);
-                    }
-                    //if price is changed
-                    if (price != oldPrice) {
-                        updateBook.put(BookbayFirestoreReferences.PRICE_FIELD, price);
-                    }
-                    //if condition is changed
-                    if (!selectorChoice.equals(oldCondition)) {
-                        updateBook.put(BookbayFirestoreReferences.CONDITION_FIELD, selectorChoice);
-                    }
-                    //if the image has been changed:
-                    if (imageChanged){
-                        StorageReference photoRef = BookbayFirestoreReferences.getStorageReferenceInstance()
-                                .child(BookbayFirestoreReferences.generateNewImagePath(bookID, tempUri));
-                        photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                // File deleted successfully
-                                Log.d(TAG, "onSuccess: deleted file");
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception exception) {
-                                // Uh-oh, an error occurred!
-                                Log.d(TAG, "onFailure: did not delete file");
-                            }
-                        });
+                    if (imageUri != null && title != null && author != null && price != null && review != null) {
+                        Map<String, Object> updateBook = new HashMap<>();
+                        //if title is changed
+                        if (!title.equals(oldTitle)) {
+                            changed = true;
+                            updateBook.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, title);
+                        }
+                        //if author is changed
+                        if (!author.equals(oldAuthor)) {
+                            changed = true;
+                            updateBook.put(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, author);
+                        }
+                        //if price is changed
+                        if (price != oldPrice) {
+                            changed = true;
+                            updateBook.put(BookbayFirestoreReferences.PRICE_FIELD, price);
+                        }
+                        //if condition is changed
+                        if (!selectorChoice.equals(oldCondition)) {
+                            changed = true;
+                            updateBook.put(BookbayFirestoreReferences.CONDITION_FIELD, selectorChoice);
+                        }
+                        if (!review.equals(oldReview)){
+                            changed = true;
+                            updateBook.put(BookbayFirestoreReferences.REVIEW_FIELD, review);
+                        }
+                        //if the image has been changed:
+                        if (imageChanged){
+                            //used for deleting
+                            BookbayFirestoreHelper.deleteBookImageFromStorage(bookID, tempUri);
 
-                        updateBook.put(BookbayFirestoreReferences.IMAGE_FIELD, updateUri);
+                            updateBook.put(BookbayFirestoreReferences.IMAGE_FIELD, imageUri.toString());
 
-                        CollectionReference photoRefAdd = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
-                        String ID = UUID.randomUUID().toString();
+                            final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
+                            progressDialog.setTitle("Uploading");
+                            progressDialog.show();
 
-                        StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
-                                .child(BookbayFirestoreReferences.generateNewImagePath(bookID, updateUri));
+                            BookbayFirestoreHelper.editBookWithImage(progressDialog, bookID, imageUri, updateBook, AddBookActivity.this, title, author, selectorChoice, price, review);
+                        }
+
+
+                        //check
+                        if (changed && !imageChanged) {
+                            Log.d("TEST EDIT", bookID);
+                            BookbayFirestoreHelper.editBookNoImage(bookID, updateBook);
+                            //TODO: Make intent
+                            Intent return_intent = new Intent();
+                            return_intent.putExtra(BOOKID_KEY, bookID);
+                            return_intent.putExtra(TITLE_KEY, title);
+                            return_intent.putExtra(AUTHOR_KEY, author);
+                            return_intent.putExtra(CONDITION_KEY, selectorChoice);
+                            return_intent.putExtra(REVIEW_KEY, review);
+                            return_intent.putExtra(PRICE_KEY, price);
+                            return_intent.putExtra(IMAGE_KEY, imageUri.toString());
+                            setResult(Activity.RESULT_OK, return_intent);
+                            finish();
+                        }
+                    } else {
+                        Toast.makeText(
+                                AddBookActivity.this,
+                                "Please fill up all of the inputs.",
+                                Toast.LENGTH_SHORT
+                        ).show();
                     }
-                    //check
-                    bookRef.document(bookID).update(updateBook);
                 }
             }
-        }));
+        });
     }
 
     @Override

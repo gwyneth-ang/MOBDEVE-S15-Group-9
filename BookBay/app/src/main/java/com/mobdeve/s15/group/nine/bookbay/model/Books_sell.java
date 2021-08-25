@@ -1,4 +1,4 @@
-package com.mobdeve.s15.group.nine.bookbay;
+package com.mobdeve.s15.group.nine.bookbay.model;
 
 
 import com.google.firebase.firestore.CollectionReference;

@@ -1,41 +1,20 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TimeZone;
+import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
+import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 
 public class ConfirmOrderDialog extends AppCompatDialogFragment {
     private TextView title, price, condition;
@@ -81,7 +60,7 @@ public class ConfirmOrderDialog extends AppCompatDialogFragment {
                         Bundle bundle = getArguments();
                         String bookID = bundle.getString(IntentKeys.BOOK_ID_KEY.name(), "");
                         dialog.cancel();
-                        ProgressDialog progress = new ProgressDialog(getActivity()); // this = YourActivity
+                        ProgressDialog progress = new ProgressDialog(getActivity());
                         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                         progress.setTitle("Loading");
                         progress.setMessage("Your order is being processed. Please wait...");

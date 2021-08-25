@@ -1,4 +1,4 @@
-package com.mobdeve.s15.group.nine.bookbay;
+package com.mobdeve.s15.group.nine.bookbay.model;
 
 import android.net.Uri;
 import android.util.Log;
@@ -9,16 +9,13 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.mobdeve.s15.group.nine.bookbay.R;
+import com.mobdeve.s15.group.nine.bookbay.model.Books_sell;
+import com.mobdeve.s15.group.nine.bookbay.model.Notifications;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
 
 public class BookbayFirestoreReferences {
     public final static String
@@ -94,6 +91,26 @@ public class BookbayFirestoreReferences {
 
     public static void downloadImageIntoImageView(Books_sell book, ImageView iv) {
         String path = "images/" + book.getBooks_sellID().getId() + "-" + Uri.parse(book.getImage()).getLastPathSegment();
+
+        Log.d("TEST", path);
+
+        getStorageReferenceInstance().child(path).getDownloadUrl()
+                .addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(Task<Uri> task) {
+                        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(iv.getContext());
+                        circularProgressDrawable.setCenterRadius(30);
+                        Picasso.get()
+                                .load(task.getResult())
+                                .error(R.drawable.ic_error)
+                                .placeholder(circularProgressDrawable)
+                                .into(iv);
+                    }
+                });
+    }
+
+    public static void downloadImageIntoImageViewUsingId(String ID, String image,ImageView iv) {
+        String path = "images/" + ID + "-" + Uri.parse(image).getLastPathSegment();
 
         Log.d("TEST", path);
 

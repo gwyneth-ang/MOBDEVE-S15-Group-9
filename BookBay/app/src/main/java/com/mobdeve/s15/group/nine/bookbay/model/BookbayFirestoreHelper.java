@@ -1,17 +1,18 @@
-package com.mobdeve.s15.group.nine.bookbay;
+package com.mobdeve.s15.group.nine.bookbay.model;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -20,22 +21,34 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.Query.Direction;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.mobdeve.s15.group.nine.bookbay.AddBookActivity;
+import com.mobdeve.s15.group.nine.bookbay.BookStatus;
+import com.mobdeve.s15.group.nine.bookbay.BooksOrders;
+import com.mobdeve.s15.group.nine.bookbay.OrdersAdapter;
+import com.mobdeve.s15.group.nine.bookbay.SellingOrdersActivity;
+import com.mobdeve.s15.group.nine.bookbay.SortByOrderDate;
+import com.mobdeve.s15.group.nine.bookbay.ThriftStoreSellingBooksAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.UUID;
 
 public class BookbayFirestoreHelper {
 
@@ -47,7 +60,7 @@ public class BookbayFirestoreHelper {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Log.d("TEST", "Hi");
 
                             ArrayList<Books_sell> books = new ArrayList<>();
@@ -88,7 +101,7 @@ public class BookbayFirestoreHelper {
                 });
     }
 
-    public static void searchFilterBooks (String searchText, String strDirection, String whichFilter, ThriftStoreSellingBooksAdapter adapter) {
+    public static void searchFilterBooks(String searchText, String strDirection, String whichFilter, ThriftStoreSellingBooksAdapter adapter) {
 
         Direction direction = Direction.ASCENDING;
         if (strDirection.equals("DES")) {
@@ -110,7 +123,7 @@ public class BookbayFirestoreHelper {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Log.d("TEST", "Hi");
 
                             ArrayList<Books_sell> books = new ArrayList<>();
@@ -127,11 +140,11 @@ public class BookbayFirestoreHelper {
                 });
     }
 
-    public static void searchFilterBooksSeller () {
+    public static void searchFilterBooksSeller() {
 
     }
 
-    public static void findBuyerOrders (OrdersAdapter myOrdersAdapter, String buyerUID) {
+    public static void findBuyerOrders(OrdersAdapter myOrdersAdapter, String buyerUID) {
         BookbayFirestoreReferences.getFirestoreInstance().collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, buyerUID)
                 .orderBy(BookbayFirestoreReferences.ORDER_DATE_FIELD, Query.Direction.DESCENDING).get()
@@ -160,6 +173,8 @@ public class BookbayFirestoreHelper {
 
                                         booksOrders.add(new BooksOrders(orderTemp, bookTemp));
 
+                                        Collections.sort(booksOrders, new SortByOrderDate());
+
                                         myOrdersAdapter.setData(booksOrders);
                                         myOrdersAdapter.notifyDataSetChanged();
                                     }
@@ -170,7 +185,7 @@ public class BookbayFirestoreHelper {
                 });
     }
 
-    public static void findSellerOrders (OrdersAdapter sellerOrdersAdapter, String sellerUID) {
+    public static void findSellerOrders(OrdersAdapter sellerOrdersAdapter, String sellerUID) {
         BookbayFirestoreReferences.getFirestoreInstance().collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
                 .orderBy(BookbayFirestoreReferences.ORDER_DATE_FIELD, Query.Direction.DESCENDING).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -205,6 +220,8 @@ public class BookbayFirestoreHelper {
                                             Log.d("TEST", "Error getting documents: ", task.getException());
                                         }
 
+                                        Collections.sort(booksOrders, new SortByOrderDate());
+
                                         sellerOrdersAdapter.setData(booksOrders);
                                         sellerOrdersAdapter.notifyDataSetChanged();
 
@@ -217,7 +234,7 @@ public class BookbayFirestoreHelper {
                 });
     }
 
-    public static void updateStatusAndNotifications (BooksOrders booksOrders, String bookStatus, Context context) {
+    public static void updateStatusAndNotifications(BooksOrders booksOrders, int position, String bookStatus, Context context, OrdersAdapter ordersAdapter) {
 
         ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setTitle("Processing");
@@ -313,16 +330,13 @@ public class BookbayFirestoreHelper {
                     .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
                         @Override
                         public void onSuccess(List<Object> objects) {
-                            ((SellingOrdersActivity) context).runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ((SellingOrdersActivity) context).updateDataAndAdapter();
 
-                                    progressDialog.setCanceledOnTouchOutside(true);
-                                    progressDialog.setMessage("Success!");
-                                    progressDialog.dismiss();
-                                }
-                            });
+                            booksOrders.getOrder().setStatus(BookStatus.DECLINED.name());
+                            ordersAdapter.notifyItemChanged(position);
+
+                            progressDialog.setCanceledOnTouchOutside(true);
+                            progressDialog.setMessage("Success!");
+                            progressDialog.dismiss();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -335,9 +349,9 @@ public class BookbayFirestoreHelper {
                             progressDialog.dismiss();
                         }
                     });
-
         }
     }
+
 
     public static void declineOthersAndNotify (Map<String, Object> declineAll, BooksOrders booksOrders, String orderID, Calendar cal, String buyerID, ProgressDialog progressDialog, Context context) {
 
@@ -366,16 +380,11 @@ public class BookbayFirestoreHelper {
                     public void onSuccess(List<Object> objects) {
                         Log.d("TEST 2", "Decline all orders and notify");
 
-                        ((SellingOrdersActivity) context).runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ((SellingOrdersActivity) context).updateDataAndAdapter();
+                        ((SellingOrdersActivity) context).updateDataAndAdapter();
 
-                                progressDialog.setCanceledOnTouchOutside(true);
-                                progressDialog.setMessage("Success!");
-                                progressDialog.dismiss();
-                            }
-                        });
+                        progressDialog.setCanceledOnTouchOutside(true);
+                        progressDialog.setMessage("Success!");
+                        progressDialog.dismiss();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -404,7 +413,7 @@ public class BookbayFirestoreHelper {
         return notifOptions;
     }
 
-    public static void placeOrder(String  bookID, ProgressDialog progress, Context activityContext){
+    public static void placeOrder(String bookID, ProgressDialog progress, Context activityContext) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
         BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
@@ -412,8 +421,8 @@ public class BookbayFirestoreHelper {
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull @NotNull Task<DocumentSnapshot> task) {
-                        if(task.isSuccessful()){
-                            if(task.getResult().getString(BookbayFirestoreReferences.OWNER_ID_UID_FIELD).equals(user.getUid())){
+                        if (task.isSuccessful()) {
+                            if (task.getResult().getString(BookbayFirestoreReferences.OWNER_ID_UID_FIELD).equals(user.getUid())) {
                                 Context context = progress.getContext();
                                 progress.dismiss();
                                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
@@ -428,8 +437,7 @@ public class BookbayFirestoreHelper {
                                 Dialog dialog = dialogBuilder.create();
                                 dialog.setCanceledOnTouchOutside(false);
                                 dialog.show();
-                            }
-                            else{
+                            } else {
                                 BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                                         .document(bookID)
                                         .collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
@@ -517,8 +525,7 @@ public class BookbayFirestoreHelper {
                                     }
                                 });
                             }
-                        }
-                        else{
+                        } else {
                             Context context = progress.getContext();
                             progress.dismiss();
                             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
@@ -539,4 +546,175 @@ public class BookbayFirestoreHelper {
 
 
     }
+
+    public static void AddBook(ProgressDialog progressDialog, Uri imageUri, Books_sell book, Context context) {
+        CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
+        String ID = UUID.randomUUID().toString();
+
+        StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
+                .child(BookbayFirestoreReferences.generateNewImagePath(ID, imageUri));
+
+        //task 1 - upload the image to the Firebase
+        Task t1 = imageRef.putFile(imageUri)
+                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
+                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.setMessage("Uploaded  " + (int) progress + "%");
+                    }
+                });
+
+        //adding the book to the book_sell collection
+        Task t2 = bookRef.document(ID).set(book);
+
+
+        Tasks.whenAllSuccess(t1, t2).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+            @Override
+            public void onSuccess(List<Object> objects) {
+                progressDialog.setCanceledOnTouchOutside(true);
+                progressDialog.setMessage("Success!");
+                ((AddBookActivity) context).finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
+                progressDialog.setCanceledOnTouchOutside(true);
+                progressDialog.setMessage("Error occurred. Please try again.");
+            }
+        });
+    }
+
+    public static void deleteBookImageFromStorage(String bookID, Uri tempUri) {
+        StorageReference photoRef = BookbayFirestoreReferences.getStorageReferenceInstance()
+                .child(BookbayFirestoreReferences.generateNewImagePath(bookID, tempUri));
+
+        // Delete picture from firestore
+        photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                // File deleted successfully
+                Log.d("Storage Result", "onSuccess: deleted file");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Uh-oh, an error occurred!
+                Log.d("Storage Result", "onFailure: did not delete file");
+            }
+        });
+    }
+
+    public static void editBookWithImage(ProgressDialog progressDialog, String bookID, Uri imageUri, Map<String, Object> updateBook, Context context, String title, String author, String selectorChoice, Float price, String review) {
+        CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
+
+        StorageReference photoRefAdd = BookbayFirestoreReferences.getStorageReferenceInstance()
+                .child(BookbayFirestoreReferences.generateNewImagePath(bookID, imageUri));
+
+        //upload the image to the Firebase
+        Task uploadFirebase = photoRefAdd.putFile(imageUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
+                double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setMessage("Uploaded  " + (int) progress + "%");
+            }
+        });
+
+        Task update = bookRef.document(bookID).update(updateBook);
+
+        Tasks.whenAllSuccess(uploadFirebase, update).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+            @Override
+            public void onSuccess(List<Object> objects) {
+                progressDialog.setCanceledOnTouchOutside(true);
+                progressDialog.setMessage("Success!");
+
+                Intent return_intent = new Intent();
+                return_intent.putExtra(AddBookActivity.BOOKID_KEY, bookID);
+                return_intent.putExtra(AddBookActivity.TITLE_KEY, title);
+                return_intent.putExtra(AddBookActivity.AUTHOR_KEY, author);
+                return_intent.putExtra(AddBookActivity.CONDITION_KEY, selectorChoice);
+                return_intent.putExtra(AddBookActivity.PRICE_KEY, price);
+                return_intent.putExtra(AddBookActivity.IMAGE_KEY, imageUri.toString());
+                return_intent.putExtra(AddBookActivity.REVIEW_KEY, review);
+                ((AddBookActivity) context).setResult(Activity.RESULT_OK, return_intent);
+                ((AddBookActivity) context).finish();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull @NotNull Exception e) {
+                progressDialog.setCanceledOnTouchOutside(true);
+                progressDialog.setMessage("Error occurred. Please try again.");
+            }
+        });
+    }
+
+    public static void editBookNoImage(String bookID, Map<String, Object> updateBook) {
+        CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
+        bookRef.document(bookID)
+                .update(updateBook)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Edit Book", "Edit successful");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull @NotNull Exception e) {
+                        Log.d("Edit Book", e.getMessage());
+                    }
+                });
+    }
+
+    public static void deleteBook (String bookID, Context context){
+        ProgressDialog progress = new ProgressDialog(context);
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setTitle("Loading");
+        progress.setMessage("Your book is being deleted. Please wait...");
+        progress.setIndeterminate(true);
+        progress.setCanceledOnTouchOutside(false);
+        progress.show();
+        BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                .document(bookID).collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
+                if (task.getResult().size() > 0) {
+                    //TODO: cannot delete (CHECK)
+                    progress.dismiss();
+                    AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
+                            .setTitle("Delete Unsuccessful")
+                            .setMessage("Book cannot be deleted!")
+                            .setPositiveButton("OK", null);
+                    Dialog dialog = dialogBuilder.create();
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.show();
+                } else {
+                    //TODO: delete image in storage(?) - check function above "deleteBookImageFromStorage" if needed
+                    //delete
+                    BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                            .document(bookID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            ((Activity) context).finish();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull @NotNull Exception e) {
+                            progress.dismiss();
+                            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
+                                    .setTitle("Delete Unsuccessful")
+                                    .setMessage("An error has occured please try again")
+                                    .setPositiveButton("OK", null);
+                            Dialog dialog = dialogBuilder.create();
+                            dialog.setCanceledOnTouchOutside(false);
+                            dialog.show();
+                        }
+                    });
+                }
+            }
+        });
+    }
 }
+

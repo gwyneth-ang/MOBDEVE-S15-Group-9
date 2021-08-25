@@ -8,7 +8,9 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.DateFormat;
+import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
+import com.mobdeve.s15.group.nine.bookbay.model.Notifications;
+
 import java.text.SimpleDateFormat;
 
 public class NotificationsViewHolder extends RecyclerView.ViewHolder {

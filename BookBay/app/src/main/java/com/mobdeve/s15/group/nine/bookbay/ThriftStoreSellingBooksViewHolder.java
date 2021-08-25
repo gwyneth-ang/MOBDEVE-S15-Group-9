@@ -1,17 +1,13 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
-import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
+import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
+import com.mobdeve.s15.group.nine.bookbay.model.Books_sell;
 
 public class ThriftStoreSellingBooksViewHolder extends RecyclerView.ViewHolder {
 
