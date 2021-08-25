@@ -289,19 +289,17 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                         if (changed && !imageChanged) {
                             Log.d("TEST EDIT", bookID);
                             BookbayFirestoreHelper.editBookNoImage(bookID, updateBook);
+                            //TODO: Make intent
+                            Intent return_intent = new Intent();
+                            return_intent.putExtra(BOOKID_KEY, bookID);
+                            return_intent.putExtra(TITLE_KEY, title);
+                            return_intent.putExtra(AUTHOR_KEY, author);
+                            return_intent.putExtra(CONDITION_KEY, selectorChoice);
+                            return_intent.putExtra(PRICE_KEY, price);
+                            return_intent.putExtra(IMAGE_KEY, imageUri.toString());
+                            setResult(Activity.RESULT_OK, return_intent);
+                            finish();
                         }
-
-                        Log.d("askdjkadajd:", bookID);
-                        //TODO: Make intent
-                        Intent return_intent = new Intent();
-                        return_intent.putExtra(BOOKID_KEY, bookID);
-                        return_intent.putExtra(TITLE_KEY, title);
-                        return_intent.putExtra(AUTHOR_KEY, author);
-                        return_intent.putExtra(CONDITION_KEY, selectorChoice);
-                        return_intent.putExtra(PRICE_KEY, price);
-                        return_intent.putExtra(IMAGE_KEY, imageUri.toString());
-                        setResult(Activity.RESULT_OK, return_intent);
-                        finish();
                     } else {
                         Toast.makeText(
                                 AddBookActivity.this,

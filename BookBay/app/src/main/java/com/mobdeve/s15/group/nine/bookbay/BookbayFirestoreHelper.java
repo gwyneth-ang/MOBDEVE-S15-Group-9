@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 import android.content.Context;
@@ -545,7 +546,7 @@ public class BookbayFirestoreHelper {
         });
     }
 
-    public static void editBookWithImage(ProgressDialog progressDialog, String bookID, Uri imageUri, Map<String, Object> updateBook, Context context) {
+    public static void editBookWithImage(ProgressDialog progressDialog, String bookID, Uri imageUri, Map<String, Object> updateBook, Context context, String title, String author, String selectorChoice, Float price) {
         CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
 
         StorageReference photoRefAdd = BookbayFirestoreReferences.getStorageReferenceInstance()
@@ -568,7 +569,16 @@ public class BookbayFirestoreHelper {
             public void onSuccess(List<Object> objects) {
                 progressDialog.setCanceledOnTouchOutside(true);
                 progressDialog.setMessage("Success!");
-                ((AddBookActivity)context).finish();
+
+                Intent return_intent = new Intent();
+                return_intent.putExtra(AddBookActivity.BOOKID_KEY, bookID);
+                return_intent.putExtra(AddBookActivity.TITLE_KEY, title);
+                return_intent.putExtra(AddBookActivity.AUTHOR_KEY, author);
+                return_intent.putExtra(AddBookActivity.CONDITION_KEY, selectorChoice);
+                return_intent.putExtra(AddBookActivity.PRICE_KEY, price);
+                return_intent.putExtra(AddBookActivity.IMAGE_KEY, imageUri.toString());
+                ((AddBookActivity) context).setResult(Activity.RESULT_OK, return_intent);
+                ((AddBookActivity) context).finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

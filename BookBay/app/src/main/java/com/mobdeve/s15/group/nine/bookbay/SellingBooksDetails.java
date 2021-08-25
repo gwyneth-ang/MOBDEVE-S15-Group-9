@@ -47,12 +47,12 @@ public class SellingBooksDetails extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     if(result.getResultCode() == Activity.RESULT_OK) {
                         /*
-                        * return_intent.putExtra(TITLE_KEY, title);
-                        * return_intent.putExtra(AUTHOR_KEY, author);
-                        *  return_intent.putExtra(CONDITION_KEY, selectorChoice);
-                        * return_intent.putExtra(PRICE_KEY, price);
-                        * return_intent.putExtra(IMAGE_KEY, imageUri.toString());
-                        * */
+                         * return_intent.putExtra(TITLE_KEY, title);
+                         * return_intent.putExtra(AUTHOR_KEY, author);
+                         *  return_intent.putExtra(CONDITION_KEY, selectorChoice);
+                         * return_intent.putExtra(PRICE_KEY, price);
+                         * return_intent.putExtra(IMAGE_KEY, imageUri.toString());
+                         * */
                         String bookID = result.getData().getStringExtra(AddBookActivity.BOOKID_KEY);
                         String title = result.getData().getStringExtra(AddBookActivity.TITLE_KEY);
                         bookTitle.setText(title);
@@ -63,7 +63,7 @@ public class SellingBooksDetails extends AppCompatActivity {
                         Float priceStr = result.getData().getFloatExtra(AddBookActivity.PRICE_KEY, 0);
                         price.setText(String.valueOf(priceStr));
                         String imageUri = result.getData().getStringExtra(AddBookActivity.IMAGE_KEY);
-                        //BookbayFirestoreReferences.downloadImageIntoImageViewUsingId(bookID, imageUri, bookImage);
+                        BookbayFirestoreReferences.downloadImageIntoImageViewUsingId(bookID, imageUri, bookImage);
                     }
                 }
             });
