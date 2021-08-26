@@ -302,7 +302,7 @@ public class BookbayFirestoreHelper {
 
         Map<String, Object> notification = new HashMap<>();
 
-        notification.put(BookbayFirestoreReferences.BOOK_REF_FIELD, booksOrders.getBook().getBooks_sellID());
+        notification.put(BookbayFirestoreReferences.BOOK_ID_FIELD, booksOrders.getBook().getBooks_sellID().getId());
         notification.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, booksOrders.getBook().getBookTitle());
         notification.put(BookbayFirestoreReferences.IMAGE_FIELD, booksOrders.getBook().getImage());
         notification.put(BookbayFirestoreReferences.PROFILE_NAME_FIELD, booksOrders.getBook().getProfileName());
@@ -409,7 +409,7 @@ public class BookbayFirestoreHelper {
 
         Map<String, Object> notificationDecline = new HashMap<>();
 
-        notificationDecline.put(BookbayFirestoreReferences.BOOK_REF_FIELD, booksOrders.getBook().getBooks_sellID());
+        notificationDecline.put(BookbayFirestoreReferences.BOOK_ID_FIELD, booksOrders.getBook().getBooks_sellID().getId());
         notificationDecline.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, booksOrders.getBook().getBookTitle());
         notificationDecline.put(BookbayFirestoreReferences.IMAGE_FIELD, booksOrders.getBook().getImage());
         notificationDecline.put(BookbayFirestoreReferences.PROFILE_NAME_FIELD, booksOrders.getBook().getProfileName());

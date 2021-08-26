@@ -10,7 +10,7 @@ public class Notifications {
     private DocumentReference notificationID;
 
     // Attributes
-    private DocumentReference bookRef;
+    private String bookID;
     private String bookTitle;
     private String image;
     private String profileName;
@@ -23,8 +23,8 @@ public class Notifications {
 
     }
 
-    public Notifications (DocumentReference bookRef, String bookTitle, String image, String profileName, Date notificationDateTime, String status, String buyerID) {
-        this.bookRef = bookRef;
+    public Notifications (String bookID, String bookTitle, String image, String profileName, Date notificationDateTime, String status, String buyerID) {
+        this.bookID = bookID;
         this.bookTitle = bookTitle;
         this.image = image;
         this.profileName = profileName;
@@ -41,12 +41,12 @@ public class Notifications {
         this.notificationID = notificationID;
     }
 
-    public DocumentReference getBookRef() {
-        return bookRef;
+    public String getBookID() {
+        return bookID;
     }
 
-    public void setBookRef(DocumentReference bookRef) {
-        this.bookRef = bookRef;
+    public void setBookID(String bookID) {
+        this.bookID = bookID;
     }
 
     public String getBookTitle() {
