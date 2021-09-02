@@ -33,7 +33,7 @@ public class BookbayFirestoreReferences {
             PROFILE_NAME_FIELD = "profileName",
             PROFILE_IMAGE_FIELD = "profileImage",
             REVIEW_FIELD = "review",
-            BOOK_REF_FIELD = "bookRef",
+            BOOK_ID_FIELD = "bookID",
             NOTIFICATION_DATE_TIME_FIELD = "notificationDateTime",
             BUYER_ID_UID_FIELD = "buyerID",
             BUYER_NAME_FIELD = "buyerName",
@@ -70,7 +70,7 @@ public class BookbayFirestoreReferences {
     }
 
     public static void downloadImageIntoImageViewNotifcation(Notifications notifications, ImageView iv) {
-        String path = "images/" + notifications.getBookRef().getId() + "-" + Uri.parse(notifications.getImage()).getLastPathSegment();
+        String path = "images/" + notifications.getBookID() + "-" + Uri.parse(notifications.getImage()).getLastPathSegment();
 
         Log.d("TEST", path);
 

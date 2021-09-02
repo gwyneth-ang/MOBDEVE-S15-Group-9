@@ -302,7 +302,7 @@ public class BookbayFirestoreHelper {
 
         Map<String, Object> notification = new HashMap<>();
 
-        notification.put(BookbayFirestoreReferences.BOOK_REF_FIELD, booksOrders.getBook().getBooks_sellID());
+        notification.put(BookbayFirestoreReferences.BOOK_ID_FIELD, booksOrders.getBook().getBooks_sellID().getId());
         notification.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, booksOrders.getBook().getBookTitle());
         notification.put(BookbayFirestoreReferences.IMAGE_FIELD, booksOrders.getBook().getImage());
         notification.put(BookbayFirestoreReferences.PROFILE_NAME_FIELD, booksOrders.getBook().getProfileName());
@@ -409,7 +409,7 @@ public class BookbayFirestoreHelper {
 
         Map<String, Object> notificationDecline = new HashMap<>();
 
-        notificationDecline.put(BookbayFirestoreReferences.BOOK_REF_FIELD, booksOrders.getBook().getBooks_sellID());
+        notificationDecline.put(BookbayFirestoreReferences.BOOK_ID_FIELD, booksOrders.getBook().getBooks_sellID().getId());
         notificationDecline.put(BookbayFirestoreReferences.BOOK_TITLE_FIELD, booksOrders.getBook().getBookTitle());
         notificationDecline.put(BookbayFirestoreReferences.IMAGE_FIELD, booksOrders.getBook().getImage());
         notificationDecline.put(BookbayFirestoreReferences.PROFILE_NAME_FIELD, booksOrders.getBook().getProfileName());
@@ -723,7 +723,10 @@ public class BookbayFirestoreHelper {
             @Override
             public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
                 boolean notDeclined = false;
+                ArrayList<Boolean> haveOrders = new ArrayList<Boolean>();
+                haveOrders.add(false);
                 if (task.getResult().size() > 0) {
+                    haveOrders.set(0, true);
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         if (!(document.getData().get(BookbayFirestoreReferences.STATUS_FIELD).toString().equals(BookStatus.DECLINED.name()))) {
                             notDeclined = true;
@@ -756,7 +759,9 @@ public class BookbayFirestoreHelper {
                                             .document(bookID).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                         @Override
                                         public void onSuccess(Void unused) {
-                                            deleteBookImageFromStorage(bookID, Uri.parse(image));
+                                            if(!(haveOrders.get(0))){
+                                                deleteBookImageFromStorage(bookID, Uri.parse(image));
+                                            }
                                             progress.dismiss();
                                             ((Activity) context).finish();
                                         }
