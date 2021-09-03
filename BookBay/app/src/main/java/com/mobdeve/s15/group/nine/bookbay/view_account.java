@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +21,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,17 +89,20 @@ public class view_account extends Fragment {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         userName.setText(user.getDisplayName());
         Picasso.get().load(user.getPhotoUrl()).into(profilePicture);
-        numBooks.setText("SELLING " + "BOOKS");
+
         this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
-        dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+
+        this.dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, user.getUid())
                 .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            setNumBooksText(task.getResult().size());
-                        } else {
+                    public void onEvent(@Nullable QuerySnapshot value,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e == null) {
+                            setNumBooksText(value.size());
+                        }
+                        else{
                             setNumBooksText(-1);
                         }
                     }
