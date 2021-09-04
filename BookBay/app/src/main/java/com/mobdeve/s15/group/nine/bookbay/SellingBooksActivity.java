@@ -1,15 +1,21 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -20,6 +26,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
+import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 
 public class  SellingBooksActivity extends AppCompatActivity {
 
@@ -33,9 +40,23 @@ public class  SellingBooksActivity extends AppCompatActivity {
     private ImageButton Bt_thriftsellingbooks_filter;
     private SwipeRefreshLayout sfl_store_selling_books;
 
+    private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if(result.getResultCode() == Activity.RESULT_OK) {
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        BookbayFirestoreHelper.searchFilterBooksSeller(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), "ASC", "NONE",  sellingBookAdapter, user.getUid());
+                        Sv_thriftsellingbooks_search_bar.setQuery(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), false);
+                    }
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("selling books activity", "OnCreate");
         setContentView(R.layout.fragment_view_thrift_store);
 
         this.tv_my_books = findViewById(R.id.tv_my_books);
@@ -100,5 +121,9 @@ public class  SellingBooksActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         updateDataAndAdapter();
+    }
+
+    public ActivityResultLauncher<Intent> getActivityResultLauncher(){
+        return this.myActivityResultLauncher;
     }
 }

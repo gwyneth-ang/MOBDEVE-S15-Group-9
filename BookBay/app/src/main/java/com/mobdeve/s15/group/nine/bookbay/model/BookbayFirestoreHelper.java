@@ -163,9 +163,9 @@ public class BookbayFirestoreHelper {
         BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
                 .whereEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
-                .whereEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText)
+//                .whereEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText)
                 .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, sellerUID)
-                .orderBy(filter, direction)
+//                .orderBy(filter, direction)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
