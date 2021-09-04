@@ -50,5 +50,10 @@ public class HomePageActivity extends AppCompatActivity {
             }
             return  true;
         });
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.nav_fragment, new view_thrift_store())
+                .commit();
     }
 }
