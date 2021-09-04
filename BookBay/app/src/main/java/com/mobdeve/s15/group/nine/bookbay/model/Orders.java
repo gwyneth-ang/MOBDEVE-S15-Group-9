@@ -16,18 +16,20 @@ public class Orders {
     private Date notificationDateTime;
     private String buyerName;
     private String buyerImage;
+    private String buyerEmail;
 
     public Orders() {
 
     }
 
-    public Orders(String buyerID, Date orderDate, String status, Date notifcationDateTime, String buyerName, String buyerImage) {
+    public Orders(String buyerID, Date orderDate, String status, Date notifcationDateTime, String buyerName, String buyerImage, String buyerEmail) {
         this.buyerID = buyerID;
         this.orderDate = orderDate;
         this.status = status;
         this.notificationDateTime = notifcationDateTime;
         this.buyerName = buyerName;
         this.buyerImage = buyerImage;
+        this.buyerEmail = buyerEmail;
     }
 
     public DocumentReference getOrderID() {
@@ -86,5 +88,13 @@ public class Orders {
 
     public void setBuyerImage(String buyerImage) {
         this.buyerImage = buyerImage;
+    }
+
+    public String getBuyerEmail() {
+        return buyerEmail;
+    }
+
+    public void setBuyerEmail(String buyerEmail) {
+        this.buyerEmail = buyerEmail;
     }
 }

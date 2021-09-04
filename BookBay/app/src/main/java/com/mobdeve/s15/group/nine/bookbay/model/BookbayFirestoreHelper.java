@@ -501,7 +501,7 @@ public class BookbayFirestoreHelper {
                                                 BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                                                         .document(bookID)
                                                         .collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
-                                                        .add(new Orders(user.getUid(), cal.getTime(), BookStatus.PENDING.name(), null, user.getDisplayName(), user.getPhotoUrl().toString()))
+                                                        .add(new Orders(user.getUid(), cal.getTime(), BookStatus.PENDING.name(), null, user.getDisplayName(), user.getPhotoUrl().toString(), user.getEmail()))
                                                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                                             @Override
                                                             public void onSuccess(DocumentReference documentReference) {
