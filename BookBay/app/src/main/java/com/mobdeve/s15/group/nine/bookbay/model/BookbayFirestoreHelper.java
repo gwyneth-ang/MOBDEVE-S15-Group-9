@@ -147,67 +147,72 @@ public class BookbayFirestoreHelper {
     }
 
     public static void searchFilterBooksSeller(String searchText, String strDirection, String whichFilter, ThriftStoreSellingBooksAdapter adapter, String sellerUID) {
+        if(!(whichFilter.equals("NONE"))) {
+            Direction direction = Direction.ASCENDING;
+            if (strDirection.equals("DES")) {
+                direction = Direction.DESCENDING;
+            }
 
-//        Direction direction = Direction.ASCENDING;
-//        if (strDirection.equals("DES")) {
-//            direction = Direction.DESCENDING;
-//        }
-//
-//        String filter = BookbayFirestoreReferences.BOOK_TITLE_FIELD;
-//
-//        if (whichFilter.equals(BookbayFirestoreReferences.PRICE_FIELD)) {
-//            filter = BookbayFirestoreReferences.PRICE_FIELD;
-//        }
-//
-//        // FIXME: wrong because where euqal to title and author should be 'OR'
-//        BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-//                .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
-//                .whereEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
-////                .whereEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText)
-//                .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, sellerUID)
-////                .orderBy(filter, direction)
-//                .get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(Task<QuerySnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            Log.d("TEST", "Hi");
-//
-//                            ArrayList<Books_sell> books = new ArrayList<>();
-//
-//                            for (QueryDocumentSnapshot document : task.getResult())
-//                                books.add(document.toObject(Books_sell.class));
-//
-//                            adapter.setData(books);
-//                            adapter.notifyDataSetChanged();
-//                        } else {
-//                            Log.d("TEST", "Error getting documents: ", task.getException());
-//                        }
-//                    }
-//                });
-        Query t1 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
-                .whereEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
-                .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, sellerUID);
+            String filter = BookbayFirestoreReferences.BOOK_TITLE_FIELD;
 
-        Query t2 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
-                .whereEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText)
-                .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, sellerUID);
-        Tasks.whenAllSuccess(t1.get(), t2.get())
-                .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
-                    @Override
-                    public void onSuccess(List<Object> list) {
-                        ArrayList<Books_sell> books = new ArrayList<>();
-                        QuerySnapshot a = ((QuerySnapshot)list.get(0));
-                        QuerySnapshot b = ((QuerySnapshot)list.get(1));
-                        books.addAll(a.toObjects(Books_sell.class));
-                        books.addAll(b.toObjects(Books_sell.class));
+            if (whichFilter.equals(BookbayFirestoreReferences.PRICE_FIELD)) {
+                filter = BookbayFirestoreReferences.PRICE_FIELD;
+            }
 
-                        adapter.setData(books);
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+            // FIXME: wrong because where euqal to title and author should be 'OR'
+            BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                    .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
+                    .whereEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
+                    .whereEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText)
+                    .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, sellerUID)
+                    .orderBy(filter, direction)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                Log.d("TEST", "Hi");
+
+                                ArrayList<Books_sell> books = new ArrayList<>();
+
+                                for (QueryDocumentSnapshot document : task.getResult())
+                                    books.add(document.toObject(Books_sell.class));
+
+                                adapter.setData(books);
+                                adapter.notifyDataSetChanged();
+                            } else {
+                                Log.d("TEST", "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+        }
+        else{
+            Query t1 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                    .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
+                    .whereGreaterThanOrEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
+                    .whereLessThanOrEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText + "\uF7FF")
+                    .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, sellerUID);
+
+            Query t2 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                    .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
+                    .whereGreaterThanOrEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText)
+                    .whereLessThanOrEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText + "\uF7FF")
+                    .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, sellerUID);
+            Tasks.whenAllSuccess(t1.get(), t2.get())
+                    .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                        @Override
+                        public void onSuccess(List<Object> list) {
+                            ArrayList<Books_sell> books = new ArrayList<>();
+                            QuerySnapshot a = ((QuerySnapshot) list.get(0));
+                            QuerySnapshot b = ((QuerySnapshot) list.get(1));
+                            books.addAll(a.toObjects(Books_sell.class));
+                            books.addAll(b.toObjects(Books_sell.class));
+
+                            adapter.setData(books);
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+        }
     }
 
     public static void findBuyerOrders(OrdersAdapter myOrdersAdapter, String buyerUID, ProgressDialog progressDialog) {
