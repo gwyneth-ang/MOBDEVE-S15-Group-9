@@ -118,7 +118,21 @@ public class SellingBooksDetails extends AppCompatActivity {
         TextView searchText = (TextView) this.searchbar.findViewById(id);
         searchText.setTypeface(tf);
         searchText.setTextColor(Color.BLACK);
+        this.searchbar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Intent i = new Intent();
+                i.putExtra(IntentKeys.FILTER_KEY.name(), query);
+                setResult(Activity.RESULT_OK, i);
+                finish();
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         this.editBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
