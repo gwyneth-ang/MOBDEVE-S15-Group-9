@@ -516,7 +516,22 @@ public class BookbayFirestoreHelper {
                                 Dialog dialog = dialogBuilder.create();
                                 dialog.setCanceledOnTouchOutside(false);
                                 dialog.show();
-                            } else {
+                            } else if(!task.getResult().getBoolean(BookbayFirestoreReferences.AVAILABLE_FIELD)){
+                                Context context = progress.getContext();
+                                progress.dismiss();
+                                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
+                                        .setTitle("Order Unsuccessful")
+                                        .setMessage("Book is no longer available")
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                ((Activity) activityContext).finish();
+                                            }
+                                        });
+                                Dialog dialog = dialogBuilder.create();
+                                dialog.setCanceledOnTouchOutside(false);
+                                dialog.show();
+                            }else {
                                 BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                                         .document(bookID)
                                         .collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
