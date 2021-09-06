@@ -1,9 +1,16 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -17,8 +24,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
@@ -54,6 +64,24 @@ public class view_thrift_store extends Fragment {
     private String mParam1;
     private String mParam2;
 
+//    private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult(
+//            new ActivityResultContracts.StartActivityForResult(),
+//            new ActivityResultCallback<ActivityResult>() {
+//                @Override
+//                public void onActivityResult(ActivityResult result) {
+//                    if(result.getResultCode() == Activity.RESULT_OK) {
+//                        Toast toast = Toast.makeText(getContext(),
+//                                "Hello",
+//                                Toast.LENGTH_SHORT);
+//
+//                        toast.show();
+//                        BookbayFirestoreHelper.searchFilterBooks(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), "ASC", "NONE",  thriftAdapter);
+//                        Sv_thriftsellingbooks_search_bar.setQuery(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), false);
+////                        ((view_thrift_store)selector).setSearchBar(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()));
+//                    }
+//                }
+//            });
+
     public view_thrift_store() {
         // Required empty public constructor
     }
@@ -75,6 +103,7 @@ public class view_thrift_store extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -175,5 +204,14 @@ public class view_thrift_store extends Fragment {
     public void onStart() {
         super.onStart();
         updateDataAndAdapter();
+    }
+
+    public void setSearchBar(String query){
+         Sv_thriftsellingbooks_search_bar.setQuery(query, false);
+
+    }
+
+    public ThriftStoreSellingBooksAdapter getAdapter(){
+        return this.thriftAdapter;
     }
 }

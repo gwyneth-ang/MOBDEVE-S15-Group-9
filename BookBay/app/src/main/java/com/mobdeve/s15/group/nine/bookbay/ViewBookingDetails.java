@@ -1,5 +1,6 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -99,18 +100,16 @@ public class ViewBookingDetails extends AppCompatActivity {
         searchbar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                callSearch(query);
+                Intent i = new Intent();
+                i.putExtra(IntentKeys.FILTER_KEY.name(), query);
+                setResult(Activity.RESULT_OK, i);
+                finish();
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                callSearch(newText);
                 return true;
-            }
-
-            public void callSearch(String query) {
-                //Do searching
             }
         });
 
@@ -118,21 +117,4 @@ public class ViewBookingDetails extends AppCompatActivity {
         filter.setEnabled(false);
     }
 
-    //  check db
-    private boolean checkBookSoldDB(String bookID){
-        this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
-        this.dbRef.collection("Books_sell").whereEqualTo("orderDate", null).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            //successful
-
-                        } else {
-                            //error
-                        }
-                    }
-                });
-        return false;
-    }
 }
