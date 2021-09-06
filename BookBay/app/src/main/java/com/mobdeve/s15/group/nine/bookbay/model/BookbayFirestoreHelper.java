@@ -415,6 +415,7 @@ public class BookbayFirestoreHelper {
         Task t2 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.NOTIFICATIONS_COLLECTION)
                 .add(notification);
 
+        // If confirmed
         if (bookStatus.equals(BookStatus.CONFIRMED.name())) {
 
             Map<String, Object> available = new HashMap<>();
@@ -436,6 +437,9 @@ public class BookbayFirestoreHelper {
                                         @Override
                                         public void onComplete(Task<QuerySnapshot> task) {
                                             if (task.isSuccessful()) {
+
+                                                //TODO CHRISSY: GET BUYER EMAIL AND SEND TO BUYER EMAIL THAT THE ORDER IS CONFIRMED
+
 
                                                 Map<String, Object> declineAll = new HashMap<>();
 
