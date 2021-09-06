@@ -107,152 +107,147 @@ public class BookbayFirestoreHelper {
             });
     }
 
-    public static void searchWithSortAllBooks(ThriftStoreSellingBooksAdapter thriftStoreAdapter, String searchText, int sortType) {
+    public static void searchFilterBooks(String searchText, int sortType, ThriftStoreSellingBooksAdapter thriftStoreAdapter) {
+        if(sortType != -1) {
+            Direction direction = null;
+            String filter = null;
 
-        Direction direction = null;
-        String filter = null;
-
-        if (sortType == R.id.menu_sort_a_to_z) {
-            direction = Direction.ASCENDING;
-            filter = BookbayFirestoreReferences.BOOK_TITLE_FIELD;
-        } else if (sortType == R.id.menu_sort_z_to_a) {
-            direction = Direction.DESCENDING;
-            filter = BookbayFirestoreReferences.BOOK_TITLE_FIELD;
-        } else if (sortType == R.id.menu_sort_low_to_high) {
-            direction = Direction.ASCENDING;
-            filter = BookbayFirestoreReferences.PRICE_FIELD;
-        } else if (sortType == R.id.menu_sort_high_to_low) {
-            direction = Direction.DESCENDING;
-            filter = BookbayFirestoreReferences.PRICE_FIELD;
-        }
-
-        //FIXME: substrings
-        Task task1 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-            .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
-            .whereEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
-            .orderBy(filter, direction)
-            .get();
-
-        Task task2 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-            .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
-            .whereEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText)
-            .orderBy(filter, direction)
-            .get();
-
-        Tasks.whenAllSuccess(task1, task2)
-            .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
-                @Override
-                public void onSuccess(List<Object> list) {
-                    ArrayList<Books_sell> books = new ArrayList<>();
-
-                    List<Books_sell> titles = ((QuerySnapshot) list.get(0)).toObjects(Books_sell.class);
-                    List<Books_sell> authors  = ((QuerySnapshot) list.get(1)).toObjects(Books_sell.class);
-
-                    int title_ctr = 0, author_ctr = 0;
-
-                    // DESCENDING
-//                    if (sortType == R.id.menu_sort_high_to_low || sortType == R.id.menu_sort_z_to_a) {
-//                        if (titles.get(title_ctr) )
-//                            Books_sell temp_author = ((DocumentSnapshot) list.get(0)).toObject(Books_sell.class);
-//
-//                        //                        ((DocumentSnapshot) list.get(1)).toObject(User.class)
-//                    }
-
-
-                    Log.d("TEST", "Hi");
-
-//                    for (QueryDocumentSnapshot document : task.getResult())
-//                        books.add(document.toObject(Books_sell.class));
-
-                    thriftStoreAdapter.setData(books);
-                    thriftStoreAdapter.notifyDataSetChanged();
-                }
-            });
-
-
-    }
-
-    public static void searchFilterBooks(String searchText, String strDirection, String whichFilter, ThriftStoreSellingBooksAdapter adapter) {
-
-        Direction direction = Direction.ASCENDING;
-        if (strDirection.equals("DES")) {
-            direction = Direction.DESCENDING;
-        }
-
-        String filter = BookbayFirestoreReferences.BOOK_TITLE_FIELD;
-
-        if (whichFilter.equals(BookbayFirestoreReferences.PRICE_FIELD)) {
-            filter = BookbayFirestoreReferences.PRICE_FIELD;
-        }
-
-        // FIXME: wrong because where euqal to title and author should be 'OR'
-        BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
-                .whereEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
-                .whereEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText)
-                .orderBy(filter, direction)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("TEST", "Hi");
-
-                            ArrayList<Books_sell> books = new ArrayList<>();
-
-                            for (QueryDocumentSnapshot document : task.getResult())
-                                books.add(document.toObject(Books_sell.class));
-
-                            adapter.setData(books);
-                            adapter.notifyDataSetChanged();
-                        } else {
-                            Log.d("TEST", "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-    }
-
-    public static void searchFilterBooksSeller(String searchText, String strDirection, String whichFilter, ThriftStoreSellingBooksAdapter adapter, String sellerUID) {
-        if(!(whichFilter.equals("NONE"))) {
-            Direction direction = Direction.ASCENDING;
-            if (strDirection.equals("DES")) {
+            if (sortType == R.id.menu_sort_a_to_z) {
+                direction = Direction.ASCENDING;
+                filter = BookbayFirestoreReferences.BOOK_TITLE_FIELD;
+            } else if (sortType == R.id.menu_sort_z_to_a) {
                 direction = Direction.DESCENDING;
-            }
-
-            String filter = BookbayFirestoreReferences.BOOK_TITLE_FIELD;
-
-            if (whichFilter.equals(BookbayFirestoreReferences.PRICE_FIELD)) {
+                filter = BookbayFirestoreReferences.BOOK_TITLE_FIELD;
+            } else if (sortType == R.id.menu_sort_low_to_high) {
+                direction = Direction.ASCENDING;
+                filter = BookbayFirestoreReferences.PRICE_FIELD;
+            } else if (sortType == R.id.menu_sort_high_to_low) {
+                direction = Direction.DESCENDING;
                 filter = BookbayFirestoreReferences.PRICE_FIELD;
             }
 
-            // FIXME: wrong because where euqal to title and author should be 'OR'
-            BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+            Task task1 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                     .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
-                    .whereEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
-                    .whereEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText)
-                    .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, sellerUID)
+                    .whereGreaterThanOrEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
+                    .whereLessThanOrEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText + "\uF7FF")
                     .orderBy(filter, direction)
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    .get();
+
+            Task task2 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                    .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
+                    .whereGreaterThanOrEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
+                    .whereLessThanOrEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText + "\uF7FF")
+                    .orderBy(filter, direction)
+                    .get();
+
+            Log.d("SEARCH WITH SORT", "HERE 1");
+
+            Tasks.whenAllSuccess(task1, task2)
+                    .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
                         @Override
-                        public void onComplete(Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                Log.d("TEST", "Hi");
+                        public void onSuccess(List<Object> list) {
+                            ArrayList<Books_sell> books = new ArrayList<>();
 
-                                ArrayList<Books_sell> books = new ArrayList<>();
+                            List<Books_sell> titles = ((QuerySnapshot) list.get(0)).toObjects(Books_sell.class);
+                            List<Books_sell> authors  = ((QuerySnapshot) list.get(1)).toObjects(Books_sell.class);
 
-                                for (QueryDocumentSnapshot document : task.getResult())
-                                    books.add(document.toObject(Books_sell.class));
+                            int title_ctr = 0, author_ctr = 0;
 
-                                adapter.setData(books);
-                                adapter.notifyDataSetChanged();
-                            } else {
-                                Log.d("TEST", "Error getting documents: ", task.getException());
+                            // DESCENDING and TITLE
+                            if (sortType == R.id.menu_sort_z_to_a) {
+
+                                while (title_ctr < titles.size() && author_ctr < authors.size()) {
+                                    if (titles.get(title_ctr).getBookTitle().compareTo(authors.get(author_ctr).getBookTitle()) > 0) {
+                                        books.add(titles.get(title_ctr));
+                                        title_ctr++;
+                                    } else {
+                                        books.add(authors.get(author_ctr));
+                                        author_ctr++;
+                                    }
+                                }
+
+                            } else if (sortType == R.id.menu_sort_high_to_low) { // DESCENDING and PRICE
+
+                                while (title_ctr < titles.size() && author_ctr < authors.size()) {
+                                    if (titles.get(title_ctr).getPrice() > authors.get(author_ctr).getPrice()) {
+                                        books.add(titles.get(title_ctr));
+                                        title_ctr++;
+                                    } else {
+                                        books.add(authors.get(author_ctr));
+                                        author_ctr++;
+                                    }
+                                }
+
+                            } else if (sortType == R.id.menu_sort_a_to_z) { // ASCENDING and TITLE
+
+                                while (title_ctr < titles.size() && author_ctr < authors.size()) {
+                                    if (titles.get(title_ctr).getBookTitle().compareTo(authors.get(author_ctr).getBookTitle()) < 0) {
+                                        books.add(titles.get(title_ctr));
+                                        title_ctr++;
+                                    } else {
+                                        books.add(authors.get(author_ctr));
+                                        author_ctr++;
+                                    }
+                                }
+
+                            } else if (sortType == R.id.menu_sort_low_to_high) { // ASCENDING and PRICE
+                                while (title_ctr < titles.size() && author_ctr < authors.size()) {
+                                    if (titles.get(title_ctr).getPrice() < authors.get(author_ctr).getPrice()) {
+                                        books.add(titles.get(title_ctr));
+                                        title_ctr++;
+                                    } else {
+                                        books.add(authors.get(author_ctr));
+                                        author_ctr++;
+                                    }
+                                }
                             }
+
+                            while (title_ctr < titles.size()) {
+                                books.add(titles.get(title_ctr));
+                                title_ctr++;
+                            }
+
+                            while (author_ctr < authors.size()) {
+                                books.add(authors.get(author_ctr));
+                                author_ctr++;
+                            }
+
+                            thriftStoreAdapter.setData(books);
+                            thriftStoreAdapter.notifyDataSetChanged();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(Exception e) {
+                            e.printStackTrace();
                         }
                     });
+        } else {
+
         }
-        else{
+    }
+
+    public static void searchFilterBooksSeller(String searchText, int sortType, ThriftStoreSellingBooksAdapter thriftStoreAdapter, String sellerUID) {
+        if(sortType != -1) {
+            Direction direction = null;
+            String filter = null;
+
+            if (sortType == R.id.menu_sort_a_to_z) {
+                direction = Direction.ASCENDING;
+                filter = BookbayFirestoreReferences.BOOK_TITLE_FIELD;
+            } else if (sortType == R.id.menu_sort_z_to_a) {
+                direction = Direction.DESCENDING;
+                filter = BookbayFirestoreReferences.BOOK_TITLE_FIELD;
+            } else if (sortType == R.id.menu_sort_low_to_high) {
+                direction = Direction.ASCENDING;
+                filter = BookbayFirestoreReferences.PRICE_FIELD;
+            } else if (sortType == R.id.menu_sort_high_to_low) {
+                direction = Direction.DESCENDING;
+                filter = BookbayFirestoreReferences.PRICE_FIELD;
+            }
+
+            //TODO ADD:
+        } else {
             Query t1 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                     .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
                     .whereGreaterThanOrEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
@@ -274,8 +269,8 @@ public class BookbayFirestoreHelper {
                             books.addAll(a.toObjects(Books_sell.class));
                             books.addAll(b.toObjects(Books_sell.class));
 
-                            adapter.setData(books);
-                            adapter.notifyDataSetChanged();
+                            thriftStoreAdapter.setData(books);
+                            thriftStoreAdapter.notifyDataSetChanged();
                         }
                     });
         }
@@ -439,8 +434,6 @@ public class BookbayFirestoreHelper {
                                             if (task.isSuccessful()) {
 
                                                 //TODO CHRISSY: GET BUYER EMAIL AND SEND TO BUYER EMAIL THAT THE ORDER IS CONFIRMED
-
-
                                                 Map<String, Object> declineAll = new HashMap<>();
 
                                                 declineAll.put(BookbayFirestoreReferences.STATUS_FIELD, BookStatus.DECLINED.name());

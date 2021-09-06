@@ -50,7 +50,7 @@ public class  SellingBooksActivity extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     if(result.getResultCode() == Activity.RESULT_OK) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        BookbayFirestoreHelper.searchFilterBooksSeller(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), "ASC", "NONE",  sellingBookAdapter, user.getUid());
+                        BookbayFirestoreHelper.searchFilterBooksSeller(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), -1,  sellingBookAdapter, user.getUid());
                         Sv_thriftsellingbooks_search_bar.setQuery(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), false);
                     }
                 }

@@ -159,11 +159,13 @@ public class view_thrift_store extends Fragment {
             }
 
             public void callSearch(String query) {
-                if (!query.equals(null) && sortType != -1) {
-                    BookbayFirestoreHelper.searchWithSortAllBooks(thriftAdapter, query, sortType);
+                if (!query.equals(null)) {
+                    Log.d("SORT", String.valueOf(sortType));
+                    BookbayFirestoreHelper.searchFilterBooks(query, sortType, thriftAdapter);
+                } else {
+                    Log.d("SORT", String.valueOf(sortType));
+                    BookbayFirestoreHelper.searchFilterBooks("", sortType, thriftAdapter);
                 }
-                //Do searching
-
             }
         });
 
@@ -181,7 +183,8 @@ public class view_thrift_store extends Fragment {
                         }
                         item.setChecked(!item.isChecked());
                         sortType = item.getItemId();
-
+                        
+                        // DO NOT CLOSE POP UP MENU WHEN CLICKING
                         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
                         item.setActionView(new View(getContext()));
                         MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
@@ -196,9 +199,14 @@ public class view_thrift_store extends Fragment {
                             }
                         });
 
-                        //TODO: add on dismiss listener
-
                         return false;
+                    }
+                });
+
+                popup.setOnDismissListener(new PopupMenu.OnDismissListener() {
+                    @Override
+                    public void onDismiss(PopupMenu menu) {
+                        BookbayFirestoreHelper.searchFilterBooks("", sortType, thriftAdapter);
                     }
                 });
 
