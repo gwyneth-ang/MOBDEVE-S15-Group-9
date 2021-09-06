@@ -36,6 +36,7 @@ import com.mobdeve.s15.group.nine.bookbay.AddBookActivity;
 import com.mobdeve.s15.group.nine.bookbay.BookStatus;
 import com.mobdeve.s15.group.nine.bookbay.BooksOrders;
 import com.mobdeve.s15.group.nine.bookbay.OrdersAdapter;
+import com.mobdeve.s15.group.nine.bookbay.R;
 import com.mobdeve.s15.group.nine.bookbay.SellingOrdersActivity;
 import com.mobdeve.s15.group.nine.bookbay.SortByOrderDate;
 import com.mobdeve.s15.group.nine.bookbay.ThriftStoreSellingBooksAdapter;
@@ -59,51 +60,116 @@ public class BookbayFirestoreHelper {
 
     public static void findAllBooksAvailable(ThriftStoreSellingBooksAdapter thriftStoreAdapter) {
         BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
-                .orderBy(BookbayFirestoreReferences.ADD_BOOK_DATE_FIELD, Direction.DESCENDING)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("TEST", "Hi");
+            .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
+            .orderBy(BookbayFirestoreReferences.ADD_BOOK_DATE_FIELD, Direction.DESCENDING)
+            .get()
+            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        Log.d("TEST", "Hi");
 
-                            ArrayList<Books_sell> books = new ArrayList<>();
+                        ArrayList<Books_sell> books = new ArrayList<>();
 
-                            for (QueryDocumentSnapshot document : task.getResult())
-                                books.add(document.toObject(Books_sell.class));
+                        for (QueryDocumentSnapshot document : task.getResult())
+                            books.add(document.toObject(Books_sell.class));
 
-                            thriftStoreAdapter.setData(books);
-                            thriftStoreAdapter.notifyDataSetChanged();
-                        } else {
-                            Log.d("TEST", "Error getting documents: ", task.getException());
-                        }
+                        thriftStoreAdapter.setData(books);
+                        thriftStoreAdapter.notifyDataSetChanged();
+                    } else {
+                        Log.d("TEST", "Error getting documents: ", task.getException());
                     }
-                });
+                }
+            });
     }
 
     public static void findAllBooksAvailableSeller(ThriftStoreSellingBooksAdapter sellingBookAdapter, String sellerUID) {
         BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
-                .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, sellerUID)
-                .orderBy(BookbayFirestoreReferences.ADD_BOOK_DATE_FIELD, Direction.DESCENDING)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("TEST", "Hi");
+            .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
+            .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, sellerUID)
+            .orderBy(BookbayFirestoreReferences.ADD_BOOK_DATE_FIELD, Direction.DESCENDING)
+            .get()
+            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        Log.d("TEST", "Hi");
 
-                            ArrayList<Books_sell> books = new ArrayList<>();
+                        ArrayList<Books_sell> books = new ArrayList<>();
 
-                            for (QueryDocumentSnapshot document : task.getResult())
-                                books.add(document.toObject(Books_sell.class));
+                        for (QueryDocumentSnapshot document : task.getResult())
+                            books.add(document.toObject(Books_sell.class));
 
-                            sellingBookAdapter.setData(books);
-                            sellingBookAdapter.notifyDataSetChanged();
-                        }
+                        sellingBookAdapter.setData(books);
+                        sellingBookAdapter.notifyDataSetChanged();
                     }
-                });
+                }
+            });
+    }
+
+    public static void searchWithSortAllBooks(ThriftStoreSellingBooksAdapter thriftStoreAdapter, String searchText, int sortType) {
+
+        Direction direction = null;
+        String filter = null;
+
+        if (sortType == R.id.menu_sort_a_to_z) {
+            direction = Direction.ASCENDING;
+            filter = BookbayFirestoreReferences.BOOK_TITLE_FIELD;
+        } else if (sortType == R.id.menu_sort_z_to_a) {
+            direction = Direction.DESCENDING;
+            filter = BookbayFirestoreReferences.BOOK_TITLE_FIELD;
+        } else if (sortType == R.id.menu_sort_low_to_high) {
+            direction = Direction.ASCENDING;
+            filter = BookbayFirestoreReferences.PRICE_FIELD;
+        } else if (sortType == R.id.menu_sort_high_to_low) {
+            direction = Direction.DESCENDING;
+            filter = BookbayFirestoreReferences.PRICE_FIELD;
+        }
+
+        //FIXME: substrings
+        Task task1 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+            .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
+            .whereEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
+            .orderBy(filter, direction)
+            .get();
+
+        Task task2 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+            .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
+            .whereEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText)
+            .orderBy(filter, direction)
+            .get();
+
+        Tasks.whenAllSuccess(task1, task2)
+            .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                @Override
+                public void onSuccess(List<Object> list) {
+                    ArrayList<Books_sell> books = new ArrayList<>();
+
+                    List<Books_sell> titles = ((QuerySnapshot) list.get(0)).toObjects(Books_sell.class);
+                    List<Books_sell> authors  = ((QuerySnapshot) list.get(1)).toObjects(Books_sell.class);
+
+                    int title_ctr = 0, author_ctr = 0;
+
+                    // DESCENDING
+//                    if (sortType == R.id.menu_sort_high_to_low || sortType == R.id.menu_sort_z_to_a) {
+//                        if (titles.get(title_ctr) )
+//                            Books_sell temp_author = ((DocumentSnapshot) list.get(0)).toObject(Books_sell.class);
+//
+//                        //                        ((DocumentSnapshot) list.get(1)).toObject(User.class)
+//                    }
+
+
+                    Log.d("TEST", "Hi");
+
+//                    for (QueryDocumentSnapshot document : task.getResult())
+//                        books.add(document.toObject(Books_sell.class));
+
+                    thriftStoreAdapter.setData(books);
+                    thriftStoreAdapter.notifyDataSetChanged();
+                }
+            });
+
+
     }
 
     public static void searchFilterBooks(String searchText, String strDirection, String whichFilter, ThriftStoreSellingBooksAdapter adapter) {

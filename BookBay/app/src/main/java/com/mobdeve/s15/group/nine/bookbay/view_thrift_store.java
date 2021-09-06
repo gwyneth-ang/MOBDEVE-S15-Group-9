@@ -5,18 +5,23 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.PopupMenu;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -46,6 +51,9 @@ public class view_thrift_store extends Fragment {
     private SearchView Sv_thriftsellingbooks_search_bar;
     private ImageButton Bt_thriftsellingbooks_filter;
     private SwipeRefreshLayout sfl_store_selling_books;
+
+    // variables
+    private int sortType = -1;
 
     // DB reference
     private FirebaseFirestore dbRef;
@@ -108,6 +116,10 @@ public class view_thrift_store extends Fragment {
         searchText.setTypeface(tf);
         searchText.setTextColor(Color.BLACK);
 
+        //POPUP MENU
+        PopupMenu popup = new PopupMenu(view.getContext(), Bt_thriftsellingbooks_filter);
+        popup.inflate(R.menu.sort_menu);
+
         // change UI based on which activity
         setupUi();
 
@@ -142,19 +154,55 @@ public class view_thrift_store extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                callSearch(newText);
+//                callSearch(newText);
                 return true;
             }
 
             public void callSearch(String query) {
+                if (!query.equals(null) && sortType != -1) {
+                    BookbayFirestoreHelper.searchWithSortAllBooks(thriftAdapter, query, sortType);
+                }
                 //Do searching
+
             }
         });
 
         this.Bt_thriftsellingbooks_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                openOptionsMenu();
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        if (item.isChecked()){
+                            //TODO: clear radio selection...
+
+                        }
+                        item.setChecked(!item.isChecked());
+                        sortType = item.getItemId();
+
+                        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+                        item.setActionView(new View(getContext()));
+                        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+                            @Override
+                            public boolean onMenuItemActionExpand(MenuItem item) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onMenuItemActionCollapse(MenuItem item) {
+                                return false;
+                            }
+                        });
+
+                        //TODO: add on dismiss listener
+
+                        return false;
+                    }
+                });
+
+                popup.show(); //showing popup menu
             }
         });
     }

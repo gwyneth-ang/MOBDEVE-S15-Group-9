@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -70,6 +73,48 @@ public class  SellingBooksActivity extends AppCompatActivity {
                 sfl_store_selling_books.setRefreshing(true);
                 updateDataAndAdapter();
                 sfl_store_selling_books.setRefreshing(false);
+            }
+        });
+
+        this.Sv_thriftsellingbooks_search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                callSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                callSearch(newText);
+                return true;
+            }
+
+            public void callSearch(String query) {
+                //Do searching
+            }
+        });
+
+        this.Bt_thriftsellingbooks_filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(v.getContext(), Bt_thriftsellingbooks_filter);
+
+                popup.getMenuInflater()
+                        .inflate(R.menu.sort_menu, popup.getMenu());
+
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        Toast.makeText(
+                                v.getContext(),
+                                "You Clicked : " + item.getTitle(),
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        return true;
+                    }
+                });
+
+                popup.show(); //showing popup menu
             }
         });
 
