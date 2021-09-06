@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.aoutir.mohamed.movies.MainFragment"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:id="@+id/sort"
+    android:checkableBehavior="single">
+        <item android:id="@+id/menu_sort_a_to_z"
+            android:title="@string/sort_alphabet_asc" />
+        <item android:id="@+id/menu_sort_z_to_a"
+            android:title="@string/sort_alphabet_des"/>
+        <item android:id="@+id/menu_sort_low_to_high"
+            android:title="@string/sort_price_asc"/>
+        <item android:id="@+id/menu_sort_high_to_low"
+            android:title="@string/sort_price_des"/>
+    </group>
+
+
+
+</menu>
