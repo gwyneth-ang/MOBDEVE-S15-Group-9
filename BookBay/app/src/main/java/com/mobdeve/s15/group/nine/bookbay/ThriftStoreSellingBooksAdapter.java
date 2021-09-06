@@ -69,7 +69,8 @@ public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftS
                     intent.putExtra(IntentKeys.BOOK_IMAGE_KEY.name(), book.get(holder.getAdapterPosition()).getImage());
                     intent.putExtra(IntentKeys.BOOK_ID_KEY.name(), book.get(holder.getAdapterPosition()).getBooks_sellID().getId());
                     intent.putExtra(IntentKeys.REVIEW_KEY.name(), book.get(holder.getAbsoluteAdapterPosition()).getReview());
-                    parent.getContext().startActivity(intent);
+//                    parent.getContext().startActivity(intent);
+                    ((SellingBooksActivity)parent.getContext()).getActivityResultLauncher().launch(intent);
                 }
             });
         }
