@@ -64,6 +64,9 @@ public class SellingBooksDetails extends AppCompatActivity {
                         review = result.getData().getStringExtra(AddBookActivity.REVIEW_KEY);
                         imageUri = result.getData().getStringExtra(AddBookActivity.IMAGE_KEY);
                         BookbayFirestoreReferences.downloadImageIntoImageViewUsingId(bookID, imageUri, bookImage);
+
+                        Intent return_intent = new Intent();
+                        SellingBooksDetails.this.setResult(10, return_intent);
                     }
                 }
             });

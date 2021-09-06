@@ -37,6 +37,7 @@ import com.mobdeve.s15.group.nine.bookbay.BookStatus;
 import com.mobdeve.s15.group.nine.bookbay.BooksOrders;
 import com.mobdeve.s15.group.nine.bookbay.OrdersAdapter;
 import com.mobdeve.s15.group.nine.bookbay.R;
+import com.mobdeve.s15.group.nine.bookbay.SellingBooksActivity;
 import com.mobdeve.s15.group.nine.bookbay.SellingOrdersActivity;
 import com.mobdeve.s15.group.nine.bookbay.SortByOrderDate;
 import com.mobdeve.s15.group.nine.bookbay.SortByPriceAsc;
@@ -115,143 +116,14 @@ public class BookbayFirestoreHelper {
             });
     }
 
-    public static void searchFilterBooks(String searchText, int sortType, ThriftStoreSellingBooksAdapter thriftStoreAdapter) {
-//        if(sortType != -1) {
-//            Direction direction = null;
-//            String filter = null;
-//
-//            if (sortType == R.id.menu_sort_a_to_z) {
-//                direction = Direction.ASCENDING;
-//                filter = BookbayFirestoreReferences.BOOK_TITLE_FIELD;
-//            } else if (sortType == R.id.menu_sort_z_to_a) {
-//                direction = Direction.DESCENDING;
-//                filter = BookbayFirestoreReferences.BOOK_TITLE_FIELD;
-//            } else if (sortType == R.id.menu_sort_low_to_high) {
-//                direction = Direction.ASCENDING;
-//                filter = BookbayFirestoreReferences.PRICE_FIELD;
-//            } else if (sortType == R.id.menu_sort_high_to_low) {
-//                direction = Direction.DESCENDING;
-//                filter = BookbayFirestoreReferences.PRICE_FIELD;
-//            }
-//
-//            Task task1 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-//                    .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
-//                    .whereGreaterThanOrEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
-//                    .whereLessThanOrEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText + "\uF7FF")
-//                    .orderBy(filter, direction)
-//                    .get();
-//
-////            Task task2 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-////                    .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
-////                    .whereGreaterThanOrEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText)
-////                    .whereLessThanOrEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText + "\uF7FF")
-////                    .orderBy(filter, direction)
-////                    .get();
-//
-//            Log.d("SEARCH WITH SORT", "HERE 1");
-//
-//            Tasks.whenAllSuccess(task1)
-//                    .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
-//                        @Override
-//                        public void onSuccess(List<Object> list) {
-//                            ArrayList<Books_sell> books = new ArrayList<>();
-//
-//                            List<Books_sell> titles = ((QuerySnapshot) list.get(0)).toObjects(Books_sell.class);
-////                            List<Books_sell> authors  = ((QuerySnapshot) list.get(1)).toObjects(Books_sell.class);
-//
-//                            int title_ctr = 0, author_ctr = 0;
-//
-//                            // DESCENDING and TITLE
-//                            if (sortType == R.id.menu_sort_z_to_a) {
-//
-//                                while (title_ctr < titles.size() && author_ctr < authors.size()) {
-//                                    if (titles.get(title_ctr).getBooks_sellID().equals(authors.get(author_ctr).getBooks_sellID())) {
-//                                        books.add(titles.get(title_ctr));
-//                                        title_ctr++;
-//                                        author_ctr++;
-//                                    } else if (titles.get(title_ctr).getBookTitle().compareTo(authors.get(author_ctr).getBookTitle()) > 0) {
-//                                        books.add(titles.get(title_ctr));
-//                                        title_ctr++;
-//                                    } else {
-//                                        books.add(authors.get(author_ctr));
-//                                        author_ctr++;
-//                                    }
-//                                }
-//
-//                            } else if (sortType == R.id.menu_sort_high_to_low) { // DESCENDING and PRICE
-//
-//                                while (title_ctr < titles.size() && author_ctr < authors.size()) {
-//                                    if (titles.get(title_ctr).getBooks_sellID().equals(authors.get(author_ctr).getBooks_sellID())) {
-//                                        books.add(titles.get(title_ctr));
-//                                        title_ctr++;
-//                                        author_ctr++;
-//                                    } else if (titles.get(title_ctr).getPrice() > authors.get(author_ctr).getPrice()) {
-//                                        books.add(titles.get(title_ctr));
-//                                        title_ctr++;
-//                                    } else {
-//                                        books.add(authors.get(author_ctr));
-//                                        author_ctr++;
-//                                    }
-//                                }
-//
-//                            } else if (sortType == R.id.menu_sort_a_to_z) { // ASCENDING and TITLE
-//
-//                                while (title_ctr < titles.size() && author_ctr < authors.size()) {
-//                                    if (titles.get(title_ctr).getBooks_sellID().equals(authors.get(author_ctr).getBooks_sellID())) {
-//                                        books.add(titles.get(title_ctr));
-//                                        title_ctr++;
-//                                        author_ctr++;
-//                                    } else if (titles.get(title_ctr).getBookTitle().compareTo(authors.get(author_ctr).getBookTitle()) < 0) {
-//                                        books.add(titles.get(title_ctr));
-//                                        title_ctr++;
-//                                    } else {
-//                                        books.add(authors.get(author_ctr));
-//                                        author_ctr++;
-//                                    }
-//                                }
-//
-//                            } else if (sortType == R.id.menu_sort_low_to_high) { // ASCENDING and PRICE
-//                                while (title_ctr < titles.size() && author_ctr < authors.size()) {
-//                                    if (titles.get(title_ctr).getBooks_sellID().equals(authors.get(author_ctr).getBooks_sellID())) {
-//                                        books.add(titles.get(title_ctr));
-//                                        title_ctr++;
-//                                        author_ctr++;
-//                                    } else if (titles.get(title_ctr).getPrice() < authors.get(author_ctr).getPrice()) {
-//                                        books.add(titles.get(title_ctr));
-//                                        title_ctr++;
-//                                    } else {
-//                                        books.add(authors.get(author_ctr));
-//                                        author_ctr++;
-//                                    }
-//                                }
-//                            }
-//
-//                            while (title_ctr < titles.size()) {
-//                                books.add(titles.get(title_ctr));
-//                                title_ctr++;
-//                            }
-//
-//                            while (author_ctr < authors.size()) {
-//                                books.add(authors.get(author_ctr));
-//                                author_ctr++;
-//                            }
-//
-//                            thriftStoreAdapter.setData(books);
-//                            thriftStoreAdapter.notifyDataSetChanged();
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    });
-//        } else {
+    public static void searchFilterBooksSeller(String searchText, int sortType, ThriftStoreSellingBooksAdapter sellingBooksAdapter, String sellerUID, Context context) {
 
-//        }
-    }
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("Searching books for you");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
 
-    public static void searchFilterBooksSeller(String searchText, int sortType, ThriftStoreSellingBooksAdapter sellingBooksAdapter, String sellerUID) {
         Query t1 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
                 .whereGreaterThanOrEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
@@ -263,6 +135,7 @@ public class BookbayFirestoreHelper {
                 .whereGreaterThanOrEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText)
                 .whereLessThanOrEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText + "\uF7FF")
                 .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, sellerUID);
+
         Tasks.whenAllSuccess(t1.get(), t2.get())
                 .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
                     @Override
@@ -296,8 +169,67 @@ public class BookbayFirestoreHelper {
 
                         sellingBooksAdapter.setData(books);
                         sellingBooksAdapter.notifyDataSetChanged();
+
+                        progressDialog.dismiss();
                     }
                 });
+    }
+
+    public static void searchFilterBooks(String searchText, int sortType, ThriftStoreSellingBooksAdapter thriftAdapter, Context context) {
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle("Loading");
+        progressDialog.setMessage("Searching books for you");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+
+            Query t1 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                    .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
+                    .whereGreaterThanOrEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText)
+                    .whereLessThanOrEqualTo(BookbayFirestoreReferences.BOOK_TITLE_FIELD, searchText + "\uF7FF");
+
+            Query t2 = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                    .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
+                    .whereGreaterThanOrEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText)
+                    .whereLessThanOrEqualTo(BookbayFirestoreReferences.BOOK_AUTHOR_FIELD, searchText + "\uF7FF");
+
+            Tasks.whenAllSuccess(t1.get(), t2.get())
+                    .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+                        @Override
+                        public void onSuccess(List<Object> list) {
+                            ArrayList<Books_sell> temp = new ArrayList<>();
+                            ArrayList<Books_sell> books = new ArrayList<>();
+
+                            QuerySnapshot a = ((QuerySnapshot) list.get(0));
+                            QuerySnapshot b = ((QuerySnapshot) list.get(1));
+
+                            temp.addAll(a.toObjects(Books_sell.class));
+                            temp.addAll(b.toObjects(Books_sell.class));
+
+                            //Removing Duplicates from title and author
+                            for (Books_sell book : temp) {
+                                if (!books.contains(book)) {
+                                    books.add(book);
+                                }
+                            }
+
+                            // perform sorting when necessary
+                            if (sortType == R.id.menu_sort_a_to_z) {
+                                Collections.sort(books, new SortByTitleAsc());
+                            } else if (sortType == R.id.menu_sort_z_to_a) {
+                                Collections.sort(books, new SortByTitleDes());
+                            } else if (sortType == R.id.menu_sort_low_to_high) {
+                                Collections.sort(books, new SortByPriceAsc());
+                            } else if (sortType == R.id.menu_sort_high_to_low) {
+                                Collections.sort(books, new SortByPriceDes());
+                            }
+
+                            thriftAdapter.setData(books);
+                            thriftAdapter.notifyDataSetChanged();
+
+                            progressDialog.dismiss();
+                        }
+                    });
     }
 
     public static void findBuyerOrders(OrdersAdapter myOrdersAdapter, String buyerUID, ProgressDialog progressDialog) {
@@ -603,7 +535,22 @@ public class BookbayFirestoreHelper {
                                 Dialog dialog = dialogBuilder.create();
                                 dialog.setCanceledOnTouchOutside(false);
                                 dialog.show();
-                            } else {
+                            } else if(!task.getResult().getBoolean(BookbayFirestoreReferences.AVAILABLE_FIELD)){
+                                Context context = progress.getContext();
+                                progress.dismiss();
+                                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
+                                        .setTitle("Order Unsuccessful")
+                                        .setMessage("Book is no longer available")
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                ((Activity) activityContext).finish();
+                                            }
+                                        });
+                                Dialog dialog = dialogBuilder.create();
+                                dialog.setCanceledOnTouchOutside(false);
+                                dialog.show();
+                            }else {
                                 BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                                         .document(bookID)
                                         .collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
@@ -738,6 +685,9 @@ public class BookbayFirestoreHelper {
             public void onSuccess(List<Object> objects) {
                 progressDialog.setCanceledOnTouchOutside(true);
                 progressDialog.setMessage("Success!");
+
+                Intent return_intent = new Intent();
+                ((AddBookActivity) context).setResult(Activity.RESULT_OK, return_intent);
                 ((AddBookActivity) context).finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -878,7 +828,11 @@ public class BookbayFirestoreHelper {
                                                 deleteBookImageFromStorage(bookID, Uri.parse(image));
                                             }
                                             progress.dismiss();
+
+                                            Intent return_intent = new Intent();
+                                            ((Activity) context).setResult(10, return_intent);
                                             ((Activity) context).finish();
+
                                         }
                                     }).addOnFailureListener(new OnFailureListener() {
                                         @Override

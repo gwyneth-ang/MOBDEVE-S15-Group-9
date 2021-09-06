@@ -20,7 +20,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.PopupMenu;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -54,9 +53,6 @@ public class view_thrift_store extends Fragment {
 
     // variables
     private int sortType = -1;
-
-    // DB reference
-    private FirebaseFirestore dbRef;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -127,13 +123,11 @@ public class view_thrift_store extends Fragment {
         this.thriftRecyclerView = view.findViewById(R.id.rv_books);
         thriftRecyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
 
-        // Get the book from the Books_sell Collection
-        this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
-
         thriftAdapter = new ThriftStoreSellingBooksAdapter();
         thriftAdapter.setViewType(WhichLayout.THRIFT_STORE.ordinal());
 
         thriftRecyclerView.setAdapter(thriftAdapter);
+        updateDataAndAdapter();
 
         // For swipe down refresh layout
         this.sfl_store_selling_books.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -154,17 +148,16 @@ public class view_thrift_store extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-//                callSearch(newText);
-                return true;
+                if (newText.length() == 0) {
+                    Log.d("SORT", String.valueOf(sortType));
+                    BookbayFirestoreHelper.searchFilterBooks("", sortType, thriftAdapter, view.getContext());
+                }
+                return false;
             }
 
             public void callSearch(String query) {
                 if (!query.equals(null)) {
-                    Log.d("SORT", String.valueOf(sortType));
-                    BookbayFirestoreHelper.searchFilterBooks(query, sortType, thriftAdapter);
-                } else {
-                    Log.d("SORT", String.valueOf(sortType));
-                    BookbayFirestoreHelper.searchFilterBooks("", sortType, thriftAdapter);
+                    BookbayFirestoreHelper.searchFilterBooks(query, sortType, thriftAdapter, view.getContext());
                 }
             }
         });
@@ -176,11 +169,6 @@ public class view_thrift_store extends Fragment {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-
-                        if (item.isChecked()){
-                            //TODO: clear radio selection...
-
-                        }
                         item.setChecked(!item.isChecked());
                         sortType = item.getItemId();
                         
@@ -206,7 +194,10 @@ public class view_thrift_store extends Fragment {
                 popup.setOnDismissListener(new PopupMenu.OnDismissListener() {
                     @Override
                     public void onDismiss(PopupMenu menu) {
-                        BookbayFirestoreHelper.searchFilterBooks("", sortType, thriftAdapter);
+                        BookbayFirestoreHelper.searchFilterBooks(Sv_thriftsellingbooks_search_bar.getQuery().toString(),
+                                sortType,
+                                thriftAdapter,
+                                view.getContext());
                     }
                 });
 
@@ -222,14 +213,20 @@ public class view_thrift_store extends Fragment {
         this.Bt_thriftsellingbooks_filter.setImageResource(R.drawable.filter);
     }
 
-    private void updateDataAndAdapter() {
+    public void updateDataAndAdapter() {
         BookbayFirestoreHelper.findAllBooksAvailable(this.thriftAdapter);
-
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        updateDataAndAdapter();
+    }
+
+    public void setSearchBar(String query){
+         Sv_thriftsellingbooks_search_bar.setQuery(query, false);
+    }
+
+    public ThriftStoreSellingBooksAdapter getAdapter(){
+        return this.thriftAdapter;
     }
 }

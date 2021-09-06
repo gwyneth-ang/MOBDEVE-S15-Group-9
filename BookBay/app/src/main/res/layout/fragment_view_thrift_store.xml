@@ -49,7 +49,8 @@
             android:queryBackground="@android:color/transparent"
             android:queryHint="Search by title or author"
             android:searchIcon="@drawable/loupe"
-            android:textDirection="ltr"></SearchView>
+            android:textDirection="ltr"
+            ></SearchView>
 
         <ImageButton
             android:id="@+id/Bt_thriftsellingbooks_filter"

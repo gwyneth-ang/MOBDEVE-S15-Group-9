@@ -56,8 +56,21 @@ public class  SellingBooksActivity extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if(result.getResultCode() == Activity.RESULT_OK) {
-                        BookbayFirestoreHelper.searchFilterBooksSeller(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), -1,  sellingBookAdapter, user.getUid());
+                        BookbayFirestoreHelper.searchFilterBooksSeller(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), -1,  sellingBookAdapter, user.getUid(), SellingBooksActivity.this);
                         Sv_thriftsellingbooks_search_bar.setQuery(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), false);
+                    } else if (result.getResultCode() == 10) {
+                        updateDataAndAdapter();
+                    }
+                }
+            });
+
+    private ActivityResultLauncher<Intent> updateAddResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if(result.getResultCode() == Activity.RESULT_OK) {
+                        updateDataAndAdapter();
                     }
                 }
             });
@@ -100,6 +113,7 @@ public class  SellingBooksActivity extends AppCompatActivity {
         sellingBookAdapter = new ThriftStoreSellingBooksAdapter();
         sellingBookAdapter.setViewType(WhichLayout.SELLING_BOOKS.ordinal());
         sellingBookRecyclerView.setAdapter(sellingBookAdapter);
+        updateDataAndAdapter();
 
         this.sfl_store_selling_books.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -113,24 +127,24 @@ public class  SellingBooksActivity extends AppCompatActivity {
         this.Sv_thriftsellingbooks_search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                Log.d("TEST", String.valueOf(sortType));
                 callSearch(query);
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-//                callSearch(newText);
+                if (newText.length() == 0) {
+                    Log.d("SORT", String.valueOf(sortType));
+                    BookbayFirestoreHelper.searchFilterBooksSeller("", sortType, sellingBookAdapter, user.getUid(), SellingBooksActivity.this);
+                }
                 return true;
             }
 
             public void callSearch(String query) {
                 if (!query.equals(null)) {
                     Log.d("SORT", String.valueOf(sortType));
-                    BookbayFirestoreHelper.searchFilterBooksSeller(query, sortType, sellingBookAdapter, user.getUid());
-                } else {
-                    //FIXME: not working
-                    Log.d("SORT", String.valueOf(sortType));
-                    BookbayFirestoreHelper.searchFilterBooksSeller("", sortType, sellingBookAdapter, user.getUid());
+                    BookbayFirestoreHelper.searchFilterBooksSeller(query, sortType, sellingBookAdapter, user.getUid(), SellingBooksActivity.this);
                 }
             }
         });
@@ -142,12 +156,8 @@ public class  SellingBooksActivity extends AppCompatActivity {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-
-                        if (item.isChecked()){
-                            //TODO: clear radio selection...
-
-                        }
                         item.setChecked(!item.isChecked());
+
                         sortType = item.getItemId();
 
                         // DO NOT CLOSE POP UP MENU WHEN CLICKING
@@ -175,7 +185,8 @@ public class  SellingBooksActivity extends AppCompatActivity {
                         BookbayFirestoreHelper.searchFilterBooksSeller(Sv_thriftsellingbooks_search_bar.getQuery().toString(),
                                 sortType,
                                 sellingBookAdapter,
-                                user.getUid());
+                                user.getUid(),
+                                SellingBooksActivity.this);
                     }
                 });
 
@@ -183,11 +194,11 @@ public class  SellingBooksActivity extends AppCompatActivity {
             }
         });
 
-        fab_add_book.setOnClickListener(new View.OnClickListener() {
+        this.fab_add_book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SellingBooksActivity.this, AddBookActivity.class);
-                startActivity(intent);
+                updateAddResultLauncher.launch(intent);
             }
         });
     }
@@ -199,14 +210,26 @@ public class  SellingBooksActivity extends AppCompatActivity {
         this.Bt_thriftsellingbooks_filter.setImageResource(R.drawable.filter_red);
     }
 
-    private void updateDataAndAdapter() {
+    public void updateDataAndAdapter() {
         BookbayFirestoreHelper.findAllBooksAvailableSeller(sellingBookAdapter, user.getUid());
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        updateDataAndAdapter();
+        Log.d("Hi", "Start");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("Hi", "Resume");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d("Hi", "Restart");
     }
 
     public ActivityResultLauncher<Intent> getActivityResultLauncher(){

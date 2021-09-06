@@ -14,6 +14,9 @@
             android:title="@string/sort_price_asc"/>
         <item android:id="@+id/menu_sort_high_to_low"
             android:title="@string/sort_price_des"/>
+        <item android:id="@+id/menu_sort_none"
+        android:title="Clear"
+            android:checked="true"/>
     </group>
 
 

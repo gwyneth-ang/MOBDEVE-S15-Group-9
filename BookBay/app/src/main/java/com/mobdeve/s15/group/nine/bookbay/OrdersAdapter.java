@@ -86,10 +86,10 @@ public class OrdersAdapter extends RecyclerView.Adapter <OrdersViewHolder> {
                     alert.show();
 
                     // set fonts for alert
-                    TextView textView = (TextView) alert.findViewById(android.R.id.message);
-                    Typeface font = ResourcesCompat.getFont(view.getContext(),R.font.cormorant_garamond);
-                    textView.setTypeface(font);
-                    textView.setTextSize(15);
+//                    TextView textView = (TextView) alert.findViewById(android.R.id.message);
+//                    Typeface font = ResourcesCompat.getFont(view.getContext(),R.font.cormorant_garamond);
+//                    textView.setTypeface(font);
+//                    textView.setTextSize(15);
                 }
 
             }
