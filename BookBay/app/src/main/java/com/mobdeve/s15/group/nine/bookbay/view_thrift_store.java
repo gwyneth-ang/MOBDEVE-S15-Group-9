@@ -1,34 +1,27 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.PopupMenu;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
@@ -57,30 +50,15 @@ public class view_thrift_store extends Fragment {
     private ImageButton Bt_thriftsellingbooks_filter;
     private SwipeRefreshLayout sfl_store_selling_books;
 
+    // variables
+    private int sortType = -1;
+
     // DB reference
     private FirebaseFirestore dbRef;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-//    private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult(
-//            new ActivityResultContracts.StartActivityForResult(),
-//            new ActivityResultCallback<ActivityResult>() {
-//                @Override
-//                public void onActivityResult(ActivityResult result) {
-//                    if(result.getResultCode() == Activity.RESULT_OK) {
-//                        Toast toast = Toast.makeText(getContext(),
-//                                "Hello",
-//                                Toast.LENGTH_SHORT);
-//
-//                        toast.show();
-//                        BookbayFirestoreHelper.searchFilterBooks(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), "ASC", "NONE",  thriftAdapter);
-//                        Sv_thriftsellingbooks_search_bar.setQuery(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), false);
-////                        ((view_thrift_store)selector).setSearchBar(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()));
-//                    }
-//                }
-//            });
 
     public view_thrift_store() {
         // Required empty public constructor
@@ -103,7 +81,6 @@ public class view_thrift_store extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -136,6 +113,10 @@ public class view_thrift_store extends Fragment {
         TextView searchText = (TextView) this.Sv_thriftsellingbooks_search_bar.findViewById(id);
         searchText.setTypeface(tf);
         searchText.setTextColor(Color.BLACK);
+
+        //POPUP MENU
+        PopupMenu popup = new PopupMenu(view.getContext(), Bt_thriftsellingbooks_filter);
+        popup.inflate(R.menu.sort_menu);
 
         // change UI based on which activity
         setupUi();
@@ -171,19 +152,55 @@ public class view_thrift_store extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                callSearch(newText);
+//                callSearch(newText);
                 return true;
             }
 
             public void callSearch(String query) {
+                if (!query.equals(null) && sortType != -1) {
+                    BookbayFirestoreHelper.searchWithSortAllBooks(thriftAdapter, query, sortType);
+                }
                 //Do searching
+
             }
         });
 
         this.Bt_thriftsellingbooks_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                openOptionsMenu();
+                //registering popup with OnMenuItemClickListener
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        if (item.isChecked()){
+                            //TODO: clear radio selection...
+
+                        }
+                        item.setChecked(!item.isChecked());
+                        sortType = item.getItemId();
+
+                        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+                        item.setActionView(new View(getContext()));
+                        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+                            @Override
+                            public boolean onMenuItemActionExpand(MenuItem item) {
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onMenuItemActionCollapse(MenuItem item) {
+                                return false;
+                            }
+                        });
+
+                        //TODO: add on dismiss listener
+
+                        return false;
+                    }
+                });
+
+                popup.show(); //showing popup menu
             }
         });
     }
