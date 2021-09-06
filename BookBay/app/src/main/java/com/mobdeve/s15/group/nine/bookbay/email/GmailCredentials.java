@@ -1,9 +1,5 @@
 package com.mobdeve.s15.group.nine.bookbay.email;
 
-import lombok.Builder;
-import lombok.Data;
-
-
 public class GmailCredentials {
     private final String userEmail;
     private final String clientId;
