@@ -467,7 +467,7 @@ public class BookbayFirestoreHelper {
                                                 //TODO CHRISSY: GET BUYER EMAIL AND SEND TO BUYER EMAIL THAT THE ORDER IS CONFIRMED
                                                 try {
                                                     GmailService gmailService = new GmailServiceImpl(GoogleNetHttpTransport.newTrustedTransport());
-                                                    gmailService.setGmailCredentials(new GmailCredentials("korekweis@gmail.com",
+                                                    gmailService.setGmailCredentials(new GmailCredentials("test@gmail.com",
                                                             "985412558086-ahopm0n5foq10s08ugor4p99tip99ttg.apps.googleusercontent.com",
                                                             "7Axm_PMdL3lppLdkA-MmPo7h",
                                                             "ya29.GluCBY6YE-TzEU2-F86sRl_Gq5QyPmUNW2wEV0MynFN-L3HK2AHEUD09pknXfrvk8UY6NYnGwuCIxAh97s6ipVylgwoNIsxLs7uouIBqj8vWiAODGiS2a1ZDNa8D",
