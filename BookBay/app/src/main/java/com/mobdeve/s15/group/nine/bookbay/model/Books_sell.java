@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Books_sell {
     @DocumentId
@@ -143,5 +144,13 @@ public class Books_sell {
 
     public void setAvailable(Boolean available) {
         isAvailable = available;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Books_sell temp = (Books_sell) o;
+        if (temp.getBooks_sellID().equals(books_sellID))
+            return true;
+        return false;
     }
 }
