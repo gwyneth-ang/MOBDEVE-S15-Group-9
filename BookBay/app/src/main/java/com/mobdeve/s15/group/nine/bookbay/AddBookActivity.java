@@ -19,6 +19,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
+import android.content.Context;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -35,6 +36,7 @@ import com.mobdeve.s15.group.nine.bookbay.model.Books_sell;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Callback;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -68,6 +70,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
     private boolean imageChanged = false;
 
     private String currentPhotoPath;
+    private File photoFile;
 
 //    private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult(
 //            new ActivityResultContracts.StartActivityForResult(),
@@ -103,36 +106,14 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                 break;
             case 1:
                 if(resultCode == RESULT_OK){
+                    Bundle extras = imageReturnedIntent.getExtras();
+                    Bitmap photo = (Bitmap) extras.get("data");
 
-//                    imageUri = imageReturnedIntent.getData();
-//                    imageUri = Uri.parse(imageReturnedIntent.getData().getStringExtra(MediaStore.EXTRA_OUTPUT));
-//                    imageUri = imageReturnedIntent.getData();
-//                    galleryAddPic();
+                    imageUri = getImageUri(getApplicationContext(), photo);
+                    Picasso.get().load(imageUri).into(Iv_bookImage);
 
-//                    Bundle extras = imageReturnedIntent.getExtras();
-//
-//                    imageUri = (Uri) extras.get("data");
-//
-                    // ANOTHER VERSION
-//                    Log.d("HERE TOO", imageUri.toString());
-//                    // FIXME: does not work yung gallery
-//                    galleryAddPic();
-//
-//                    // PISCASOO DOES NOT WORK
-//                    Picasso.get().load(imageUri).into(Iv_bookImage, new Callback() {
-//                        @Override
-//                        public void onSuccess() {
-//                        }
-//
-//                        @Override
-//                        public void onError(Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    });
-//
-//                    Bundle extras = imageReturnedIntent.getExtras();
-//                    Bitmap bmp = (Bitmap) extras.get("data");
-//                    Iv_bookImage.setImageBitmap(bmp);
+                    Log.d("HERE INSIDE BITMAP", imageUri.toString());
+
                 }
                 break;
         }
@@ -219,35 +200,10 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                         if (choice[which].equals("Take Photo")) {
                             Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-//                            File file=getOutputMediaFile(1);
-//                            picUri = Uri.fromFile(file); // create
-//                            i.putExtra(MediaStore.EXTRA_OUTPUT,picUri); // set the image file
+                            startActivityForResult(takePicture, 1);
 
-//                            if (takePicture.resolveActivity(getPackageManager()) != null) {
-//                                startActivityForResult(takePicture, 1);
-//                            }
-
-                            if (takePicture.resolveActivity(getPackageManager()) != null) {
-                                // Create the File where the photo should go
-                                File photoFile = null;
-                                try {
-                                    photoFile = createImageFile();
-                                } catch (IOException ex) {
-                                    // Error occurred while creating the File
-                                    ex.printStackTrace();
-                                }
-                                // Continue only if the File was successfully created
-                                if (photoFile != null) {
-                                    Uri photoUri = FileProvider.getUriForFile(view.getContext(),
-                                            "com.example.android.fileprovider",
-                                            photoFile);
-
-                                    Log.d("HERE", photoUri.toString());
-                                    takePicture.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-                                    startActivityForResult(takePicture, 1);
-                                }
-                            }
                         } else if (choice[which].equals("Choose From Gallery")) {
+
                             Intent pickPhoto = new Intent(Intent.ACTION_PICK,
                                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             pickPhoto.setType("image/*");
@@ -257,8 +213,6 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     }
                 });
                 builder.show();
-
-
 
 //                imageChanged = true;
 //
@@ -407,46 +361,10 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 
     }
 
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
-
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, imageUri);
-        File f = new File(currentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        Log.d("HERE GALLERY", contentUri.toString());
-        sendBroadcast(mediaScanIntent);
-    }
-
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//
-//        outState.putParcelable("imageUri", imageUri);
-//    }
-//
-//    // Recover the saved state when the activity is recreated.
-//    @Override
-//    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//
-//        imageUri = savedInstanceState.getParcelable("imageUri");
-//
-//    }
-
-
 }

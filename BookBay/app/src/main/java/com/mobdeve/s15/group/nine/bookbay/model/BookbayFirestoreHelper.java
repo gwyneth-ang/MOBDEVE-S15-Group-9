@@ -686,6 +686,8 @@ public class BookbayFirestoreHelper {
                 progressDialog.setCanceledOnTouchOutside(true);
                 progressDialog.setMessage("Success!");
 
+                Log.d("HERE IN ADD BOOK HELPER", "IN");
+
                 Intent return_intent = new Intent();
                 ((AddBookActivity) context).setResult(Activity.RESULT_OK, return_intent);
                 ((AddBookActivity) context).finish();

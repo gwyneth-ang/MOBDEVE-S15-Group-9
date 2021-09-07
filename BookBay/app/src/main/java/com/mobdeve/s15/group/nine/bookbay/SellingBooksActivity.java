@@ -70,6 +70,8 @@ public class  SellingBooksActivity extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if(result.getResultCode() == Activity.RESULT_OK) {
+
+                        Log.d("HERE IN ADD LAUNCHER", "IN");
                         updateDataAndAdapter();
                     }
                 }
