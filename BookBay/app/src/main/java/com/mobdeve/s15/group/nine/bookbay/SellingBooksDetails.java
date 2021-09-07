@@ -19,23 +19,29 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class SellingBooksDetails extends AppCompatActivity {
     private SearchView searchbar;
@@ -45,6 +51,7 @@ public class SellingBooksDetails extends AppCompatActivity {
     private Button editBook, deleteBook;
     private String bookID, title, author, conditionStr, imageUri, review;
     private Float priceFlt;
+    private Boolean canEdit = true;
 
     private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -115,6 +122,19 @@ public class SellingBooksDetails extends AppCompatActivity {
                     }
                 });
 
+        //check if in cart
+        BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                .document(bookID).collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
+                if (task.getResult().size() != 0) {
+                    canEdit = false;
+                }
+            }
+        });
+
+
         // change font for search view
         int id = this.searchbar.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
         Typeface tf = ResourcesCompat.getFont(this,R.font.cormorant_garamond);
@@ -139,15 +159,23 @@ public class SellingBooksDetails extends AppCompatActivity {
         this.editBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SellingBooksDetails.this.getBaseContext(), AddBookActivity.class);
-                intent.putExtra(IntentKeys.BOOK_ID_KEY.name(), bookID);
-                intent.putExtra(IntentKeys.BOOK_IMAGE_KEY.name(), imageUri);
-                intent.putExtra(IntentKeys.TITLE_KEY.name(), title);
-                intent.putExtra(IntentKeys.AUTHOR_KEY.name(), author);
-                intent.putExtra(IntentKeys.PRICE_KEY.name(), priceFlt);
-                intent.putExtra(IntentKeys.CONDITION_KEY.name(), conditionStr);
-                intent.putExtra(IntentKeys.REVIEW_KEY.name(), review);
-                myActivityResultLauncher.launch(intent);
+                if (canEdit) {
+                    Intent intent = new Intent(SellingBooksDetails.this.getBaseContext(), AddBookActivity.class);
+                    intent.putExtra(IntentKeys.BOOK_ID_KEY.name(), bookID);
+                    intent.putExtra(IntentKeys.BOOK_IMAGE_KEY.name(), imageUri);
+                    intent.putExtra(IntentKeys.TITLE_KEY.name(), title);
+                    intent.putExtra(IntentKeys.AUTHOR_KEY.name(), author);
+                    intent.putExtra(IntentKeys.PRICE_KEY.name(), priceFlt);
+                    intent.putExtra(IntentKeys.CONDITION_KEY.name(), conditionStr);
+                    intent.putExtra(IntentKeys.REVIEW_KEY.name(), review);
+                    myActivityResultLauncher.launch(intent);
+                } else {
+                    Toast toast = Toast.makeText(
+                            SellingBooksDetails.this.getBaseContext(),
+                            "The book has already been placed as an Order.",
+                            Toast.LENGTH_LONG);
+                    toast.show();
+                }
             }
         });
 
