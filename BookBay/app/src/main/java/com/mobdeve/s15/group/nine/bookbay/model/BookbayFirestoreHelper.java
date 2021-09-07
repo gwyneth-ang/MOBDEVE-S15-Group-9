@@ -20,6 +20,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.services.gmail.Gmail;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -32,6 +34,27 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import javax.mail.BodyPart;
+//import javax.mail.Message;
+import javax.mail.MessagingException;
+import com.google.api.services.gmail.model.Message;
+import javax.mail.Multipart;
+import javax.mail.SendFailedException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import com.google.api.client.util.Base64;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+//import java.util.Base64;
+import java.security.GeneralSecurityException;
+import java.util.Properties;
+
 import com.mobdeve.s15.group.nine.bookbay.AddBookActivity;
 import com.mobdeve.s15.group.nine.bookbay.BookStatus;
 import com.mobdeve.s15.group.nine.bookbay.BooksOrders;
@@ -45,6 +68,9 @@ import com.mobdeve.s15.group.nine.bookbay.SortByPriceDes;
 import com.mobdeve.s15.group.nine.bookbay.SortByTitleAsc;
 import com.mobdeve.s15.group.nine.bookbay.SortByTitleDes;
 import com.mobdeve.s15.group.nine.bookbay.ThriftStoreSellingBooksAdapter;
+import com.mobdeve.s15.group.nine.bookbay.email.GmailCredentials;
+import com.mobdeve.s15.group.nine.bookbay.email.GmailService;
+import com.mobdeve.s15.group.nine.bookbay.email.GmailServiceImpl;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 import com.mobdeve.s15.group.nine.bookbay.model.Books_sell;
 import com.mobdeve.s15.group.nine.bookbay.model.Notifications;
@@ -390,6 +416,25 @@ public class BookbayFirestoreHelper {
                                             if (task.isSuccessful()) {
 
                                                 //TODO CHRISSY: GET BUYER EMAIL AND SEND TO BUYER EMAIL THAT THE ORDER IS CONFIRMED
+<<<<<<< HEAD
+=======
+                                                try {
+                                                    GmailService gmailService = new GmailServiceImpl(GoogleNetHttpTransport.newTrustedTransport());
+                                                    gmailService.setGmailCredentials(new GmailCredentials("test@gmail.com",
+                                                            "985412558086-ahopm0n5foq10s08ugor4p99tip99ttg.apps.googleusercontent.com",
+                                                            "7Axm_PMdL3lppLdkA-MmPo7h",
+                                                            "ya29.GluCBY6YE-TzEU2-F86sRl_Gq5QyPmUNW2wEV0MynFN-L3HK2AHEUD09pknXfrvk8UY6NYnGwuCIxAh97s6ipVylgwoNIsxLs7uouIBqj8vWiAODGiS2a1ZDNa8D",
+                                                            "1/XyMnZb4UfU8WDt6SnHIeE3wFTPyTAg2K16ZA7NIF0bY"));
+                                                    gmailService.sendMessage(booksOrders.getOrder().getBuyerEmail(),
+                                                                                "BOOKBAY Notification",
+                                                                                    "Woohoo! Your purchase of " + booksOrders.getBook().getBookTitle() + " has been approved by the seller! You will be receiving this book by your doorstep soon!  ");
+                                                } catch (MessagingException | IOException e) {
+                                                    e.printStackTrace();
+                                                } catch (GeneralSecurityException e) {
+                                                    e.printStackTrace();
+                                                }
+
+>>>>>>> editing-book
                                                 Map<String, Object> declineAll = new HashMap<>();
 
                                                 declineAll.put(BookbayFirestoreReferences.STATUS_FIELD, BookStatus.DECLINED.name());
@@ -451,6 +496,47 @@ public class BookbayFirestoreHelper {
         }
     }
 
+    //TODO: Change the location later
+    //make mail
+    public static MimeMessage createEmail(String to, String from, String subject, String bodyText)
+            throws MessagingException {
+        Properties props = new Properties();
+        Session session = Session.getDefaultInstance(props, null);
+
+        MimeMessage email = new MimeMessage(session);
+
+        email.setFrom(new InternetAddress(from));
+        email.addRecipient(javax.mail.Message.RecipientType.TO,
+                new InternetAddress(to));
+        email.setSubject(subject);
+        email.setText(bodyText);
+        return email;
+    }
+
+    //encode as base64url string
+    public static Message createMessageWithEmail(MimeMessage emailContent)
+            throws MessagingException, IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        emailContent.writeTo(buffer);
+        byte[] bytes = buffer.toByteArray();
+        String encodedEmail = Base64.encodeBase64URLSafeString(bytes);
+        Message message = new Message();
+        message.setRaw(encodedEmail);
+        return message;
+    }
+
+    //sending the message
+    public static Message sendMessage(Gmail service,
+                                      String userId,
+                                      MimeMessage emailContent)
+            throws MessagingException, IOException {
+        Message message = createMessageWithEmail(emailContent);
+        message = service.users().messages().send(userId, message).execute();
+
+        System.out.println("Message id: " + message.getId());
+        System.out.println(message.toPrettyString());
+        return message;
+    }
 
     public static void declineOthersAndNotify (Map<String, Object> declineAll, BooksOrders booksOrders, String orderID, Calendar cal, String buyerID, ProgressDialog progressDialog, Context context, OrdersAdapter ordersAdapter) {
 
