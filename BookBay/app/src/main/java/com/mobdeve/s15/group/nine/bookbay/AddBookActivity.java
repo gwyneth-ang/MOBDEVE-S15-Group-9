@@ -72,52 +72,46 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
     private String currentPhotoPath;
     private File photoFile;
 
-//    private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult(
-//            new ActivityResultContracts.StartActivityForResult(),
-//            new ActivityResultCallback<ActivityResult>() {
-//                @Override
-//                public void onActivityResult(ActivityResult result) {
-//                    if (result.getResultCode() == Activity.RESULT_OK){
-//                        try {
-//                            if(result.getData() != null) {
-//                                // Get the path of the image
-//                                imageUri = result.getData().getData();
-//                                // Load the image into the tempImageIv using the path
-//                                Picasso.get().load(imageUri).into(Iv_bookImage);
-//                            }
-//                        } catch(Exception exception){
-//                            Log.d("TAG",""+exception.getLocalizedMessage());
-//                        }
-//                    }
-//                }
-//            });
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
-        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
-        switch(requestCode) {
-            case 0:
-                if(resultCode == RESULT_OK){
-                    imageUri = imageReturnedIntent.getData();
-                    Picasso.get().load(imageUri).into(Iv_bookImage);
-
-                    Log.d("HERE IN CHOOSE", imageUri.toString());
+    private ActivityResultLauncher<Intent> choosePictureLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK){
+                        try {
+                            if(result.getData() != null) {
+                                // Get the path of the image
+                                imageUri = result.getData().getData();
+                                // Load the image into the tempImageIv using the path
+                                Picasso.get().load(imageUri).into(Iv_bookImage);
+                            }
+                        } catch(Exception exception){
+                            Log.d("TAG",""+exception.getLocalizedMessage());
+                        }
+                    }
                 }
+            });
 
-                break;
-            case 1:
-                if(resultCode == RESULT_OK){
-                    Bundle extras = imageReturnedIntent.getExtras();
-                    Bitmap photo = (Bitmap) extras.get("data");
+    private ActivityResultLauncher<Intent> takePictureLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK){
+                        try {
+                            if(result.getData() != null) {
+                                Bundle extras = result.getData().getExtras();
+                                Bitmap photo = (Bitmap) extras.get("data");
 
-                    imageUri = getImageUri(getApplicationContext(), photo);
-                    Picasso.get().load(imageUri).into(Iv_bookImage);
-
-                    Log.d("HERE INSIDE BITMAP", imageUri.toString());
-
+                                imageUri = getImageUri(getApplicationContext(), photo);
+                                Picasso.get().load(imageUri).into(Iv_bookImage);
+                            }
+                        } catch(Exception exception){
+                            Log.d("TAG",""+exception.getLocalizedMessage());
+                        }
+                    }
                 }
-                break;
-        }
-    }
+            });
 
     @Override
     protected  void onCreate(Bundle savedInstanceState) {
@@ -181,8 +175,9 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 
             //TODO: Check this part
             this.tempUri = Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name()));
-            Picasso.get().load(tempUri).into(Iv_bookImage);
+//            Picasso.get().load(tempUri).into(Iv_bookImage);
             imageUri = tempUri;
+            BookbayFirestoreReferences.downloadImageIntoImageViewUsingId(bookID, imageUri.toString(), Iv_bookImage);
         }
 
         this.Bt_browse_addBook.setOnClickListener(new View.OnClickListener() {
@@ -200,7 +195,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                         if (choice[which].equals("Take Photo")) {
                             Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                            startActivityForResult(takePicture, 1);
+                            takePictureLauncher.launch(takePicture);
 
                         } else if (choice[which].equals("Choose From Gallery")) {
 
@@ -208,7 +203,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             pickPhoto.setType("image/*");
 
-                            startActivityForResult(pickPhoto, 0);
+                            choosePictureLauncher.launch(pickPhoto);
                         }
                     }
                 });
