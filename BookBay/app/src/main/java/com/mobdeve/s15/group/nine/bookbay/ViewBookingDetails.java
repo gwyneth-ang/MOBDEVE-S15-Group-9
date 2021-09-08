@@ -30,7 +30,6 @@ import java.text.DecimalFormat;
 
 public class ViewBookingDetails extends AppCompatActivity {
     private SearchView searchbar;
-    private ImageButton filter;
     private ImageView bookImage, ownerImage;
     private TextView bookTitle, authorName, ownerName, price, condition, review;
     private Button placeOrder;
@@ -41,7 +40,6 @@ public class ViewBookingDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_booking_details);
         this.searchbar = findViewById(R.id.Sv_viewbookingdetails_seach_bar);
-        this.filter = findViewById(R.id.Bt_viewbookingdetails_filter);
         this.bookImage = findViewById(R.id.Iv_viewbookingdetails_book_image);
         this.ownerImage = findViewById(R.id.Iv_viewbookingdetails_owner_image);
         this.bookTitle = findViewById(R.id.Tv_viewbookingdetails_title);
@@ -114,8 +112,6 @@ public class ViewBookingDetails extends AppCompatActivity {
             }
         });
 
-//        disable filter for this view
-        filter.setEnabled(false);
     }
 
 }

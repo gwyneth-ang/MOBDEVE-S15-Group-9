@@ -45,7 +45,6 @@ import java.util.ArrayList;
 
 public class SellingBooksDetails extends AppCompatActivity {
     private SearchView searchbar;
-    private ImageButton filter;
     private ImageView bookImage;
     private TextView bookTitle, authorName, price, condition;
     private Button editBook, deleteBook;
@@ -83,7 +82,6 @@ public class SellingBooksDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.selling_books_details);
         this.searchbar = findViewById(R.id.Sv_sellingbooksdetails_seach_bar);
-        this.filter = findViewById(R.id.Bt_sellingbooksdetails_filter);
         this.bookImage = findViewById(R.id.Iv_sellingbooksdetails_book_image);
         this.bookTitle = findViewById(R.id.Tv_sellingbooksdetails_title);
         this.authorName = findViewById(R.id.Tv_sellingbooksdetails_author);

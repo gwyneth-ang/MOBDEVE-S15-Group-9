@@ -12,6 +12,7 @@
         android:layout_height="60dp"
         android:background="#EFE6D5"
         android:orientation="horizontal"
+        android:weightSum="5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,13 +20,14 @@
 
         <SearchView
             android:id="@+id/Sv_sellingbooksdetails_seach_bar"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:layout_weight="1"
             android:background="@drawable/custom_search_bar"
             android:backgroundTint="#FFFFFF"
             android:iconifiedByDefault="false"
@@ -34,19 +36,6 @@
             android:queryHint="Search by title or author"
             android:searchIcon="@drawable/loupe"
             android:textDirection="ltr"></SearchView>
-
-        <ImageButton
-            android:id="@+id/Bt_sellingbooksdetails_filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_weight="1"
-            android:adjustViewBounds="true"
-            android:backgroundTint="@android:color/transparent"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/filter_red" />
 
     </LinearLayout>
 
