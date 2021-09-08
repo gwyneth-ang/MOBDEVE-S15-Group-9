@@ -103,6 +103,7 @@ public class  SellingBooksActivity extends AppCompatActivity {
         TextView searchText = (TextView) this.Sv_thriftsellingbooks_search_bar.findViewById(id);
         searchText.setTypeface(tf);
         searchText.setTextColor(Color.BLACK);
+        searchText.setHintTextColor(Color.parseColor("#999999"));
 
         // change UI based on which activity
         setupUi();

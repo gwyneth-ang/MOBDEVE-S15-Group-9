@@ -111,6 +111,7 @@ public class view_thrift_store extends Fragment {
         TextView searchText = (TextView) this.Sv_thriftsellingbooks_search_bar.findViewById(id);
         searchText.setTypeface(tf);
         searchText.setTextColor(Color.BLACK);
+        searchText.setHintTextColor(Color.parseColor("#999999"));
 
         //POPUP MENU
         PopupMenu popup = new PopupMenu(view.getContext(), Bt_thriftsellingbooks_filter);

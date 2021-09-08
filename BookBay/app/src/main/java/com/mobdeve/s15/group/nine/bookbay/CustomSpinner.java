@@ -1,5 +1,6 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,8 @@ public class CustomSpinner<String> extends ArrayAdapter<String> {
             view.setTextSize(13);
         }
 
+        view.setTextColor(Color.parseColor("#555555"));
+
         return view;
     }
 
@@ -53,6 +56,8 @@ public class CustomSpinner<String> extends ArrayAdapter<String> {
         } else {
             view.setTextSize(13);
         }
+
+        view.setTextColor(Color.parseColor("#555555"));
 
         return view;
     }

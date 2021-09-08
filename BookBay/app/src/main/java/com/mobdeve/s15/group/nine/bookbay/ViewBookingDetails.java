@@ -66,6 +66,7 @@ public class ViewBookingDetails extends AppCompatActivity {
         TextView searchText = (TextView) this.searchbar.findViewById(id);
         searchText.setTypeface(tf);
         searchText.setTextColor(Color.BLACK);
+        searchText.setHintTextColor(Color.parseColor("#999999"));
 
         String path = "images/" + i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()) + "-" + Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name())).getLastPathSegment();
 

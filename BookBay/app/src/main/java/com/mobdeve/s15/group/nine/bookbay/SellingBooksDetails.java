@@ -141,6 +141,8 @@ public class SellingBooksDetails extends AppCompatActivity {
         TextView searchText = (TextView) this.searchbar.findViewById(id);
         searchText.setTypeface(tf);
         searchText.setTextColor(Color.BLACK);
+        searchText.setHintTextColor(Color.parseColor("#999999"));
+
         this.searchbar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

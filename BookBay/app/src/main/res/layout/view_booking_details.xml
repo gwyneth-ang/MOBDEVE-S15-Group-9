@@ -189,6 +189,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="15sp"
             android:backgroundTint="#000000"
+            android:textColor="#FFFFFF"
             android:fontFamily="@font/cormorant_garamond_medium"
             android:text="Place Order" />
 
