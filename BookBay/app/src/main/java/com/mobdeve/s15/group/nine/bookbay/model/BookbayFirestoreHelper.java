@@ -11,9 +11,9 @@ import android.util.Log;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -25,6 +25,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.Query.Direction;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -38,7 +40,6 @@ import com.mobdeve.s15.group.nine.bookbay.BookStatus;
 import com.mobdeve.s15.group.nine.bookbay.BooksOrders;
 import com.mobdeve.s15.group.nine.bookbay.OrdersAdapter;
 import com.mobdeve.s15.group.nine.bookbay.R;
-import com.mobdeve.s15.group.nine.bookbay.SellingBooksActivity;
 import com.mobdeve.s15.group.nine.bookbay.SellingOrdersActivity;
 import com.mobdeve.s15.group.nine.bookbay.SortByOrderDate;
 import com.mobdeve.s15.group.nine.bookbay.SortByPriceAsc;
@@ -46,10 +47,8 @@ import com.mobdeve.s15.group.nine.bookbay.SortByPriceDes;
 import com.mobdeve.s15.group.nine.bookbay.SortByTitleAsc;
 import com.mobdeve.s15.group.nine.bookbay.SortByTitleDes;
 import com.mobdeve.s15.group.nine.bookbay.ThriftStoreSellingBooksAdapter;
-import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
-import com.mobdeve.s15.group.nine.bookbay.model.Books_sell;
-import com.mobdeve.s15.group.nine.bookbay.model.Notifications;
-import com.mobdeve.s15.group.nine.bookbay.model.Orders;
+import com.mobdeve.s15.group.nine.bookbay.callback.CanEditCallback;
+import com.mobdeve.s15.group.nine.bookbay.callback.NumBookCallBack;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -64,9 +63,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class BookbayFirestoreHelper {
+
+    private static Boolean canEdit;
 
     public static void findAllBooksAvailable(ThriftStoreSellingBooksAdapter thriftStoreAdapter) {
         BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
@@ -77,8 +77,6 @@ public class BookbayFirestoreHelper {
                 @Override
                 public void onComplete(Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
-                        Log.d("TEST", "Hi");
-
                         ArrayList<Books_sell> books = new ArrayList<>();
 
                         for (QueryDocumentSnapshot document : task.getResult())
@@ -103,8 +101,6 @@ public class BookbayFirestoreHelper {
                 @Override
                 public void onComplete(Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
-                        Log.d("TEST", "Hi");
-
                         ArrayList<Books_sell> books = new ArrayList<>();
 
                         for (QueryDocumentSnapshot document : task.getResult())
@@ -241,12 +237,9 @@ public class BookbayFirestoreHelper {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            Log.d("TEST", "Hi");
-
                             ArrayList<BooksOrders> booksOrders = new ArrayList<>();
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TEST", "In the loop" + document.getReference().getId());
                                 Orders orderTemp = document.toObject(Orders.class);
 
                                 document.getReference().getParent().getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -285,12 +278,9 @@ public class BookbayFirestoreHelper {
                     @Override
                     public void onComplete(Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            Log.d("TEST", "Hi");
-
                             ArrayList<BooksOrders> booksOrders = new ArrayList<>();
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                Log.d("TEST", "In the loop" + document.getReference().getId());
                                 Orders orderTemp = document.toObject(Orders.class);
 
                                 document.getReference().getParent().getParent().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -318,8 +308,6 @@ public class BookbayFirestoreHelper {
 
                                         sellerOrdersAdapter.setData(booksOrders);
                                         sellerOrdersAdapter.notifyDataSetChanged();
-
-                                        Log.d("SELLER ORDERS", String.valueOf(booksOrders.size()));
                                     }
                                 });
                             }
@@ -389,19 +377,12 @@ public class BookbayFirestoreHelper {
                                         @Override
                                         public void onComplete(Task<QuerySnapshot> task) {
                                             if (task.isSuccessful()) {
-
-                                                //TODO CHRISSY: GET BUYER EMAIL AND SEND TO BUYER EMAIL THAT THE ORDER IS CONFIRMED
-
                                                 Map<String, Object> declineAll = new HashMap<>();
 
                                                 declineAll.put(BookbayFirestoreReferences.STATUS_FIELD, BookStatus.DECLINED.name());
                                                 declineAll.put(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, cal.getTime());
 
-                                                Log.d("ORDER TEST", booksOrders.getOrder().getOrderID().getId());
-
                                                 for (QueryDocumentSnapshot document : task.getResult()) {
-                                                    Log.d("ORDER TEST", document.getId());
-
                                                     // if statement - do not update the one that was just confirmed
                                                     if (!document.getId().equals(booksOrders.getOrder().getOrderID().getId())) {
                                                         String buyerID = document.getString(BookbayFirestoreReferences.BUYER_ID_UID_FIELD);
@@ -478,8 +459,6 @@ public class BookbayFirestoreHelper {
                 .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
                     @Override
                     public void onSuccess(List<Object> objects) {
-                        Log.d("TEST 2", "Decline all orders and notify");
-
                         ((SellingOrdersActivity) context).updateDataAndAdapter(progressDialog);
 
                         progressDialog.setCanceledOnTouchOutside(true);
@@ -687,8 +666,6 @@ public class BookbayFirestoreHelper {
                 progressDialog.setCanceledOnTouchOutside(true);
                 progressDialog.setMessage("Success!");
 
-                Log.d("HERE IN ADD BOOK HELPER", "IN");
-
                 Intent return_intent = new Intent();
                 ((AddBookActivity) context).setResult(Activity.RESULT_OK, return_intent);
                 ((AddBookActivity) context).finish();
@@ -718,6 +695,23 @@ public class BookbayFirestoreHelper {
             public void onFailure(@NonNull Exception exception) {
                 // Uh-oh, an error occurred!
                 Log.d("Storage Result", "onFailure: did not delete file");
+            }
+        });
+    }
+
+    public static void canEdit(String bookID, CanEditCallback canEditCallback){
+        canEdit = true;
+
+        BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+                .document(bookID).collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
+                if (task.getResult().size() != 0) {
+                    canEditCallback.canEdit(false);
+                } else {
+                    canEditCallback.canEdit(true);
+                }
             }
         });
     }
@@ -869,6 +863,25 @@ public class BookbayFirestoreHelper {
                 }
             }
         });
+    }
+
+    public static void findTotalSellingBooks (String userUid, NumBookCallBack numBookCallBack) {
+        BookbayFirestoreReferences.getFirestoreInstance()
+            .collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
+            .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, userUid)
+            .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
+            .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot value,
+                                    @Nullable FirebaseFirestoreException e) {
+                    if (e == null) {
+                        numBookCallBack.totalBooks(value.size());
+                    }
+                    else{
+                        numBookCallBack.totalBooks(-1);
+                    }
+                }
+            });
     }
 }
 

@@ -26,6 +26,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.mobdeve.s15.group.nine.bookbay.callback.CanEditCallback;
+import com.mobdeve.s15.group.nine.bookbay.callback.NumBookCallBack;
+import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 import com.squareup.picasso.Picasso;
 
@@ -44,7 +47,6 @@ public class view_account extends Fragment {
 
     private String mParam1;
     private String mParam2;
-    private FirebaseFirestore dbRef;
     private int count;
     private ImageView profilePicture;
     private TextView userName, numBooks;
@@ -90,23 +92,13 @@ public class view_account extends Fragment {
         userName.setText(user.getDisplayName());
         Picasso.get().load(user.getPhotoUrl()).into(profilePicture);
 
-        this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
-
-        this.dbRef.collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                .whereEqualTo(BookbayFirestoreReferences.OWNER_ID_UID_FIELD, user.getUid())
-                .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value,
-                                        @Nullable FirebaseFirestoreException e) {
-                        if (e == null) {
-                            setNumBooksText(value.size());
-                        }
-                        else{
-                            setNumBooksText(-1);
-                        }
-                    }
-                });
+        // set total number of books
+        BookbayFirestoreHelper.findTotalSellingBooks(user.getUid(), new NumBookCallBack() {
+            @Override
+            public void totalBooks(int book_num) {
+                setNumBooksText(book_num);
+            }
+        });
 
         //Set on click listeners for buttons
         myBooks.setOnClickListener(new View.OnClickListener() {

@@ -217,24 +217,6 @@ public class  SellingBooksActivity extends AppCompatActivity {
         BookbayFirestoreHelper.findAllBooksAvailableSeller(sellingBookAdapter, user.getUid());
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d("Hi", "Start");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d("Hi", "Resume");
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.d("Hi", "Restart");
-    }
-
     public ActivityResultLauncher<Intent> getActivityResultLauncher(){
         return this.myActivityResultLauncher;
     }

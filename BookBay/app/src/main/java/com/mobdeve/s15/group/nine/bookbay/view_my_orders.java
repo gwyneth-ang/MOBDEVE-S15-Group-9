@@ -26,7 +26,6 @@ import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
  */
 public class view_my_orders extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -38,7 +37,6 @@ public class view_my_orders extends Fragment {
     private TextView tv_orders;
     private SwipeRefreshLayout sfl_orders;
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -54,7 +52,6 @@ public class view_my_orders extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment view_my_orders.
      */
-    // TODO: Rename and change types and number of parameters
     public static view_my_orders newInstance(String param1, String param2) {
         view_my_orders fragment = new view_my_orders();
         Bundle args = new Bundle();

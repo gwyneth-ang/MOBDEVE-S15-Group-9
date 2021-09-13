@@ -61,7 +61,6 @@ public class OrdersViewHolder extends RecyclerView.ViewHolder {
 
         SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd, yyyy | hh:mm aa");
 
-
         this.tv_order_date.setText(DateForm.format(order.getOrderDate()).toUpperCase());
 
         // Profile

@@ -33,7 +33,6 @@ public class ViewBookingDetails extends AppCompatActivity {
     private ImageView bookImage, ownerImage;
     private TextView bookTitle, authorName, ownerName, price, condition, review;
     private Button placeOrder;
-    private FirebaseFirestore dbRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,21 +65,13 @@ public class ViewBookingDetails extends AppCompatActivity {
         searchText.setTextColor(Color.BLACK);
         searchText.setHintTextColor(Color.parseColor("#999999"));
 
-        String path = "images/" + i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()) + "-" + Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name())).getLastPathSegment();
 
-        FirebaseStorage.getInstance().getReference().child(path).getDownloadUrl()
-                .addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(Task<Uri> task) {
-                        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(bookImage.getContext());
-                        circularProgressDrawable.setCenterRadius(30);
-                        Picasso.get()
-                                .load(task.getResult())
-                                .error(R.drawable.ic_error)
-                                .placeholder(circularProgressDrawable)
-                                .into(bookImage);
-                    }
-                });
+        // load image from firebase
+        BookbayFirestoreReferences.downloadImageIntoImageViewUsingId(
+                i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()),
+                i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name()),
+                bookImage
+        );
 
         this.ownerName.setText(i.getStringExtra(IntentKeys.OWNER_NAME_KEY.name()));
         Picasso.get().load(i.getStringExtra(IntentKeys.OWNER_IMAGE_KEY.name())).into(ownerImage);

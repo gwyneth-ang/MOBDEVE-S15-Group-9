@@ -172,10 +172,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
             }
             spinner_addBook.setSelection(spinnerIndex);
 
-
-            //TODO: Check this part
             this.tempUri = Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name()));
-//            Picasso.get().load(tempUri).into(Iv_bookImage);
             imageUri = tempUri;
             BookbayFirestoreReferences.downloadImageIntoImageViewUsingId(bookID, imageUri.toString(), Iv_bookImage);
         }
@@ -208,13 +205,6 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     }
                 });
                 builder.show();
-
-//                imageChanged = true;
-//
-//                Intent i = new Intent();
-//                i.setType("image/*");
-//                i.setAction(Intent.ACTION_OPEN_DOCUMENT);
-//                myActivityResultLauncher.launch(Intent.createChooser(i, "Select Picture"));
             }
         });
 
@@ -242,8 +232,6 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                         progressDialog.show();
 
                         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
-//                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-//                    simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+8"));
 
                         Log.d("TEST", user.getDisplayName());
 
@@ -316,7 +304,6 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                             BookbayFirestoreHelper.editBookWithImage(progressDialog, bookID, imageUri, updateBook, AddBookActivity.this, title, author, selectorChoice, price, review);
                         }
 
-
                         //check
                         if (changed && !imageChanged) {
                             Log.d("TEST EDIT", bookID);
@@ -348,7 +335,6 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         this.selectorChoice = parent.getItemAtPosition(position).toString();
-        //Toast.makeText(parent.getContext(), selectorChoice, Toast.LENGTH_SHORT).show();
     }
 
     @Override

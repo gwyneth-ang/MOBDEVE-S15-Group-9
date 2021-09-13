@@ -34,6 +34,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
+import com.mobdeve.s15.group.nine.bookbay.callback.CanEditCallback;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 import com.squareup.picasso.Picasso;
@@ -104,34 +105,16 @@ public class SellingBooksDetails extends AppCompatActivity {
         this.review = i.getStringExtra(IntentKeys.REVIEW_KEY.name());
         this.imageUri = i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name());
 
-        String path = "images/" + i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()) + "-" + Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name())).getLastPathSegment();
-
-        FirebaseStorage.getInstance().getReference().child(path).getDownloadUrl()
-                .addOnCompleteListener(new OnCompleteListener<Uri>() {
-                    @Override
-                    public void onComplete(Task<Uri> task) {
-                        CircularProgressDrawable circularProgressDrawable = new CircularProgressDrawable(bookImage.getContext());
-                        circularProgressDrawable.setCenterRadius(30);
-                        Picasso.get()
-                                .load(task.getResult())
-                                .error(R.drawable.ic_error)
-                                .placeholder(circularProgressDrawable)
-                                .into(bookImage);
-                    }
-                });
+        // load image from firebase
+        BookbayFirestoreReferences.downloadImageIntoImageViewUsingId(bookID, imageUri, bookImage);
 
         //check if in cart
-        BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
-                .document(bookID).collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        BookbayFirestoreHelper.canEdit(bookID, new CanEditCallback() {
             @Override
-            public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
-                if (task.getResult().size() != 0) {
-                    canEdit = false;
-                }
+            public void canEdit(boolean edit) {
+                canEdit = edit;
             }
         });
-
 
         // change font for search view
         int id = this.searchbar.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);

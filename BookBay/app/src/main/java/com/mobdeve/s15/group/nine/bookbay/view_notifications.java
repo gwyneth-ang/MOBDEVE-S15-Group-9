@@ -24,7 +24,6 @@ import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
  */
 public class view_notifications extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -39,7 +38,6 @@ public class view_notifications extends Fragment {
     private RecyclerView notificationsRecyclerView;
     private NotificationsAdapter notificationsAdapter;
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -55,7 +53,7 @@ public class view_notifications extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment view_notifications.
      */
-    // TODO: Rename and change types and number of parameters
+
     public static view_notifications newInstance(String param1, String param2) {
         view_notifications fragment = new view_notifications();
         Bundle args = new Bundle();
@@ -83,13 +81,6 @@ public class view_notifications extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-
-//        this.tvBookTitle_notifLayout = view.findViewById(R.id.tvBookTitle_notifLayout);
-//        this.tvSellerName_notifLayout = view.findViewById(R.id.tvSellerName_notifLayout);
-//        this.tvStatusBook_notifLayout = view.findViewById(R.id.tvStatusBook_notifLayout);
-//        this.tvTimePassed_notifLayout = view.findViewById(R.id.tvTimePassed_notifLayout);
-//        this.notifImageView = view.findViewById(R.id.notifImageView);
-
         this.recyclerView = view.findViewById(R.id.rvNotifications);
 
         //get current user

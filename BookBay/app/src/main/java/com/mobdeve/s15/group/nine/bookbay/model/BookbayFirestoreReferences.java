@@ -109,7 +109,7 @@ public class BookbayFirestoreReferences {
                 });
     }
 
-    public static void downloadImageIntoImageViewUsingId(String ID, String image,ImageView iv) {
+    public static void downloadImageIntoImageViewUsingId(String ID, String image, ImageView iv) {
         String path = "images/" + ID + "-" + Uri.parse(image).getLastPathSegment();
 
         Log.d("TEST", path);
