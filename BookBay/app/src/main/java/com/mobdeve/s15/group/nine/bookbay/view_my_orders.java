@@ -1,6 +1,5 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
-import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -12,18 +11,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link view_my_orders#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class view_my_orders extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,14 +37,6 @@ public class view_my_orders extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment view_my_orders.
-     */
     public static view_my_orders newInstance(String param1, String param2) {
         view_my_orders fragment = new view_my_orders();
         Bundle args = new Bundle();

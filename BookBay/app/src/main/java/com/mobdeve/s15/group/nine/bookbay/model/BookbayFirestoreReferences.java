@@ -13,8 +13,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.mobdeve.s15.group.nine.bookbay.R;
-import com.mobdeve.s15.group.nine.bookbay.model.Books_sell;
-import com.mobdeve.s15.group.nine.bookbay.model.Notifications;
 import com.squareup.picasso.Picasso;
 
 public class BookbayFirestoreReferences {

@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -26,7 +25,6 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,20 +32,15 @@ import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 import com.mobdeve.s15.group.nine.bookbay.model.Books_sell;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Callback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Calendar;
 import java.util.TimeZone;
-import java.util.Date;
 
-import java.text.SimpleDateFormat;
 
 public class AddBookActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public static String
@@ -249,7 +242,6 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                                 true
                         );
 
-                        //TODO: start here
                         BookbayFirestoreHelper.AddBook(progressDialog, imageUri, book, AddBookActivity.this);
 
                     } else {
@@ -308,7 +300,6 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                         if (changed && !imageChanged) {
                             Log.d("TEST EDIT", bookID);
                             BookbayFirestoreHelper.editBookNoImage(bookID, updateBook);
-                            //TODO: Make intent
                             Intent return_intent = new Intent();
                             return_intent.putExtra(BOOKID_KEY, bookID);
                             return_intent.putExtra(TITLE_KEY, title);

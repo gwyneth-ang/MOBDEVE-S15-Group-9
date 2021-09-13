@@ -1,18 +1,11 @@
 package com.mobdeve.s15.group.nine.bookbay.model;
 
 
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.ServerTimestamp;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+
 
 public class Books_sell {
     @DocumentId

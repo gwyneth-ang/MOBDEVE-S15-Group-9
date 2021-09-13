@@ -23,15 +23,8 @@ import android.widget.TextView;
 import android.widget.PopupMenu;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
-import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link view_thrift_store#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class view_thrift_store extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
@@ -59,15 +52,6 @@ public class view_thrift_store extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment view_thrift_store.
-     */
-    // TODO: Rename and change types and number of parameters
     public static view_thrift_store newInstance(String param1, String param2) {
         view_thrift_store fragment = new view_thrift_store();
         Bundle args = new Bundle();

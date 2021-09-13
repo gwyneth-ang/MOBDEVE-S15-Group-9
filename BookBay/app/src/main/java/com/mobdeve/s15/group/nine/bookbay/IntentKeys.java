@@ -11,6 +11,5 @@ public enum IntentKeys {
     REVIEW_KEY,
     OWNER_NAME_KEY,
     OWNER_IMAGE_KEY,
-    ADD_EDIT_BOOK_KEY,
     FILTER_KEY
 }

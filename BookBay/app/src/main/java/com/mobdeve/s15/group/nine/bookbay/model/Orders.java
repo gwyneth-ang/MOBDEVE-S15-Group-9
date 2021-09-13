@@ -3,7 +3,6 @@ package com.mobdeve.s15.group.nine.bookbay.model;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.DocumentReference;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Orders {
@@ -49,7 +48,6 @@ public class Orders {
     }
 
     public Date getOrderDate() {
-//        SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd, yyyy | hh:mm");
         return this.orderDate;
     }
 
@@ -66,7 +64,6 @@ public class Orders {
     }
 
     public Date getNotificationDateTime() {
-//        SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd, yyyy | hh:mm");
         return this.notificationDateTime;
     }
 

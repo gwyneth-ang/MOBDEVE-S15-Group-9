@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -30,7 +29,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
-import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 
 public class  SellingBooksActivity extends AppCompatActivity {
 

@@ -17,11 +17,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link view_notifications#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class view_notifications extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,15 +39,6 @@ public class view_notifications extends Fragment {
     public view_notifications() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment view_notifications.
-     */
 
     public static view_notifications newInstance(String param1, String param2) {
         view_notifications fragment = new view_notifications();

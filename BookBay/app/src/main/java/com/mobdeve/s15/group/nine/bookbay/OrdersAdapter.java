@@ -1,18 +1,15 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
 import android.content.DialogInterface;
-import android.graphics.Typeface;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.TextView;
 import android.content.Context;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
