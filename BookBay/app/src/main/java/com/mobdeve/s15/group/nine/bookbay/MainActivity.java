@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         signInLauncher.launch(signInIntent);
-//        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     private ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
