@@ -157,7 +157,7 @@ public class view_thrift_store extends Fragment {
                         // DO NOT CLOSE POP UP MENU WHEN CLICKING
                         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
                         item.setActionView(new View(getContext()));
-                        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+                        item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
                             @Override
                             public boolean onMenuItemActionExpand(MenuItem item) {
                                 return false;
