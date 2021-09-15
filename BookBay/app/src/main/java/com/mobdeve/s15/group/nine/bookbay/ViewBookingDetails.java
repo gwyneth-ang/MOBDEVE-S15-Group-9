@@ -14,6 +14,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 import com.squareup.picasso.Picasso;
 
@@ -24,6 +27,7 @@ public class ViewBookingDetails extends AppCompatActivity {
     private ImageView bookImage, ownerImage;
     private TextView bookTitle, authorName, ownerName, price, condition, review;
     private Button placeOrder;
+    private String userID, ownerID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +51,16 @@ public class ViewBookingDetails extends AppCompatActivity {
         this.condition.setText(i.getStringExtra(IntentKeys.CONDITION_KEY.name()));
         this.price.setText("₱" + decimalFormat.format(i.getFloatExtra(IntentKeys.PRICE_KEY.name(),((float)0))));
         this.review.setText(i.getStringExtra(IntentKeys.REVIEW_KEY.name()));
+
+        //check if button is displayed
+        this.ownerID = i.getStringExtra(IntentKeys.OWNER_ID_KEY.name());
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        this.userID = user.getUid();
+        if (ownerID.equals(userID)) {
+            this.placeOrder.setVisibility(View.GONE);
+        } else {
+            this.placeOrder.setVisibility(View.VISIBLE);
+        }
 
         // change font for search view
         int id = this.searchbar.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
