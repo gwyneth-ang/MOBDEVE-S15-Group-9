@@ -1,36 +1,46 @@
 package com.mobdeve.s15.group.nine.bookbay;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.MenuItem;
+
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.view.MenuItemCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
+import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 
-public class  SellingBooksActivity extends AppCompatActivity {
+public class view_selling_books extends Fragment {
+
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
     private RecyclerView sellingBookRecyclerView;
     private ThriftStoreSellingBooksAdapter sellingBookAdapter;
@@ -48,46 +58,50 @@ public class  SellingBooksActivity extends AppCompatActivity {
     // user
     FirebaseUser user;
 
-    private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if(result.getResultCode() == Activity.RESULT_OK) {
-                        BookbayFirestoreHelper.searchFilterBooksSeller(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), -1,  sellingBookAdapter, user.getUid(), SellingBooksActivity.this);
-                        Sv_thriftsellingbooks_search_bar.setQuery(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), false);
-                    } else if (result.getResultCode() == 10) {
-                        updateDataAndAdapter();
-                    }
-                }
-            });
+    private String mParam1;
+    private String mParam2;
 
-    private ActivityResultLauncher<Intent> updateAddResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if(result.getResultCode() == Activity.RESULT_OK) {
+    public view_selling_books() {
+        // Required empty public constructor
+    }
 
-                        updateDataAndAdapter();
-                    }
-                }
-            });
+    public static view_selling_books newInstance(String param1, String param2) {
+        view_selling_books fragment = new view_selling_books();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_view_thrift_store);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
 
-        this.tv_my_books = findViewById(R.id.tv_my_books);
-        this.fab_add_book = findViewById(R.id.fab_add_book);
-        this.ll_thriftsellingbooks_search = findViewById(R.id.ll_thriftsellingbooks_search);
-        this.Sv_thriftsellingbooks_search_bar = findViewById(R.id.Sv_thriftsellingbooks_seach_bar);
-        this.Bt_thriftsellingbooks_filter = findViewById(R.id.Bt_thriftsellingbooks_filter);
-        this.sfl_store_selling_books = findViewById(R.id.sfl_store_selling_books);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_view_thrift_store, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+
+        this.tv_my_books = view.findViewById(R.id.tv_my_books);
+        this.fab_add_book = view.findViewById(R.id.fab_add_book);
+        this.ll_thriftsellingbooks_search = view.findViewById(R.id.ll_thriftsellingbooks_search);
+        this.Sv_thriftsellingbooks_search_bar = view.findViewById(R.id.Sv_thriftsellingbooks_seach_bar);
+        this.Bt_thriftsellingbooks_filter = view.findViewById(R.id.Bt_thriftsellingbooks_filter);
+        this.sfl_store_selling_books = view.findViewById(R.id.sfl_store_selling_books);
 
         //POPUP MENU
-        PopupMenu popup = new PopupMenu(this, Bt_thriftsellingbooks_filter);
+        PopupMenu popup = new PopupMenu(view.getContext(), Bt_thriftsellingbooks_filter);
         popup.inflate(R.menu.sort_menu);
 
         //user
@@ -95,7 +109,7 @@ public class  SellingBooksActivity extends AppCompatActivity {
 
         // change font for search view
         int id = this.Sv_thriftsellingbooks_search_bar.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-        Typeface tf = ResourcesCompat.getFont(this,R.font.cormorant_garamond);
+        Typeface tf = ResourcesCompat.getFont(view.getContext(), R.font.cormorant_garamond);
         TextView searchText = (TextView) this.Sv_thriftsellingbooks_search_bar.findViewById(id);
         searchText.setTypeface(tf);
         searchText.setTextColor(Color.BLACK);
@@ -105,8 +119,8 @@ public class  SellingBooksActivity extends AppCompatActivity {
         setupUi();
 
         // for recycler view
-        this.sellingBookRecyclerView = findViewById(R.id.rv_books);
-        this.sellingBookRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        this.sellingBookRecyclerView = view.findViewById(R.id.rv_books);
+        this.sellingBookRecyclerView.setLayoutManager(new GridLayoutManager(view.getContext(), 2));
 
         // Recycler and adapter
         sellingBookAdapter = new ThriftStoreSellingBooksAdapter();
@@ -135,14 +149,14 @@ public class  SellingBooksActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 if (newText.length() == 0) {
                     Log.d("SORT", String.valueOf(sortType));
-                    BookbayFirestoreHelper.searchFilterBooksSeller("", sortType, sellingBookAdapter, user.getUid(), SellingBooksActivity.this);
+                    BookbayFirestoreHelper.searchFilterBooksSeller("", sortType, sellingBookAdapter, user.getUid(), view.getContext());
                 }
                 return true;
             }
 
             public void callSearch(String query) {
                 if (!query.equals(null)) {
-                    BookbayFirestoreHelper.searchFilterBooksSeller(query, sortType, sellingBookAdapter, user.getUid(), SellingBooksActivity.this);
+                    BookbayFirestoreHelper.searchFilterBooksSeller(query, sortType, sellingBookAdapter, user.getUid(), view.getContext());
                 }
             }
         });
@@ -160,7 +174,7 @@ public class  SellingBooksActivity extends AppCompatActivity {
 
                         // DO NOT CLOSE POP UP MENU WHEN CLICKING
                         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-                        item.setActionView(new View(SellingBooksActivity.this));
+                        item.setActionView(new View(getContext()));
                         item.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
                             @Override
                             public boolean onMenuItemActionExpand(MenuItem item) {
@@ -184,7 +198,7 @@ public class  SellingBooksActivity extends AppCompatActivity {
                                 sortType,
                                 sellingBookAdapter,
                                 user.getUid(),
-                                SellingBooksActivity.this);
+                                view.getContext());
                     }
                 });
 
@@ -195,10 +209,11 @@ public class  SellingBooksActivity extends AppCompatActivity {
         this.fab_add_book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SellingBooksActivity.this, AddBookActivity.class);
-                updateAddResultLauncher.launch(intent);
+                Intent intent = new Intent(view.getContext(), AddBookActivity.class);
+                ((HomePageActivity)view.getContext()).getUpdateAddResultLauncher().launch(intent);
             }
         });
+
     }
 
     private void setupUi(){
@@ -208,11 +223,19 @@ public class  SellingBooksActivity extends AppCompatActivity {
         this.Bt_thriftsellingbooks_filter.setImageResource(R.drawable.filter_red);
     }
 
-    public void updateDataAndAdapter() {
-        BookbayFirestoreHelper.findAllBooksAvailableSeller(sellingBookAdapter, user.getUid());
+    public FirebaseUser getFirebaseUser () {
+        return user;
     }
 
-    public ActivityResultLauncher<Intent> getActivityResultLauncher(){
-        return this.myActivityResultLauncher;
+    public ThriftStoreSellingBooksAdapter getSellingBookAdapter() {
+        return sellingBookAdapter;
+    }
+
+    public void setSearchBar(String query){
+        Sv_thriftsellingbooks_search_bar.setQuery(query, false);
+    }
+
+    public void updateDataAndAdapter() {
+        BookbayFirestoreHelper.findAllBooksAvailableSeller(sellingBookAdapter, user.getUid());
     }
 }

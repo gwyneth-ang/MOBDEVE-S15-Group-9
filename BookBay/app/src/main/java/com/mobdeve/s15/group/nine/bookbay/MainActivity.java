@@ -27,6 +27,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
 import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {

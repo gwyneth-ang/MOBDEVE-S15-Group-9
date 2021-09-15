@@ -10,6 +10,12 @@
         android:id="@+id/view_notifications"
         android:title="Notifications"
         android:icon="@drawable/bell_black"/>
+
+    <item
+        android:id="@+id/view_selling_books"
+        android:title="My Books"
+        android:icon="@drawable/book_black"/>
+
     <item
         android:id="@+id/view_my_orders"
         android:title="Orders"

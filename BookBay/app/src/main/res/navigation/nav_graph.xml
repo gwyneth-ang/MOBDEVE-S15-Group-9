@@ -24,4 +24,9 @@
         android:name="com.mobdeve.s15.group.nine.bookbay.view_my_orders"
         android:label="fragment_view_my_orders"
         tools:layout="@layout/fragment_view_my_orders" />
+    <fragment
+        android:id="@+id/view_selling_books"
+        android:name="com.mobdeve.s15.group.nine.bookbay.view_selling_books"
+        android:label="fragment_view_thrift_store"
+        tools:layout="@layout/fragment_view_thrift_store" />
 </navigation>

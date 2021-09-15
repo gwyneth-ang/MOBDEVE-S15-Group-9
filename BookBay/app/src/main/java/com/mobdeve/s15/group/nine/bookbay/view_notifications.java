@@ -26,13 +26,6 @@ public class view_notifications extends Fragment {
     private RecyclerView recyclerView;
     private NotificationsAdapter myNotificationsAdapter;
 
-    private FirebaseFirestore dbRef;
-    //vars used
-//    private ArrayList<Notification> notifications;
-
-    private RecyclerView notificationsRecyclerView;
-    private NotificationsAdapter notificationsAdapter;
-
     private String mParam1;
     private String mParam2;
 
@@ -71,8 +64,6 @@ public class view_notifications extends Fragment {
 
         //get current user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-        this.dbRef = BookbayFirestoreReferences.getFirestoreInstance();
 
         this.myNotificationsAdapter = new NotificationsAdapter(BookbayFirestoreHelper.findNotificationOptions(user.getUid()));
         readyRecyclerViewAndAdapter(view.getContext());

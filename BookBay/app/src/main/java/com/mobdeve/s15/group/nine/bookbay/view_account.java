@@ -27,10 +27,9 @@ public class view_account extends Fragment {
 
     private String mParam1;
     private String mParam2;
-    private int count;
     private ImageView profilePicture;
     private TextView userName, numBooks;
-    private Button myBooks, sellingOrder, logout;
+    private Button sellingOrder, logout;
 
     public view_account() {
         // Required empty public constructor
@@ -63,7 +62,6 @@ public class view_account extends Fragment {
         this.profilePicture = view.findViewById(R.id.Iv_myaccount_profile_picture);
         this.userName = view.findViewById(R.id.Tv_myaccount_user_name);
         this.numBooks = view.findViewById(R.id.Tv_myaccount_num_books);
-        this.myBooks = view.findViewById(R.id.Bt_myaccount_my_books);
         this.sellingOrder = view.findViewById(R.id.Bt_myaccount_selling_orders);
         this.logout = view.findViewById(R.id.Bt_myaccount_logout);
 
@@ -77,15 +75,6 @@ public class view_account extends Fragment {
             @Override
             public void totalBooks(int book_num) {
                 setNumBooksText(book_num);
-            }
-        });
-
-        //Set on click listeners for buttons
-        myBooks.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), SellingBooksActivity.class);
-                startActivity(intent);
             }
         });
 

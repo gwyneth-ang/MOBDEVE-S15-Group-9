@@ -32,6 +32,31 @@ public class HomePageActivity extends AppCompatActivity {
                 }
             });
 
+    private ActivityResultLauncher<Intent> setSellingSearchLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if(result.getResultCode() == Activity.RESULT_OK) {
+                        BookbayFirestoreHelper.searchFilterBooksSeller(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), -1,  ((view_selling_books)(selector)).getSellingBookAdapter(), ((view_selling_books)(selector)).getFirebaseUser().getUid(), HomePageActivity.this);
+                        ((view_selling_books)(selector)).setSearchBar(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()));
+                    } else if (result.getResultCode() == 10) {
+                        ((view_selling_books)(selector)).updateDataAndAdapter();
+                    }
+                }
+            });
+
+    private ActivityResultLauncher<Intent> updateAddResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if(result.getResultCode() == Activity.RESULT_OK) {
+                        ((view_selling_books)(selector)).updateDataAndAdapter();
+                    }
+                }
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +72,10 @@ public class HomePageActivity extends AppCompatActivity {
                     break;
                 case R.id.view_notifications:
                     this.selector = new view_notifications();
+                    this.selector.setArguments(bundle);
+                    break;
+                case R.id.view_selling_books:
+                    this.selector = new view_selling_books();
                     this.selector.setArguments(bundle);
                     break;
                 case R.id.view_my_orders:
@@ -73,5 +102,13 @@ public class HomePageActivity extends AppCompatActivity {
 
     public ActivityResultLauncher<Intent> getMyActivityResultLauncher(){
         return this.myActivityResultLauncher;
+    }
+
+    public ActivityResultLauncher<Intent> getSetSellingSearchLauncher (){
+        return this.setSellingSearchLauncher;
+    }
+
+    public ActivityResultLauncher<Intent> getUpdateAddResultLauncher(){
+        return this.updateAddResultLauncher;
     }
 }
