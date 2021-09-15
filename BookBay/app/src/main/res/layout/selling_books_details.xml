@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FBF9F6">
@@ -34,7 +33,6 @@
             android:layoutDirection="rtl"
             android:queryBackground="@android:color/transparent"
             android:queryHint="Search by title or author"
-            android:searchIcon="@drawable/loupe"
             android:textDirection="ltr"></SearchView>
 
     </LinearLayout>
@@ -45,7 +43,6 @@
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/include3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_sellingbooksdetails_search">
