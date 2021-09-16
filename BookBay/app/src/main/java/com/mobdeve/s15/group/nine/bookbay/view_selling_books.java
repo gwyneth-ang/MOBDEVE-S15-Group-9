@@ -134,6 +134,8 @@ public class view_selling_books extends Fragment {
             @Override
             public void onRefresh() {
                 sfl_store_selling_books.setRefreshing(true);
+                popup.getMenu().getItem(4).setChecked(true);
+                Sv_thriftsellingbooks_search_bar.setQuery("", false);
                 updateDataAndAdapter();
                 sfl_store_selling_books.setRefreshing(false);
             }
