@@ -752,31 +752,34 @@ public class BookbayFirestoreHelper {
 
         StorageReference imageRef = BookbayFirestoreReferences.getStorageReferenceInstance()
                 .child(BookbayFirestoreReferences.generateNewImagePath(ID, imageUri));
-
-        //task 1 - upload the image to the Firebase
-        Task t1 = imageRef.putFile(imageUri)
-                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+        imageRef.putFile(imageUri).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
+                double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setMessage("Uploaded  " + (int) progress + "%");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                bookRef.document(ID).set(book).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
-                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-                        progressDialog.setCanceledOnTouchOutside(false);
-                        progressDialog.setMessage("Uploaded  " + (int) progress + "%");
+                    public void onSuccess(Void unused) {
+                        progressDialog.setCanceledOnTouchOutside(true);
+                        progressDialog.setMessage("Success!");
+
+                        Intent return_intent = new Intent();
+                        ((AddBookActivity) context).setResult(Activity.RESULT_OK, return_intent);
+                        ((AddBookActivity) context).finish();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull @NotNull Exception e) {
+                        deleteBookImageFromStorage(ID, imageUri);
+                        progressDialog.setCanceledOnTouchOutside(true);
+                        progressDialog.setMessage("Error occurred. Please try again.");
                     }
                 });
-
-        //adding the book to the book_sell collection
-        Task t2 = bookRef.document(ID).set(book);
-
-
-        Tasks.whenAllSuccess(t1, t2).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
-            @Override
-            public void onSuccess(List<Object> objects) {
-                progressDialog.setCanceledOnTouchOutside(true);
-                progressDialog.setMessage("Success!");
-
-                Intent return_intent = new Intent();
-                ((AddBookActivity) context).setResult(Activity.RESULT_OK, return_intent);
-                ((AddBookActivity) context).finish();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -785,6 +788,38 @@ public class BookbayFirestoreHelper {
                 progressDialog.setMessage("Error occurred. Please try again.");
             }
         });
+//        //task 1 - upload the image to the Firebase
+//        Task t1 = imageRef.putFile(imageUri)
+//                .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+//                    @Override
+//                    public void onProgress(@NonNull @NotNull UploadTask.TaskSnapshot snapshot) {
+//                        double progress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
+//                        progressDialog.setCanceledOnTouchOutside(false);
+//                        progressDialog.setMessage("Uploaded  " + (int) progress + "%");
+//                    }
+//                });
+//
+//        //adding the book to the book_sell collection
+//        Task t2 = bookRef.document(ID).set(book);
+//
+//
+//        Tasks.whenAllSuccess(t1, t2).addOnSuccessListener(new OnSuccessListener<List<Object>>() {
+//            @Override
+//            public void onSuccess(List<Object> objects) {
+//                progressDialog.setCanceledOnTouchOutside(true);
+//                progressDialog.setMessage("Success!");
+//
+//                Intent return_intent = new Intent();
+//                ((AddBookActivity) context).setResult(Activity.RESULT_OK, return_intent);
+//                ((AddBookActivity) context).finish();
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull @NotNull Exception e) {
+//                progressDialog.setCanceledOnTouchOutside(true);
+//                progressDialog.setMessage("Error occurred. Please try again.");
+//            }
+//        });
     }
 
     /**
