@@ -225,7 +225,6 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                 //get the input
                 String title = Et_bookTitle_addBook.getText().toString();
                 String author = Et_author_addBook.getText().toString();
-                Float price = Float.valueOf(Et_price_addBook.getText().toString());
                 String review = Et_review_addBook.getText().toString();
 
                 //if the view is for add book
@@ -235,13 +234,14 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                     //check if inputs are null
-                    if (imageUri != null && title != null && author != null && price != null && review != null) {
+                    if (!imageUri.toString().isEmpty() && !title.isEmpty() && !author.isEmpty() && !Et_price_addBook.getText().toString().isEmpty()) {
                         // This is a prompt for the user to know the status of the image upload
                         final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
                         progressDialog.setTitle("Uploading");
                         progressDialog.show();
 
                         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
+                        Float price = Float.valueOf(Et_price_addBook.getText().toString());
 
                         // Create a temporary Book instance
                         Books_sell book = new Books_sell(
@@ -274,7 +274,9 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     Boolean changed = false;
 
                     //create a hashmap for all the changed values
-                    if (imageUri != null && title != null && author != null && price != null && review != null) {
+                    if (!imageUri.toString().isEmpty() && !title.isEmpty() && !author.isEmpty() && !Et_price_addBook.getText().toString().isEmpty()) {
+
+                        Float price = Float.valueOf(Et_price_addBook.getText().toString());
                         Map<String, Object> updateBook = new HashMap<>();
                         //if title is changed
                         if (!title.equals(oldTitle)) {
