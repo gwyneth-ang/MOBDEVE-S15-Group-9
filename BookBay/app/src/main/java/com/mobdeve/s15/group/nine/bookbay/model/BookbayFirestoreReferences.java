@@ -16,6 +16,46 @@ import com.mobdeve.s15.group.nine.bookbay.R;
 import com.squareup.picasso.Picasso;
 
 public class BookbayFirestoreReferences {
+
+    /* For Reference:
+     *      Firebase Firestore
+     *          Books_sell
+     *              -> id
+     *                  -> addBookDate (Timestamp)
+     *                  -> available (Boolean)
+     *                  -> bookAuthor (String)
+     *                  -> bookTitle (String)
+     *                  -> condition (String)
+     *                  -> imageUri (String)
+     *                  -> ownerID (String - Uid)
+     *                  -> price (Number)
+     *                  -> profileImage (String - url of Google Profile Image)
+     *                  -> profileName (String)
+     *                  -> review (String)
+     *                  -> Orders (Collection)
+     *                      -> id
+     *                          -> buyerEmail (String)
+     *                          -> buyerID (String)
+     *                          -> buyerImage (String - url of Google Profile Image)
+     *                          -> buyerName (String)
+     *                          -> notificationDateTime (Timestamp)
+     *                          -> orderDate (Timestamp)
+     *                          -> status (String)
+     *          Notifications
+     *              -> id
+     *                  -> bookID (String)
+     *                  -> bookTitle (String)
+     *                  -> buyerID (String)
+     *                  -> image (String)
+     *                  -> notificationDateTime (Timestamp)
+     *                  -> profileName (String)
+     *                  -> status (String)
+     *
+     *      Firebase Storage
+     *          -> images/
+     *              -> book_id + <name of image>
+     * */
+
     public final static String
             BOOKS_SELL_COLLECTION = "Books_sell",
             ORDERS_COLLECTION = "Orders",

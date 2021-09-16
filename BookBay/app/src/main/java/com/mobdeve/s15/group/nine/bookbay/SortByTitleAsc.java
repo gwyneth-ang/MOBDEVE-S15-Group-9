@@ -4,6 +4,9 @@ import com.mobdeve.s15.group.nine.bookbay.model.Books_sell;
 
 import java.util.Comparator;
 
+/**
+ * Custom Comparator Class for sorting book title in ascending order
+ */
 public class SortByTitleAsc implements Comparator<Books_sell> {
 
     @Override

@@ -52,19 +52,22 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
             REVIEW_KEY = "REVIEW_KEY",
             IMAGE_KEY = "IMAGE_KEY";
 
+    //views
     private Button Bt_browse_addBook, Bt_addBook;
     private ImageView Iv_bookImage;
     private TextView TvAddOrEditTitle;
     private EditText Et_bookTitle_addBook, Et_author_addBook, Et_price_addBook, Et_review_addBook;
+
+    // variables
     private Uri imageUri, tempUri;
     private String selectorChoice = "New", oldTitle, oldAuthor, oldCondition, oldReview, bookID, TAG="inside";
     private float oldPrice;
     private int ViewKey = 0, spinnerIndex;
     private boolean imageChanged = false;
 
-    private String currentPhotoPath;
-    private File photoFile;
-
+    /* Handles the return intent from image picking. Stores the imageUri and extracts the image
+     * and inserts it into the ImageView.
+     * */
     private ActivityResultLauncher<Intent> choosePictureLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -85,6 +88,10 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                 }
             });
 
+    /* Handles the return intent from taking a photo using the camera. Converts the bitmap to imageUri,
+     * stores the imageUri and extracts the image
+     * and inserts it into the ImageView.
+     * */
     private ActivityResultLauncher<Intent> takePictureLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -111,6 +118,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_and_edit_book);
 
+        // View initialization
         Spinner spinner_addBook = findViewById(R.id.Spinner_addBook);
 
         this.Bt_browse_addBook = findViewById(R.id.Bt_browse_addBook);
@@ -122,19 +130,20 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         this.Et_review_addBook = findViewById(R.id.Et_review_addBook);
         this.TvAddOrEditTitle = findViewById(R.id.TvAddOrEditTitle);
 
-
-        //for checking edit or add, check intent
+        // For checking edit or add, check intent
         Intent i = getIntent();
 
+        // Setting up the custom spinner
         CustomSpinner<String> book_conditions_adapter = new CustomSpinner(this, android.R.layout.simple_spinner_item, Arrays.asList(getResources().getStringArray(R.array.conditions)), true);
         book_conditions_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_addBook.setAdapter(book_conditions_adapter);
         spinner_addBook.setOnItemSelectedListener(this);
 
+        // Set text in title and button
         this.TvAddOrEditTitle.setText("Add a Book");
         this.Bt_addBook.setText("Add Book");
 
-        //if add book
+        // If add book
         if (i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()) == null) {
             this.TvAddOrEditTitle.setText("Add a Book");
             this.Bt_addBook.setText("Add Book");
@@ -145,9 +154,9 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
             this.Bt_addBook.setText("Update");
             this.ViewKey = 1;
 
+            // Store the values from the intent and set them to the views accordingly
             bookID = i.getStringExtra(IntentKeys.BOOK_ID_KEY.name());
             oldTitle = i.getStringExtra(IntentKeys.TITLE_KEY.name());
-            Log.d("OLD TITLE EDITING", oldTitle);
             this.Et_bookTitle_addBook.setText(oldTitle.trim());
             oldAuthor = i.getStringExtra(IntentKeys.AUTHOR_KEY.name());
             this.Et_author_addBook.setText(oldAuthor.trim());
@@ -156,6 +165,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
             oldReview = i.getStringExtra(IntentKeys.REVIEW_KEY.name());
             this.Et_review_addBook.setText(oldReview);
             oldCondition = IntentKeys.CONDITION_KEY.name();
+
             if (oldCondition == "New") {
                 spinnerIndex = 0;
             } else if (oldCondition == "Good") {
@@ -167,9 +177,12 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 
             this.tempUri = Uri.parse(i.getStringExtra(IntentKeys.BOOK_IMAGE_KEY.name()));
             imageUri = tempUri;
+
+            // Load image from firebase storage into the image view
             BookbayFirestoreReferences.downloadImageIntoImageViewUsingId(bookID, imageUri.toString(), Iv_bookImage);
         }
 
+        // When browse photo button is clicked
         this.Bt_browse_addBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -177,16 +190,19 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                 String[] choice = {"Take Photo", "Choose From Gallery"};
                 imageChanged = true;
 
+                // Open a dialog to let the user choose if they want to take a photo or choose from gallery
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                 builder.setTitle("Add Photo");
                 builder.setItems(choice, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        // if take photo
                         if (choice[which].equals("Take Photo")) {
                             Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
                             takePictureLauncher.launch(takePicture);
 
+                        // if choose from gallery
                         } else if (choice[which].equals("Choose From Gallery")) {
 
                             Intent pickPhoto = new Intent(Intent.ACTION_PICK,
@@ -201,6 +217,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
             }
         });
 
+        // when the add or edit button is clicked
         this.Bt_addBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -226,8 +243,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 
                         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
 
-                        Log.d("TEST", user.getDisplayName());
-
+                        // Create a temporary Book instance
                         Books_sell book = new Books_sell(
                                 cal.getTime(),
                                 author,
@@ -242,9 +258,11 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                                 true
                         );
 
+                        // Add the book to the Firestore
                         BookbayFirestoreHelper.AddBook(progressDialog, imageUri, book, AddBookActivity.this);
 
                     } else {
+                        // when one of the input is null
                         Toast.makeText(
                                 AddBookActivity.this,
                                 "Please fill up all of the inputs.",
@@ -278,13 +296,14 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                             changed = true;
                             updateBook.put(BookbayFirestoreReferences.CONDITION_FIELD, selectorChoice);
                         }
+                        //if review is changed
                         if (!review.equals(oldReview)){
                             changed = true;
                             updateBook.put(BookbayFirestoreReferences.REVIEW_FIELD, review);
                         }
                         //if the image has been changed:
                         if (imageChanged){
-                            //used for deleting
+                            //used for deleting the Image from Firebase Storage
                             BookbayFirestoreHelper.deleteBookImageFromStorage(bookID, tempUri);
 
                             updateBook.put(BookbayFirestoreReferences.IMAGE_FIELD, imageUri.toString());
@@ -293,13 +312,16 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                             progressDialog.setTitle("Uploading");
                             progressDialog.show();
 
+                            // Update the book in the Firestore when the image changed
                             BookbayFirestoreHelper.editBookWithImage(progressDialog, bookID, imageUri, updateBook, AddBookActivity.this, title, author, selectorChoice, price, review);
                         }
 
-                        //check
+                        // update book in the Firestore when the image did not change
                         if (changed && !imageChanged) {
-                            Log.d("TEST EDIT", bookID);
+                            // update the book in the Firestore
                             BookbayFirestoreHelper.editBookNoImage(bookID, updateBook);
+
+                            // return the updated book details to the Selling Books Details (displays the details of the book)
                             Intent return_intent = new Intent();
                             return_intent.putExtra(BOOKID_KEY, bookID);
                             return_intent.putExtra(TITLE_KEY, title);
@@ -312,6 +334,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                             finish();
                         }
                     } else {
+                        // when one of the input is null
                         Toast.makeText(
                                 AddBookActivity.this,
                                 "Please fill up all of the inputs.",
@@ -323,6 +346,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
         });
     }
 
+    // For the spinner
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         this.selectorChoice = parent.getItemAtPosition(position).toString();
@@ -333,6 +357,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
 
     }
 
+    // To convert the Bitmap to ImageUri
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);

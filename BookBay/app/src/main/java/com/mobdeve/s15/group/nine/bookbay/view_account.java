@@ -59,18 +59,19 @@ public class view_account extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_view_account, container, false);
 
+        // View initialization
         this.profilePicture = view.findViewById(R.id.Iv_myaccount_profile_picture);
         this.userName = view.findViewById(R.id.Tv_myaccount_user_name);
         this.numBooks = view.findViewById(R.id.Tv_myaccount_num_books);
         this.sellingOrder = view.findViewById(R.id.Bt_myaccount_selling_orders);
         this.logout = view.findViewById(R.id.Bt_myaccount_logout);
 
-        // set profile information
+        // Set profile information
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         userName.setText(user.getDisplayName());
         Picasso.get().load(user.getPhotoUrl()).into(profilePicture);
 
-        // set total number of books
+        // Set total number of books
         BookbayFirestoreHelper.findTotalSellingBooks(user.getUid(), new NumBookCallBack() {
             @Override
             public void totalBooks(int book_num) {
@@ -78,6 +79,7 @@ public class view_account extends Fragment {
             }
         });
 
+        // If view selling orders is clicked
         sellingOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,6 +88,7 @@ public class view_account extends Fragment {
             }
         });
 
+        // If logout is clicked
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

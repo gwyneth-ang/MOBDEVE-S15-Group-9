@@ -20,6 +20,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Arrays;
 
+/**
+ * ViewHolder for the My Orders and Selling Orders Recylerview
+ */
 public class OrdersViewHolder extends RecyclerView.ViewHolder {
     private TextView tv_book_author, tv_book_title, tv_book_smallest_price, tv_book_status, tv_buyer_name, tv_order_date;
     private ImageView iv_book_image, iv_buyer_image;
@@ -28,6 +31,7 @@ public class OrdersViewHolder extends RecyclerView.ViewHolder {
     public OrdersViewHolder(View view) {
         super(view);
 
+        // View initialization
         this.tv_book_author = view.findViewById(R.id.tv_book_author);
         this.tv_book_title = view.findViewById(R.id.tv_book_title);
         this.tv_book_smallest_price = view.findViewById(R.id.tv_book_smallest_price);
@@ -46,6 +50,7 @@ public class OrdersViewHolder extends RecyclerView.ViewHolder {
 
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
 
+        // Set the text in the views accordingly
         this.tv_book_author.setText(book.getBookAuthor().toUpperCase());
         this.tv_book_title.setText(book.getBookTitle());
         this.tv_book_smallest_price.setText("₱" + decimalFormat.format(book.getPrice()) + " - " + book.getCondition());
@@ -59,24 +64,29 @@ public class OrdersViewHolder extends RecyclerView.ViewHolder {
         this.s_book_status.setAdapter(adapter);
         this.s_book_status.setSelection(0, false);
 
+        // Set the orderDate
         SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd, yyyy | hh:mm aa");
-
         this.tv_order_date.setText(DateForm.format(order.getOrderDate()).toUpperCase());
 
-        // Profile
+        // If the view is My Orders
         if (whichView == WhichLayout.MY_ORDERS.ordinal()) {
 
+            // Do not display buyer image and name
             this.tv_buyer_name.setVisibility(View.GONE);
             this.iv_buyer_image.setVisibility(View.GONE);
 
             this.tv_order_date.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
 
+        // If the view is Selling Orders
         } else if (whichView == WhichLayout.SELLING_ORDERS.ordinal()) {
 
+            // Display buyer image and name
             this.tv_buyer_name.setVisibility(View.VISIBLE);
             this.iv_buyer_image.setVisibility(View.VISIBLE);
 
             this.tv_buyer_name.setText(order.getBuyerName().toUpperCase());
+
+            // Load buyer image to the image view
             Picasso.get().load(Uri.parse(order.getBuyerImage())).into(this.iv_buyer_image);
 
             this.tv_order_date.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_END);
@@ -84,24 +94,30 @@ public class OrdersViewHolder extends RecyclerView.ViewHolder {
         }
 
         // For Book Status
+        // If My Orders and the order status is pending
         if (whichView == WhichLayout.MY_ORDERS.ordinal() && order.getStatus().equals(BookStatus.PENDING.name())) {
 
+            // Set without spinner (pending)
             this.s_book_status.setVisibility(View.GONE);
             this.tv_book_status.setVisibility(View.VISIBLE);
             this.tv_book_status.setText(BookStatus.PENDING.name());
             this.tv_book_status.setBackgroundResource(R.drawable.pending_roundable_book_status);
             this.tv_book_status.setTextColor(Color.parseColor("#FF000000"));
 
+        // If Selling Orders and the order status is pending
         } else if (whichView == WhichLayout.SELLING_ORDERS.ordinal() && order.getStatus().equals(BookStatus.PENDING.name())) {
 
+            // Set the spinner
             this.s_book_status.setVisibility(View.VISIBLE);
             this.tv_book_status.setVisibility(View.GONE);
             this.s_book_status.setBackgroundResource(R.drawable.status_spinner_background);
 
         }
 
+        // If the order status is declined
         if (order.getStatus().equals(BookStatus.DECLINED.name())) {
 
+            // Set without spinner (declined)
             this.s_book_status.setVisibility(View.GONE);
             this.tv_book_status.setVisibility(View.VISIBLE);
             this.tv_book_status.setText(BookStatus.DECLINED.name());
@@ -110,6 +126,7 @@ public class OrdersViewHolder extends RecyclerView.ViewHolder {
 
         } else if (order.getStatus().equals(BookStatus.CONFIRMED.name())) {
 
+            // Set without spinner (confirmed)
             this.s_book_status.setVisibility(View.GONE);
             this.tv_book_status.setVisibility(View.VISIBLE);
             this.tv_book_status.setText(BookStatus.CONFIRMED.name());
@@ -119,6 +136,7 @@ public class OrdersViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    // On item selected for the spinner
     public void setItemSelectedListener(AdapterView.OnItemSelectedListener onItemSelectedListener) {
         this.s_book_status.setOnItemSelectedListener(onItemSelectedListener);
     }

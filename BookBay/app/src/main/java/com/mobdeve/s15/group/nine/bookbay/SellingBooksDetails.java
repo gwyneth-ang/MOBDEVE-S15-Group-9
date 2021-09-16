@@ -41,6 +41,9 @@ public class SellingBooksDetails extends AppCompatActivity {
     private Float priceFlt;
     private Boolean canEdit = true;
 
+    /**
+     * Handles the return intent when finishing editing the book
+     */
     private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -70,6 +73,8 @@ public class SellingBooksDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.selling_books_details);
+
+        // View Initialization
         this.searchbar = findViewById(R.id.Sv_sellingbooksdetails_seach_bar);
         this.bookImage = findViewById(R.id.Iv_sellingbooksdetails_book_image);
         this.bookTitle = findViewById(R.id.Tv_sellingbooksdetails_title);
@@ -79,6 +84,7 @@ public class SellingBooksDetails extends AppCompatActivity {
         this.editBook = findViewById(R.id.Bt_sellingbooksdetails_edit);
         this.deleteBook = findViewById(R.id.Bt_sellingbooksdetails_delete);
 
+        // Get intent from the My Books (Selling Books)
         Intent i = getIntent();
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         this.bookID = i.getStringExtra(IntentKeys.BOOK_ID_KEY.name());
@@ -112,6 +118,7 @@ public class SellingBooksDetails extends AppCompatActivity {
         searchText.setTextColor(Color.BLACK);
         searchText.setHintTextColor(Color.parseColor("#999999"));
 
+        // Set return intent to Selling Books when the user search in the Selling Books Details View
         this.searchbar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -127,10 +134,13 @@ public class SellingBooksDetails extends AppCompatActivity {
                 return false;
             }
         });
+
+        // When the edit button is clicked
         this.editBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (canEdit) {
+                if (canEdit) { // if edit is allowed
+                    // passed the intent to the edit book view
                     Intent intent = new Intent(SellingBooksDetails.this.getBaseContext(), AddBookActivity.class);
                     intent.putExtra(IntentKeys.BOOK_ID_KEY.name(), bookID);
                     intent.putExtra(IntentKeys.BOOK_IMAGE_KEY.name(), imageUri);
@@ -140,7 +150,7 @@ public class SellingBooksDetails extends AppCompatActivity {
                     intent.putExtra(IntentKeys.CONDITION_KEY.name(), conditionStr);
                     intent.putExtra(IntentKeys.REVIEW_KEY.name(), review);
                     myActivityResultLauncher.launch(intent);
-                } else {
+                } else { // if edit is not allowed
                     Toast toast = Toast.makeText(
                             SellingBooksDetails.this.getBaseContext(),
                             "The book has already been placed as an Order.",
@@ -150,10 +160,13 @@ public class SellingBooksDetails extends AppCompatActivity {
             }
         });
 
+        // When the delete button is clicked
         this.deleteBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Context context = deleteBook.getContext();
+
+                // Alert the user if deleting is final decision
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context)
                         .setTitle("Delete Book")
                         .setMessage("Are you sure you want to delete this book?")
@@ -167,6 +180,8 @@ public class SellingBooksDetails extends AppCompatActivity {
                                 progress.setIndeterminate(true);
                                 progress.setCanceledOnTouchOutside(false);
                                 progress.show();
+
+                                // Delete the book from the FireStore
                                 BookbayFirestoreHelper.deleteBook(i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()), progress,context);
                             }
                         }).setNegativeButton("Cancel", null);

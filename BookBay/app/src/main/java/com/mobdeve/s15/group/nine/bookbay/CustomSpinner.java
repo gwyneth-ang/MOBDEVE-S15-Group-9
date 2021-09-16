@@ -12,6 +12,10 @@ import androidx.core.content.res.ResourcesCompat;
 
 import java.util.List;
 
+/**
+ * Class for the Custom Spinner that is used to change order status and book condition
+ * @param <String>
+ */
 public class CustomSpinner<String> extends ArrayAdapter<String> {
     // Initialise custom font, for example:
     Typeface font;

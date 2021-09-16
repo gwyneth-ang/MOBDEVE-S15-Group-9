@@ -17,6 +17,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
 
+import java.util.Set;
+
 public class view_my_orders extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -65,21 +67,25 @@ public class view_my_orders extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
+        // View initialization
         this.myOrdersRecyclerView = view.findViewById(R.id.rv_orders);
         this.tv_orders = view.findViewById(R.id.tv_orders);
         this.sfl_orders = view.findViewById(R.id.sfl_orders);
 
+        // Set layout manager for the recylerview
         this.myOrdersRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        this.myOrdersRecyclerView.setAdapter(this.myOrdersAdapter);
-
+        // Set up the UI for my orders
         setUpUI();
 
+        // For Adapter
         myOrdersAdapter = new OrdersAdapter(view.getContext());
         myOrdersAdapter.setViewType(WhichLayout.MY_ORDERS.ordinal());
 
-        myOrdersRecyclerView.setAdapter(myOrdersAdapter);
+        // Set adapter
+        this.myOrdersRecyclerView.setAdapter(this.myOrdersAdapter);
 
+        // On refresh
         this.sfl_orders.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -90,16 +96,19 @@ public class view_my_orders extends Fragment {
         });
     }
 
+    // Set up the UI for this view
     private void setUpUI(){
         this.tv_orders.setBackgroundColor(Color.parseColor("#FFEFE6D5"));
         this.tv_orders.setText("My Orders");
         this.tv_orders.setTextColor(Color.parseColor("#FF000000"));
     }
 
+    // Get the data and update it
     private void updateDataAndAdapter() {
         //get current user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+        // Find my orders in the Firestore
         BookbayFirestoreHelper.findBuyerOrders(myOrdersAdapter, user.getUid(), null);
     }
 

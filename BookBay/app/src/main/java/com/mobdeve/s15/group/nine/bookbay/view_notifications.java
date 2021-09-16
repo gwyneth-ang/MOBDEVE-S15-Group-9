@@ -60,15 +60,18 @@ public class view_notifications extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        // View initialization
         this.recyclerView = view.findViewById(R.id.rvNotifications);
 
         //get current user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+        // Set the Firestore Recycler Options for notifications
         this.myNotificationsAdapter = new NotificationsAdapter(BookbayFirestoreHelper.findNotificationOptions(user.getUid()));
         readyRecyclerViewAndAdapter(view.getContext());
     }
 
+    // Set adapter and layout manager for the recycler view
     private void readyRecyclerViewAndAdapter(Context view) {
         this.recyclerView.setAdapter(this.myNotificationsAdapter);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(view));

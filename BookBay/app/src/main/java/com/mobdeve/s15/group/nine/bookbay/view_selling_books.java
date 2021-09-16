@@ -93,6 +93,7 @@ public class view_selling_books extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
+        // View initialization
         this.tv_my_books = view.findViewById(R.id.tv_my_books);
         this.fab_add_book = view.findViewById(R.id.fab_add_book);
         this.ll_thriftsellingbooks_search = view.findViewById(R.id.ll_thriftsellingbooks_search);
@@ -128,6 +129,7 @@ public class view_selling_books extends Fragment {
         sellingBookRecyclerView.setAdapter(sellingBookAdapter);
         updateDataAndAdapter();
 
+        // On refresh
         this.sfl_store_selling_books.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -137,15 +139,16 @@ public class view_selling_books extends Fragment {
             }
         });
 
+        // For search bar
         this.Sv_thriftsellingbooks_search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
+            @Override // when the query is submitted
             public boolean onQueryTextSubmit(String query) {
                 Log.d("TEST", String.valueOf(sortType));
                 callSearch(query);
                 return true;
             }
 
-            @Override
+            @Override // when the query is changed and the text is 0
             public boolean onQueryTextChange(String newText) {
                 if (newText.length() == 0) {
                     Log.d("SORT", String.valueOf(sortType));
@@ -154,13 +157,22 @@ public class view_selling_books extends Fragment {
                 return true;
             }
 
+            // search query
             public void callSearch(String query) {
                 if (!query.equals(null)) {
-                    BookbayFirestoreHelper.searchFilterBooksSeller(query, sortType, sellingBookAdapter, user.getUid(), view.getContext());
+                    // search the query with the filter (sort) type
+                    BookbayFirestoreHelper.searchFilterBooksSeller(
+                            query,
+                            sortType,
+                            sellingBookAdapter,
+                            user.getUid(),
+                            view.getContext()
+                    );
                 }
             }
         });
 
+        // pop up menu for which filter to use
         this.Bt_thriftsellingbooks_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,8 +180,10 @@ public class view_selling_books extends Fragment {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+                        // checked the item
                         item.setChecked(!item.isChecked());
 
+                        // get which sort or filtering to use
                         sortType = item.getItemId();
 
                         // DO NOT CLOSE POP UP MENU WHEN CLICKING
@@ -191,9 +205,11 @@ public class view_selling_books extends Fragment {
                     }
                 });
 
+                // when the pop up is dismissed, that's when the search is processed
                 popup.setOnDismissListener(new PopupMenu.OnDismissListener() {
                     @Override
                     public void onDismiss(PopupMenu menu) {
+                        // search books in the firestore
                         BookbayFirestoreHelper.searchFilterBooksSeller(Sv_thriftsellingbooks_search_bar.getQuery().toString(),
                                 sortType,
                                 sellingBookAdapter,
@@ -206,6 +222,7 @@ public class view_selling_books extends Fragment {
             }
         });
 
+        // if add book button is clicked
         this.fab_add_book.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -216,6 +233,7 @@ public class view_selling_books extends Fragment {
 
     }
 
+    // Set up the UI for this view
     private void setupUi(){
         this.tv_my_books.setVisibility(View.VISIBLE);
         this.fab_add_book.setVisibility(View.VISIBLE);
@@ -223,19 +241,24 @@ public class view_selling_books extends Fragment {
         this.Bt_thriftsellingbooks_filter.setImageResource(R.drawable.filter_red);
     }
 
+    // Get the user logged in
     public FirebaseUser getFirebaseUser () {
         return user;
     }
 
+    // Get the adapter
     public ThriftStoreSellingBooksAdapter getSellingBookAdapter() {
         return sellingBookAdapter;
     }
 
+    // Set the text in the search bar
     public void setSearchBar(String query){
         Sv_thriftsellingbooks_search_bar.setQuery(query, false);
     }
 
+    // Update data and adapter
     public void updateDataAndAdapter() {
+        // find all the books the owner sells
         BookbayFirestoreHelper.findAllBooksAvailableSeller(sellingBookAdapter, user.getUid());
     }
 }

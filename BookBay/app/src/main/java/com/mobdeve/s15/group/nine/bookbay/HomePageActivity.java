@@ -20,25 +20,37 @@ public class HomePageActivity extends AppCompatActivity {
     private BottomNavigationView navView;
     private Fragment selector;
 
+    /**
+     * Handles the return intent from the search bar of book details - search bar is set to the query
+     * and the search is performed accordingly
+     */
     private ActivityResultLauncher<Intent> myActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if(result.getResultCode() == Activity.RESULT_OK) {
+                        // Search the book based on the search query
                         BookbayFirestoreHelper.searchFilterBooks(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), -1,  ((view_thrift_store)(selector)).getAdapter(), HomePageActivity.this);
+                        // Set the text in the search bar
                         ((view_thrift_store)(selector)).setSearchBar(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()));
                     }
                 }
             });
 
+    /**
+     * Handles the return intent from the search bar of selling book details - search bar is set to the query
+     * and the search is performed accordingly
+     */
     private ActivityResultLauncher<Intent> setSellingSearchLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     if(result.getResultCode() == Activity.RESULT_OK) {
+                        // Search the book based on the search query and the seller ID
                         BookbayFirestoreHelper.searchFilterBooksSeller(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()), -1,  ((view_selling_books)(selector)).getSellingBookAdapter(), ((view_selling_books)(selector)).getFirebaseUser().getUid(), HomePageActivity.this);
+                        // Set the text in the search bar
                         ((view_selling_books)(selector)).setSearchBar(result.getData().getStringExtra(IntentKeys.FILTER_KEY.name()));
                     } else if (result.getResultCode() == 10) {
                         ((view_selling_books)(selector)).updateDataAndAdapter();
@@ -46,6 +58,9 @@ public class HomePageActivity extends AppCompatActivity {
                 }
             });
 
+    /**
+     * Handles the return intent from adding a book - updates the data and the adapter
+     */
     private ActivityResultLauncher<Intent> updateAddResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -99,6 +114,10 @@ public class HomePageActivity extends AppCompatActivity {
                 .replace(R.id.nav_fragment, this.selector)
                 .commit();
     }
+
+    /*
+     Getters for the result launchers
+     */
 
     public ActivityResultLauncher<Intent> getMyActivityResultLauncher(){
         return this.myActivityResultLauncher;

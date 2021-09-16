@@ -11,33 +11,41 @@ import com.mobdeve.s15.group.nine.bookbay.model.Books_sell;
 
 import java.util.ArrayList;
 
+/**
+ * Adapter for the Thrift Store and My Books (Selling Books) Recylerview
+ */
 public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftStoreSellingBooksViewHolder> {
+
+    // Data
     private ArrayList<Books_sell> book;
 
+    // Variables
     private int whichView;
     private String TAG = "THRIFT_SELLING_ADAPTER";
 
+    // Constructor
     public ThriftStoreSellingBooksAdapter() {
         this.book = new ArrayList<>();
     }
 
+    // Set view type (if thrift store or if my books
     public void setViewType(int whichView) {
         this.whichView = whichView;
     }
 
+    // Set data/books
     public void setData(ArrayList<Books_sell> data) {
         this.book = data;
     }
 
     @Override
     public ThriftStoreSellingBooksViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Inflate the appropriate layout based on the viewType returned and generate the itemView.
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View itemView = layoutInflater.inflate(R.layout.thrift_and_selling_layout, parent, false);
 
         ThriftStoreSellingBooksViewHolder holder = new ThriftStoreSellingBooksViewHolder(itemView);
 
-        // Determine which subclass of CustomViewHolder to generate based on the viewType
+        // Pass the intents to the view book details activity for viewing the specific book details
         if(this.whichView == WhichLayout.THRIFT_STORE.ordinal()) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -56,7 +64,7 @@ public class ThriftStoreSellingBooksAdapter extends RecyclerView.Adapter<ThriftS
                     ((HomePageActivity)parent.getContext()).getMyActivityResultLauncher().launch(intent);
                 }
             });
-        }
+        } // Pass the intents to the selling book details activity for viewing the specific book details
         else if(this.whichView == WhichLayout.SELLING_BOOKS.ordinal()) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

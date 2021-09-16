@@ -13,6 +13,9 @@ import com.mobdeve.s15.group.nine.bookbay.model.Notifications;
 
 import java.text.SimpleDateFormat;
 
+/**
+ * ViewHolder for the Notification Recylerview which utilized the Firebase UI
+ */
 public class NotificationsViewHolder extends RecyclerView.ViewHolder {
 
     private ImageView imageView;
@@ -21,6 +24,8 @@ public class NotificationsViewHolder extends RecyclerView.ViewHolder {
 
     public NotificationsViewHolder(View itemView) {
         super(itemView);
+
+        // View initialization
         this.tvSellerName_notifLayout = itemView.findViewById(R.id.tvSellerName_notifLayout);
         this.tvBookTitle_notifLayout = itemView.findViewById(R.id.tvBookTitle_notifLayout);
         this.tvStatusBook_notifLayout = itemView.findViewById(R.id.tvStatusBook_notifLayout);
@@ -37,12 +42,16 @@ public class NotificationsViewHolder extends RecyclerView.ViewHolder {
         this.tvSellerName_notifLayout.setText(notification.getProfileName());
         this.tvBookTitle_notifLayout.setText(notification.getBookTitle());
 
+        // Set the notification date
         SimpleDateFormat DateForm = new SimpleDateFormat("MMM dd, yyyy | hh:mm aa");
         this.tvTimePassed_notifLayout.setText(DateForm.format(notification.getNotificationDateTime()).toUpperCase());
 
-        if (notification.getStatus().equals("CONFIRMED")) {
+        // Change the notification message and icon based on the status of the order
+        // if Confirmed
+        if (notification.getStatus().equals(BookStatus.CONFIRMED.name())) {
             this.tvStatusBook_notifLayout.setText(Html.fromHtml("Woohoo! Your purchase of <b>" + notification.getBookTitle() + "</b> has been approved by the seller! You will be receiving this book by your doorstep soon"));
             this.ibButton_notifLayout.setImageResource(R.drawable.check_mark);
+        // if Declined
         } else {
             this.tvStatusBook_notifLayout.setText(Html.fromHtml("I’m sorry, your purchase of <b>" + notification.getBookTitle() + "</b> has been denied by the seller. Check our Thrift Store for more book options."));
             this.ibButton_notifLayout.setImageResource(R.drawable.cancel);

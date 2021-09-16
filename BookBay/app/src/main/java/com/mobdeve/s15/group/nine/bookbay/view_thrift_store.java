@@ -79,6 +79,8 @@ public class view_thrift_store extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+
+        // View initialization
         this.tv_my_books = view.findViewById(R.id.tv_my_books);
         this.fab_add_book = view.findViewById(R.id.fab_add_book);
         this.ll_thriftsellingbooks_search = view.findViewById(R.id.ll_thriftsellingbooks_search);
@@ -121,14 +123,15 @@ public class view_thrift_store extends Fragment {
             }
         });
 
+        // For search bar
         this.Sv_thriftsellingbooks_search_bar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
+            @Override // when the query is submitted
             public boolean onQueryTextSubmit(String query) {
                 callSearch(query);
                 return true;
             }
 
-            @Override
+            @Override // when the query is changed and the text is 0
             public boolean onQueryTextChange(String newText) {
                 if (newText.length() == 0) {
                     Log.d("SORT", String.valueOf(sortType));
@@ -137,13 +140,16 @@ public class view_thrift_store extends Fragment {
                 return false;
             }
 
+            // search query
             public void callSearch(String query) {
                 if (!query.equals(null)) {
+                    // search the query with the filter (sort) type
                     BookbayFirestoreHelper.searchFilterBooks(query, sortType, thriftAdapter, view.getContext());
                 }
             }
         });
 
+        // pop up menu for which filter to use
         this.Bt_thriftsellingbooks_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,7 +157,10 @@ public class view_thrift_store extends Fragment {
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+                        // checked the item
                         item.setChecked(!item.isChecked());
+
+                        // get which sort or filtering to use
                         sortType = item.getItemId();
                         
                         // DO NOT CLOSE POP UP MENU WHEN CLICKING
@@ -173,9 +182,11 @@ public class view_thrift_store extends Fragment {
                     }
                 });
 
+                // when the pop up is dismissed, that's when the search is processed
                 popup.setOnDismissListener(new PopupMenu.OnDismissListener() {
                     @Override
                     public void onDismiss(PopupMenu menu) {
+                        // search books in the firestore
                         BookbayFirestoreHelper.searchFilterBooks(Sv_thriftsellingbooks_search_bar.getQuery().toString(),
                                 sortType,
                                 thriftAdapter,
@@ -188,6 +199,7 @@ public class view_thrift_store extends Fragment {
         });
     }
 
+    // Set up the UI for this view
     private void setupUi(){
         this.tv_my_books.setVisibility(View.GONE);
         this.fab_add_book.setVisibility(View.GONE);
@@ -195,6 +207,7 @@ public class view_thrift_store extends Fragment {
         this.Bt_thriftsellingbooks_filter.setImageResource(R.drawable.filter);
     }
 
+    // Update data and adapter
     public void updateDataAndAdapter() {
         BookbayFirestoreHelper.findAllBooksAvailable(this.thriftAdapter);
     }
@@ -204,10 +217,12 @@ public class view_thrift_store extends Fragment {
         super.onStart();
     }
 
+    // Set the text in the search bar
     public void setSearchBar(String query){
          Sv_thriftsellingbooks_search_bar.setQuery(query, false);
     }
 
+    // Get the adapter
     public ThriftStoreSellingBooksAdapter getAdapter(){
         return this.thriftAdapter;
     }

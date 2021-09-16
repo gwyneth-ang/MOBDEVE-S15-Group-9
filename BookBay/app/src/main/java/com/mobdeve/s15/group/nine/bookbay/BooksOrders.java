@@ -3,6 +3,8 @@ package com.mobdeve.s15.group.nine.bookbay;
 import com.mobdeve.s15.group.nine.bookbay.model.Books_sell;
 import com.mobdeve.s15.group.nine.bookbay.model.Orders;
 
+/* Class to store both the order and its correspondng book
+* */
 public class BooksOrders {
     private Orders order;
     private Books_sell book;

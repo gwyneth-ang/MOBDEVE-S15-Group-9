@@ -12,6 +12,9 @@ import com.mobdeve.s15.group.nine.bookbay.model.Notifications;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Adapter for the Notification Recylerview which utilized the Firebase UI
+ */
 public class NotificationsAdapter extends FirestoreRecyclerAdapter<Notifications, NotificationsViewHolder> {
 
 

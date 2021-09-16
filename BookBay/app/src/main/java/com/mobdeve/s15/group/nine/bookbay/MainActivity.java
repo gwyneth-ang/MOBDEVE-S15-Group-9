@@ -78,11 +78,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Sign in
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         signInLauncher.launch(signInIntent);
     }
 
+    /**
+     Handles the intent when the user signed in
+     */
     private ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -126,6 +130,11 @@ public class MainActivity extends AppCompatActivity {
     }
     // [END auth_with_google]
 
+    /**
+     * If the user is null, a toast is shown that sign in failed
+     * Otherwise, the user gets transfered to the home page
+     * @param user FirebaseUser
+     */
     private void updateUI(FirebaseUser user) {
         if (user == null) {
             Toast.makeText(

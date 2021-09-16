@@ -11,6 +11,9 @@ import com.mobdeve.s15.group.nine.bookbay.model.Books_sell;
 
 import java.text.DecimalFormat;
 
+/**
+ * ViewHolder for the Thrift Store and Selling Books (My Books) Recylerview
+ */
 public class ThriftStoreSellingBooksViewHolder extends RecyclerView.ViewHolder {
 
     private TextView tv_book_author, tv_book_title, tv_book_smallest_price;
@@ -19,6 +22,7 @@ public class ThriftStoreSellingBooksViewHolder extends RecyclerView.ViewHolder {
     public ThriftStoreSellingBooksViewHolder(View view) {
         super(view);
 
+        // View initialization
         this.tv_book_author = view.findViewById(R.id.tv_book_author);
         this.tv_book_title = view.findViewById(R.id.tv_book_title);
         this.tv_book_smallest_price = view.findViewById(R.id.tv_book_smallest_price);
@@ -33,8 +37,10 @@ public class ThriftStoreSellingBooksViewHolder extends RecyclerView.ViewHolder {
         this.tv_book_author.setText(book.getBookAuthor().toUpperCase());
         this.tv_book_title.setText(book.getBookTitle());
 
+        // If the view is My Books (Selling Books)
         if (whichLayout == WhichLayout.SELLING_BOOKS.ordinal()) {
             this.tv_book_smallest_price.setVisibility(View.GONE);
+        // If the view is the thrift store
         } else if (whichLayout == WhichLayout.THRIFT_STORE.ordinal()) {
             DecimalFormat decimalFormat = new DecimalFormat("#.00");
 

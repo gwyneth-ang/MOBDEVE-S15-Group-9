@@ -63,8 +63,49 @@ import java.util.UUID;
 
 public class BookbayFirestoreHelper {
 
-    private static Boolean canEdit;
+    /* For Reference:
+     *      Firebase Firestore
+     *          Books_sell
+     *              -> id
+     *                  -> addBookDate (Timestamp)
+     *                  -> available (Boolean)
+     *                  -> bookAuthor (String)
+     *                  -> bookTitle (String)
+     *                  -> condition (String)
+     *                  -> imageUri (String)
+     *                  -> ownerID (String - Uid)
+     *                  -> price (Number)
+     *                  -> profileImage (String - url of Google Profile Image)
+     *                  -> profileName (String)
+     *                  -> review (String)
+     *                  -> Orders (Collection)
+     *                      -> id
+     *                          -> buyerEmail (String)
+     *                          -> buyerID (String)
+     *                          -> buyerImage (String - url of Google Profile Image)
+     *                          -> buyerName (String)
+     *                          -> notificationDateTime (Timestamp)
+     *                          -> orderDate (Timestamp)
+     *                          -> status (String)
+     *          Notifications
+     *              -> id
+     *                  -> bookID (String)
+     *                  -> bookTitle (String)
+     *                  -> buyerID (String)
+     *                  -> image (String)
+     *                  -> notificationDateTime (Timestamp)
+     *                  -> profileName (String)
+     *                  -> status (String)
+     *
+     *      Firebase Storage
+     *          -> images/
+     *              -> book_id + <name of image>
+     * */
 
+    /**
+     * Function to find all the books available in the firestore
+     * @param thriftStoreAdapter Adapter for thrift store
+     */
     public static void findAllBooksAvailable(ThriftStoreSellingBooksAdapter thriftStoreAdapter) {
         BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
             .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
@@ -79,7 +120,9 @@ public class BookbayFirestoreHelper {
                         for (QueryDocumentSnapshot document : task.getResult())
                             books.add(document.toObject(Books_sell.class));
 
+                        // Set Data
                         thriftStoreAdapter.setData(books);
+                        // Notify data changed
                         thriftStoreAdapter.notifyDataSetChanged();
                     } else {
                         Log.d("TEST", "Error getting documents: ", task.getException());
@@ -88,6 +131,11 @@ public class BookbayFirestoreHelper {
             });
     }
 
+    /**
+     * Function to find all the books available that is owned by the seller in the firestore
+     * @param sellingBookAdapter
+     * @param sellerUID
+     */
     public static void findAllBooksAvailableSeller(ThriftStoreSellingBooksAdapter sellingBookAdapter, String sellerUID) {
         BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
             .whereEqualTo(BookbayFirestoreReferences.AVAILABLE_FIELD, true)
@@ -103,13 +151,23 @@ public class BookbayFirestoreHelper {
                         for (QueryDocumentSnapshot document : task.getResult())
                             books.add(document.toObject(Books_sell.class));
 
+                        // Set Data
                         sellingBookAdapter.setData(books);
+                        // Notify data changed
                         sellingBookAdapter.notifyDataSetChanged();
                     }
                 }
             });
     }
 
+    /**
+     * Search all the books owned by the seller with title or author based on the searchText and the sorting/filtering based on the sort type
+     * @param searchText
+     * @param sortType
+     * @param sellingBooksAdapter
+     * @param sellerUID
+     * @param context
+     */
     public static void searchFilterBooksSeller(String searchText, int sortType, ThriftStoreSellingBooksAdapter sellingBooksAdapter, String sellerUID, Context context) {
 
         ProgressDialog progressDialog = new ProgressDialog(context);
@@ -161,7 +219,9 @@ public class BookbayFirestoreHelper {
                             Collections.sort(books, new SortByPriceDes());
                         }
 
+                        // Set Data
                         sellingBooksAdapter.setData(books);
+                        // Notify data changed
                         sellingBooksAdapter.notifyDataSetChanged();
 
                         progressDialog.dismiss();
@@ -169,6 +229,13 @@ public class BookbayFirestoreHelper {
                 });
     }
 
+    /**
+     * Search all the books with title or author based on the searchText and the sorting/filtering based on the sort type
+     * @param searchText
+     * @param sortType
+     * @param thriftAdapter
+     * @param context
+     */
     public static void searchFilterBooks(String searchText, int sortType, ThriftStoreSellingBooksAdapter thriftAdapter, Context context) {
 
         ProgressDialog progressDialog = new ProgressDialog(context);
@@ -218,7 +285,9 @@ public class BookbayFirestoreHelper {
                                 Collections.sort(books, new SortByPriceDes());
                             }
 
+                            // Set Data
                             thriftAdapter.setData(books);
+                            // Notify data changed
                             thriftAdapter.notifyDataSetChanged();
 
                             progressDialog.dismiss();
@@ -226,6 +295,12 @@ public class BookbayFirestoreHelper {
                     });
     }
 
+    /**
+     * Find all the orders of the buyer
+     * @param myOrdersAdapter
+     * @param buyerUID
+     * @param progressDialog
+     */
     public static void findBuyerOrders(OrdersAdapter myOrdersAdapter, String buyerUID, ProgressDialog progressDialog) {
         BookbayFirestoreReferences.getFirestoreInstance().collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
                 .whereEqualTo(BookbayFirestoreReferences.BUYER_ID_UID_FIELD, buyerUID)
@@ -252,6 +327,7 @@ public class BookbayFirestoreHelper {
 
                                         booksOrders.add(new BooksOrders(orderTemp, bookTemp));
 
+                                        // sort the orders
                                         Collections.sort(booksOrders, new SortByOrderDate());
 
                                         myOrdersAdapter.setData(booksOrders);
@@ -268,6 +344,12 @@ public class BookbayFirestoreHelper {
                 });
     }
 
+    /**
+     * Find all the orders of the seller
+     * @param sellerOrdersAdapter
+     * @param sellerUID
+     * @param progressDialog
+     */
     public static void findSellerOrders(OrdersAdapter sellerOrdersAdapter, String sellerUID, ProgressDialog progressDialog) {
         BookbayFirestoreReferences.getFirestoreInstance().collectionGroup(BookbayFirestoreReferences.ORDERS_COLLECTION)
                 .orderBy(BookbayFirestoreReferences.ORDER_DATE_FIELD, Query.Direction.DESCENDING).get()
@@ -301,6 +383,7 @@ public class BookbayFirestoreHelper {
                                             Log.d("TEST", "Error getting documents: ", task.getException());
                                         }
 
+                                        // sort the orders
                                         Collections.sort(booksOrders, new SortByOrderDate());
 
                                         sellerOrdersAdapter.setData(booksOrders);
@@ -317,6 +400,14 @@ public class BookbayFirestoreHelper {
                 });
     }
 
+    /**
+     * Update the status to either confirmed or declined and add it to the notifications
+     * @param booksOrders
+     * @param position
+     * @param bookStatus
+     * @param context
+     * @param ordersAdapter
+     */
     public static void updateStatusAndNotifications(BooksOrders booksOrders, int position, String bookStatus, Context context, OrdersAdapter ordersAdapter) {
 
         ProgressDialog progressDialog = new ProgressDialog(context);
@@ -379,6 +470,7 @@ public class BookbayFirestoreHelper {
                                                 declineAll.put(BookbayFirestoreReferences.STATUS_FIELD, BookStatus.DECLINED.name());
                                                 declineAll.put(BookbayFirestoreReferences.NOTIFICATION_DATE_TIME_FIELD, cal.getTime());
 
+                                                // Decline all other orders when the status is confirmed
                                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                                     // if statement - do not update the one that was just confirmed
                                                     if (!document.getId().equals(booksOrders.getOrder().getOrderID().getId())) {
@@ -403,7 +495,7 @@ public class BookbayFirestoreHelper {
                         }
                     });
 
-        } else if (bookStatus.equals(BookStatus.DECLINED.name())) {
+        } else if (bookStatus.equals(BookStatus.DECLINED.name())) { // when the status is changed to declined
 
             Tasks.whenAllSuccess(t1, t2)
                     .addOnSuccessListener(new OnSuccessListener<List<Object>>() {
@@ -431,6 +523,7 @@ public class BookbayFirestoreHelper {
         }
     }
 
+    // Decline others and made a notification for those declined orders
     public static void declineOthersAndNotify (Map<String, Object> declineAll, BooksOrders booksOrders, String orderID, Calendar cal, String buyerID, ProgressDialog progressDialog, Context context, OrdersAdapter ordersAdapter) {
 
         Map<String, Object> notificationDecline = new HashMap<>();
@@ -475,6 +568,11 @@ public class BookbayFirestoreHelper {
 
         }
 
+    /**
+     * Find all the notifications of the buyer
+     * @param buyerID
+     * @return FirestoreRecyclerOptions<Notifcations>
+     */
     public static FirestoreRecyclerOptions<Notifications> findNotificationOptions (String buyerID) {
         Query myNotificationsQuery = BookbayFirestoreReferences.getFirestoreInstance()
                 .collection(BookbayFirestoreReferences.NOTIFICATIONS_COLLECTION)
@@ -488,6 +586,12 @@ public class BookbayFirestoreHelper {
         return notifOptions;
     }
 
+    /**
+     * Place order
+     * @param bookID
+     * @param progress
+     * @param activityContext
+     */
     public static void placeOrder(String bookID, ProgressDialog progress, Context activityContext) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+8"));
@@ -635,6 +739,13 @@ public class BookbayFirestoreHelper {
                 });
     }
 
+    /**
+     * Add a book to the firestore
+     * @param progressDialog
+     * @param imageUri
+     * @param book
+     * @param context
+     */
     public static void AddBook(ProgressDialog progressDialog, Uri imageUri, Books_sell book, Context context) {
         CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
         String ID = UUID.randomUUID().toString();
@@ -676,11 +787,16 @@ public class BookbayFirestoreHelper {
         });
     }
 
+    /**
+     * Delete image from firebase storage
+     * @param bookID
+     * @param tempUri
+     */
     public static void deleteBookImageFromStorage(String bookID, Uri tempUri) {
         StorageReference photoRef = BookbayFirestoreReferences.getStorageReferenceInstance()
                 .child(BookbayFirestoreReferences.generateNewImagePath(bookID, tempUri));
 
-        // Delete picture from firestore
+        // Delete picture from firebase storage
         photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -696,9 +812,12 @@ public class BookbayFirestoreHelper {
         });
     }
 
+    /**
+     * Check if the book can be edited (if there are no orders, then the owner can edit)
+     * @param bookID
+     * @param canEditCallback
+     */
     public static void canEdit(String bookID, CanEditCallback canEditCallback){
-        canEdit = true;
-
         BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                 .document(bookID).collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
                 .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -713,7 +832,19 @@ public class BookbayFirestoreHelper {
         });
     }
 
-
+    /**
+     * Edit book with an image changed
+     * @param progressDialog
+     * @param bookID
+     * @param imageUri
+     * @param updateBook
+     * @param context
+     * @param title
+     * @param author
+     * @param selectorChoice
+     * @param price
+     * @param review
+     */
     public static void editBookWithImage(ProgressDialog progressDialog, String bookID, Uri imageUri, Map<String, Object> updateBook, Context context, String title, String author, String selectorChoice, Float price, String review) {
         CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
 
@@ -758,6 +889,11 @@ public class BookbayFirestoreHelper {
         });
     }
 
+    /**
+     * Edit book with no image changed
+     * @param bookID
+     * @param updateBook
+     */
     public static void editBookNoImage(String bookID, Map<String, Object> updateBook) {
         CollectionReference bookRef = BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION);
         bookRef.document(bookID)
@@ -776,6 +912,12 @@ public class BookbayFirestoreHelper {
                 });
     }
 
+    /**
+     * Delete the book from the firestore
+     * @param bookID
+     * @param progress
+     * @param context
+     */
     public static void deleteBook (String bookID, AlertDialog progress, Context context){
         BookbayFirestoreReferences.getFirestoreInstance().collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)
                 .document(bookID).collection(BookbayFirestoreReferences.ORDERS_COLLECTION)
@@ -863,6 +1005,11 @@ public class BookbayFirestoreHelper {
         });
     }
 
+    /**
+     * Find the total number of books that the seller is selling that are available
+     * @param userUid
+     * @param numBookCallBack
+     */
     public static void findTotalSellingBooks (String userUid, NumBookCallBack numBookCallBack) {
         BookbayFirestoreReferences.getFirestoreInstance()
             .collection(BookbayFirestoreReferences.BOOKS_SELL_COLLECTION)

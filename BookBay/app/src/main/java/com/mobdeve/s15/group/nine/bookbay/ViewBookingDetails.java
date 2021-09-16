@@ -33,6 +33,8 @@ public class ViewBookingDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_booking_details);
+
+        // View Initialization
         this.searchbar = findViewById(R.id.Sv_viewbookingdetails_seach_bar);
         this.bookImage = findViewById(R.id.Iv_viewbookingdetails_book_image);
         this.ownerImage = findViewById(R.id.Iv_viewbookingdetails_owner_image);
@@ -44,6 +46,7 @@ public class ViewBookingDetails extends AppCompatActivity {
         this.condition = findViewById(R.id.Tv_viewbookingdetails_condition);
         this.review = findViewById(R.id.Tv_viewbookingdetails_review);
 
+        // Get intent from the Thrift Store
         Intent i = getIntent();
         DecimalFormat decimalFormat = new DecimalFormat("#.00");
         this.bookTitle.setText(i.getStringExtra(IntentKeys.TITLE_KEY.name()));
@@ -52,7 +55,8 @@ public class ViewBookingDetails extends AppCompatActivity {
         this.price.setText("₱" + decimalFormat.format(i.getFloatExtra(IntentKeys.PRICE_KEY.name(),((float)0))));
         this.review.setText(i.getStringExtra(IntentKeys.REVIEW_KEY.name()));
 
-        //check if button is displayed
+        //check if button is displayed for placing order
+        // if the owner is the one logged in, place order would be gone
         this.ownerID = i.getStringExtra(IntentKeys.OWNER_ID_KEY.name());
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         this.userID = user.getUid();
@@ -70,7 +74,6 @@ public class ViewBookingDetails extends AppCompatActivity {
         searchText.setTextColor(Color.BLACK);
         searchText.setHintTextColor(Color.parseColor("#999999"));
 
-
         // load image from firebase
         BookbayFirestoreReferences.downloadImageIntoImageViewUsingId(
                 i.getStringExtra(IntentKeys.BOOK_ID_KEY.name()),
@@ -80,6 +83,8 @@ public class ViewBookingDetails extends AppCompatActivity {
 
         this.ownerName.setText(i.getStringExtra(IntentKeys.OWNER_NAME_KEY.name()));
         Picasso.get().load(i.getStringExtra(IntentKeys.OWNER_IMAGE_KEY.name())).into(ownerImage);
+
+        // when the place order button is clicked
         placeOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,6 +97,7 @@ public class ViewBookingDetails extends AppCompatActivity {
             }
         });
 
+        // Set return intent to Thrift Store when the user search in the View Books Details View
         searchbar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

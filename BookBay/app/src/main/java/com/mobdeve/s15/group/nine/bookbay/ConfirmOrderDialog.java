@@ -16,6 +16,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreHelper;
 import com.mobdeve.s15.group.nine.bookbay.model.BookbayFirestoreReferences;
 
+/**
+ * Class for the confirm order dialog to signify that an order is completed
+ */
 public class ConfirmOrderDialog extends AppCompatDialogFragment {
     private TextView title, price, condition;
     private String title_holder, condition_holder;
