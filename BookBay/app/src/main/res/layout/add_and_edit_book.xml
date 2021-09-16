@@ -62,7 +62,7 @@
             android:textSize="18dp"
             android:paddingLeft="10sp"
             android:paddingRight="10sp"
-            android:maxLength="40"
+            android:maxLength="50"
             android:textColor="#555555"
             android:layout_marginBottom="10dp"
             android:background="@drawable/custom_add_and_edit_text"
