@@ -59,7 +59,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
     private EditText Et_bookTitle_addBook, Et_author_addBook, Et_price_addBook, Et_review_addBook;
 
     // variables
-    private Uri imageUri, tempUri;
+    private Uri imageUri = null, tempUri = null;
     private String selectorChoice = "New", oldTitle, oldAuthor, oldCondition, oldReview, bookID, TAG="inside";
     private float oldPrice;
     private int ViewKey = 0, spinnerIndex;
@@ -234,7 +234,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                     //check if inputs are null
-                    if (!imageUri.toString().isEmpty() && !title.isEmpty() && !author.isEmpty() && !Et_price_addBook.getText().toString().isEmpty()) {
+                    if (imageUri != null && !title.isEmpty() && !author.isEmpty() && !Et_price_addBook.getText().toString().isEmpty()) {
                         // This is a prompt for the user to know the status of the image upload
                         final ProgressDialog progressDialog = new ProgressDialog(AddBookActivity.this);
                         progressDialog.setTitle("Uploading");
@@ -274,7 +274,7 @@ public class AddBookActivity extends AppCompatActivity implements AdapterView.On
                     Boolean changed = false;
 
                     //create a hashmap for all the changed values
-                    if (!imageUri.toString().isEmpty() && !title.isEmpty() && !author.isEmpty() && !Et_price_addBook.getText().toString().isEmpty()) {
+                    if (imageUri != null && !title.isEmpty() && !author.isEmpty() && !Et_price_addBook.getText().toString().isEmpty()) {
 
                         Float price = Float.valueOf(Et_price_addBook.getText().toString());
                         Map<String, Object> updateBook = new HashMap<>();
